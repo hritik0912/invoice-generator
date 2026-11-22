@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Handwritten Invoice Formats – Fill &amp; Print</title>
+<!--
+  Fillable formats of the 7 handwritten bill-book invoices (docs/ scans), laid out like the printed originals.
+  Every page is editable in the browser (header, bank details, items - everything): click, type, then Print.
+  Edits are kept in this browser (localStorage) until "Clear my changes" is pressed.
+  Open with #id to show a single format (also used for per-invoice PDF export):
+    #ece  #shrikrishna  #gagan  #zebabrush  #greenplus  #trackit  #manilal
+-->
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; background: #e9ecef; font-family: Arial, Helvetica, sans-serif; color: #000; }
+  .page { width: 210mm; height: 297mm; padding: 10mm 11mm; background: #fff; margin: 8mm auto; overflow: hidden;
+          display: flex; flex-direction: column; page-break-after: always; break-after: page; }
+  /* landscape bill books (original is wider than tall) */
+  @page landscape { size: A4 landscape; margin: 0; }
+  .page.landscape { width: 297mm; height: 210mm; page: landscape; }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  @media print { body { background: #fff; } .page { margin: 0; } }
+  .hide { display: none !important; }
+
+  /* fill & print toolbar (screen only) */
+  .toolbar { position: sticky; top: 0; z-index: 10; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+             background: #1f2d3d; color: #fff; padding: 8px 14px; font-size: 13px; }
+  .toolbar select, .toolbar button { font-size: 13px; padding: 6px 10px; border-radius: 4px; border: 0; }
+  .toolbar button { background: #28a745; color: #fff; font-weight: bold; cursor: pointer; }
+  .toolbar button.alt { background: #6c757d; }
+  .toolbar .tip { color: #cfd8e3; font-size: 12px; }
+  @media screen {
+    .page[contenteditable] { outline: none; cursor: text; }
+    .page .fill:hover, .page span.v:hover, .page td:hover { background: #eef5ff; }
+    .page .fill:focus-within, .page td:focus-within { background: #e3efff; }
+  }
+  .page { scroll-margin-top: 60px; }
+  @media print { .no-print { display: none !important; } .page { outline: none !important; caret-color: transparent; } }
+
+  /* shared helpers */
+  .c { text-align: center; } .r { text-align: right; } .b { font-weight: bold; } .i { font-style: italic; }
+  .small { font-size: 8.5pt; } .xs { font-size: 7.5pt; }
+  .v { font-family: "Courier New", Courier, monospace; font-weight: bold; font-size: 10.5pt; }   /* filled-in values (blank format) */
+  span.v:empty:not(.fill) { display: inline-block; min-width: 9mm; border-bottom: 1px dotted #000; height: 1em; vertical-align: baseline; }
+  .box { border: 1.4px solid #000; }
+  .flex { display: flex; } .grow { flex: 1; }
+  .line { display: flex; align-items: baseline; gap: 2mm; padding: 1mm 2mm; }
+  .line .fill { flex: 1; border-bottom: 1px dotted #000; min-height: 5mm; padding-left: 1mm; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.t td, table.t th { border: 1px solid #000; padding: 1.2mm 1.5mm; vertical-align: top; }
+  table.t th { font-size: 9pt; }
+  .tall td { height: 95mm; }
+  .hindi { font-family: "Kohinoor Devanagari", "Devanagari Sangam MN", "Mangal", "Noto Sans Devanagari", sans-serif; }
+  .shade { background: #dcdcdc; }
+  .band { background: #000; color: #fff; font-weight: bold; text-align: center; padding: 1mm; }
+
+  /* ============ 1. ECE ============ */
+  .ece-name { font-family: "Arial Narrow", Arial, sans-serif; font-size: 25pt; font-weight: bold; letter-spacing: .3px; }
+  .ece-logo { border: 2px solid #000; font-weight: 900; font-size: 18pt; padding: 0 2mm; margin-right: 3mm; }
+  .ece-inv { background: #bbb; color: #fff; font-weight: 900; font-size: 15pt; padding: 0 3mm; letter-spacing: 1px; }
+
+  /* ============ 2/3. Hindi bill books ============ */
+  .sk-name { font-size: 30pt; font-weight: 900; text-align: center; letter-spacing: 1px; text-shadow: 1px 1px 0 #888; }
+  .pill { display: inline-block; border: 1.4px solid #000; border-radius: 3mm; padding: 0.5mm 4mm; font-weight: bold; }
+  .gg-name { display: inline-block; background: #000; color: #fff; font-size: 22pt; font-weight: 900; padding: 1mm 4mm; }
+
+  /* ============ 4. Zebabrush ============ */
+  .zb-name { font-family: Impact, "Arial Black", sans-serif; font-size: 34pt; text-align: center; letter-spacing: 1px; line-height: 1.1; }
+  .zb-copy { border: 1px solid #000; font-size: 6.5pt; font-weight: bold; padding: 0.5mm 1mm; line-height: 1.25; }
+
+  /* ============ 5. Green Plus ============ */
+  .gp-name { font-size: 24pt; font-weight: 900; font-style: italic; }
+  .gp-logo { border: 2px solid #000; border-radius: 2mm; font-weight: 900; font-style: italic; font-size: 16pt; padding: 0 2mm; margin-right: 2mm; }
+  .gp-tag { display: inline-block; border: 1px solid #000; font-style: italic; padding: 0.3mm 3mm; font-size: 9pt; }
+
+  /* ============ 6. Trackit ============ */
+  .tk-name { font-size: 40pt; font-weight: 900; font-style: italic; letter-spacing: 2px; line-height: 1; }
+  .tk-sub { font-size: 17pt; font-style: italic; font-weight: bold; }
+
+  /* ============ 7. Manilal ============ */
+  .md-name { font-family: "Times New Roman", Times, serif; font-size: 27pt; font-weight: bold; }
+  .md-tag { display: inline-block; border: 1.4px solid #000; border-radius: 4mm; padding: 0.5mm 4mm; font-weight: bold; font-size: 9.5pt; }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <b>Handwritten invoice formats</b>
+  <select id="fmt" onchange="location.hash = this.value">
+    <option value="">All 7 formats</option>
+    <option value="ece">Electrical Controls &amp; Equipments</option>
+    <option value="shrikrishna">Shri Krishna Traders</option>
+    <option value="gagan">Gagan Enterprises</option>
+    <option value="zebabrush">Zebabrush Enterprises</option>
+    <option value="greenplus">Green Plus Roadlines</option>
+    <option value="trackit">Trackit India Logistics</option>
+    <option value="manilal">Manilal C. Desai &amp; Sons</option>
+  </select>
+  <button onclick="window.print()">🖨 Print / Save PDF</button>
+  <button class="alt" onclick="resetPages()">Clear my changes</button>
+  <span class="tip">Click anywhere on the bill and type &mdash; name, address, bank details, items, totals: everything is editable. Changes stay saved in this browser.</span>
+</div>
+
+<!-- ======================================================================================= -->
+<!-- 1. ELECTRICAL CONTROLS & EQUIPMENTS — Invoice 52/25-26                                   -->
+<!-- ======================================================================================= -->
+<section class="page" id="ece">
+  <div class="flex" style="align-items:flex-end; margin-bottom:1mm;">
+    <div class="grow"></div>
+    <div class="grow c small">Subject to Indore Jurisdiction</div>
+    <div class="grow r"><span class="ece-inv">INVOICE</span></div>
+  </div>
+  <div class="box">
+    <div class="flex" style="align-items:center; justify-content:center; padding:2mm 0 1mm;">
+      <span class="ece-logo">ECE</span><span class="ece-name">Electrical Controls &amp; Equipments</span>
+    </div>
+    <div class="c b" style="background:#ddd; margin:0 25mm; font-size:9.5pt;">* Electrical Control Panels Manufactures *</div>
+    <div class="c small" style="padding:1mm 0 1.5mm; line-height:1.35;">
+      Plot No. 29 - 30 Industrial Area (Extn.), Near Nai Dunia Press, Rangwasa Rau Indore<br>
+      Mobile : 98263-70707, 99264-77770, email : ece7031@yahoo.com, ece7031@gmail.com<br>
+      <b>GSTIN : 23AOJPK5922L1ZR</b>
+    </div>
+    <table class="t" style="border-left:0; border-right:0;">
+      <colgroup><col style="width:56%"><col></colgroup>
+      <tr>
+        <td style="border-left:0; padding:0;">
+          <div class="line">M/s <span class="fill v"></span></div>
+          <div class="line"><span class="fill v"></span></div>
+          <div class="line"><span class="fill v"></span></div>
+          <div class="line">Party GSTIN <span class="fill v"></span></div>
+        </td>
+        <td style="border-right:0; padding:0;">
+          <div class="line">Invoice No. : <span class="fill v"></span></div>
+          <div class="line">Date : <span class="fill v"></span></div>
+          <div class="line">E-Way Bill No. : <span class="fill v"></span></div>
+          <div class="line">Through : <span class="fill v"></span></div>
+        </td>
+      </tr>
+    </table>
+    <table class="t" style="border-left:0; border-right:0; border-top:0;">
+      <colgroup><col style="width:8%"><col style="width:48%"><col style="width:13%"><col style="width:13%"><col></colgroup>
+      <tr class="shade"><th style="border-left:0">S.No.</th><th>PARTICULARS</th><th>QUANTITY</th><th>RATE</th><th style="border-right:0">AMOUNT</th></tr>
+      <tr style="height:118mm;">
+        <td class="c v" style="border-left:0"></td>
+        <td class="v" style="line-height:1.5;"></td>
+        <td class="c v"></td>
+        <td class="r v"></td>
+        <td class="r v" style="border-right:0"></td>
+      </tr>
+      <tr><td style="border-left:0; border-bottom:0;" colspan="2" rowspan="4"></td><td colspan="2">CGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td colspan="2">SGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td colspan="2">IGST ...... %</td><td style="border-right:0"></td></tr>
+      <tr><td colspan="2">R.off</td><td class="r v" style="border-right:0"></td></tr>
+      <tr>
+        <td colspan="3" style="border-left:0">Rupees in words <span class="v" style="min-width:95mm;"></span></td>
+        <td class="c b">G. TOTAL</td><td class="r v" style="border-right:0; font-size:12pt;"></td>
+      </tr>
+    </table>
+    <div class="flex" style="padding:2mm; font-size:8.5pt; line-height:1.4;">
+      <div class="grow">E. &amp; O. E.<br>State Bank of India, 6 Bank Colony Annpurna Road Indore.<br>Current A/c No. : 63020284558, IFSC : SBIN0030458<br>STATE M.P., STATE CODE : 23</div>
+      <div class="r" style="display:flex; flex-direction:column; justify-content:space-between; width:70mm;">
+        <div style="height:12mm;"></div>
+        <div class="b">For : Electrical Controls &amp; Equipments</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================================= -->
+<!-- 2. SHRI KRISHNA TRADERS — Bill 9                                                          -->
+<!-- ======================================================================================= -->
+<section class="page hindi" id="shrikrishna">
+  <div class="box" style="padding:2mm 3mm 0;">
+    <div class="flex small b" style="align-items:flex-start;">
+      <div class="grow">प्रो. अभिषेक पटेल<br>9179101183</div>
+      <div class="grow c">|| श्री गणेशाय नमः ||</div>
+      <div class="grow r">बंशीलाल वर्मा<br>99977523851</div>
+    </div>
+    <div class="sk-name">श्री कृष्णा ट्रेडर्स</div>
+    <div class="c"><span class="band" style="display:inline-block; padding:0.5mm 5mm;">सिमेन्ट, सरिया एवं बिल्डींग मटेरियल सप्लायर</span></div>
+    <div class="c small b" style="margin-top:1mm;">* टोल टैक्स के पास, मण्डलावदा, इण्डोरामा, पीथमपुर से.नं. 3 पीथमपुर, जि. धार *</div>
+    <div class="c" style="margin:1mm 0 2mm;"><span class="pill" style="font-family:Arial;">GSTIN 23FWZPP2237J1ZV</span></div>
+    <div class="flex" style="align-items:baseline;">
+      <div class="line grow" style="padding-left:0;">बिल नं. <span class="fill v" style="max-width:40mm;"></span></div>
+      <div class="line" style="width:62mm;">दिनांक <span class="fill v"></span></div>
+    </div>
+    <div class="line" style="padding-left:0;">श्रीमान <span class="fill v"></span></div>
+    <div class="line" style="padding-left:0;">पता <span class="fill v"></span></div>
+    <div class="flex">
+      <div class="line grow" style="padding-left:0;">Party GSTIN <span class="fill v"></span></div>
+      <div class="line" style="width:52mm;">Party State Code <span class="fill v"></span></div>
+    </div>
+  </div>
+  <table class="t" style="border-top:0;">
+    <colgroup><col style="width:8%"><col style="width:44%"><col style="width:11%"><col style="width:11%"><col style="width:11%"><col></colgroup>
+    <tr><th>क्रं.</th><th>विवरण</th><th>HSN Code</th><th>मात्रा</th><th>रेट</th><th>रूपये / पैसे</th></tr>
+    <tr style="height:118mm;">
+      <td class="c v"></td><td class="v" style="font-size:13pt; padding-top:6mm;"></td><td></td>
+      <td class="c v" style="padding-top:6mm;"></td><td class="r v" style="padding-top:6mm;"></td><td class="r v" style="padding-top:6mm;"></td>
+    </tr>
+    <tr><td colspan="3" rowspan="7" style="vertical-align:bottom; font-family:Arial; font-size:8.5pt; line-height:1.45;">
+        <b>Bank Details :</b><br>Bank : <b>Punjab National Bank</b><br>Branch : <b>Indorama, Pithampur</b><br>A/c No. : <b>3239002100005791</b><br>IFCE Code: <b>PUNB0323900</b></td>
+      <td colspan="2" class="small b" style="font-family:Arial;">Total Amount Before Tax</td><td class="r v"></td></tr>
+    <tr><td colspan="2" class="b" style="font-family:Arial;">CGST <span class="v"></span> %</td><td class="r v"></td></tr>
+    <tr><td colspan="2" class="b" style="font-family:Arial;">SGST <span class="v"></span> %</td><td class="r v"></td></tr>
+    <tr><td colspan="2" class="b" style="font-family:Arial;">IGST &nbsp;&nbsp;&nbsp;&nbsp; %</td><td></td></tr>
+    <tr><td colspan="2" class="r">भाड़ा</td><td class="c"></td></tr>
+    <tr><td colspan="2" class="r">हम्माली</td><td class="c"></td></tr>
+    <tr><td colspan="2" class="r b">टोटल</td><td class="r v" style="font-size:12pt;"></td></tr>
+  </table>
+  <div class="box flex" style="border-top:0; padding:10mm 3mm 2mm; justify-content:space-between; align-items:flex-end;">
+    <span class="b">प्राप्तकर्ता के हस्ताक्षर</span><span class="b">वास्ते : श्री कृष्णा ट्रेडर्स</span>
+  </div>
+</section>
+
+<!-- ======================================================================================= -->
+<!-- 3. GAGAN ENTERPRISES — Bill 261                                                           -->
+<!-- ======================================================================================= -->
+<section class="page hindi" id="gagan">
+  <div class="box" style="padding:2mm 3mm 0;">
+    <div class="flex b" style="font-family:Arial; font-size:9pt;">
+      <div class="grow">GSTN - 23AMAPC9724B1ZP</div>
+      <div class="r">Mob: 99264 76596<br>99262 21226</div>
+    </div>
+    <div class="flex" style="align-items:center; gap:4mm; margin-top:-3mm;">
+      <div><span class="gg-name">गगन इन्टरप्राइसेस</span></div>
+    </div>
+    <div class="b" style="margin-top:1mm;">सरिया - सिमेंट - रेती - गिट्टी - मुरम</div>
+    <div class="small">पता : नगरपालिका मार्केट के सामने (सागौर कुटी) कालीबिल्लोद जिला - इन्दौर म.प्र.</div>
+    <div class="xs" style="font-family:Arial;">Email: gaganenterprises2020@gmail.com</div>
+    <div class="flex" style="margin-top:2mm;">
+      <div class="line grow" style="padding-left:0;">बिल नं. <span class="fill v" style="max-width:40mm;"></span></div>
+      <div class="line" style="width:60mm;">दिनांक <span class="fill v"></span></div>
+    </div>
+    <div class="flex">
+      <div class="line grow" style="padding-left:0;">श्रीमान् <span class="fill v"></span></div>
+      <div class="line" style="width:78mm;">जीएसटी नं. <span class="fill v"></span></div>
+    </div>
+    <div class="flex">
+      <div class="line grow" style="padding-left:0;">पता <span class="fill v"></span></div>
+      <div class="line" style="width:78mm;">आधार नं. <span class="fill"></span></div>
+    </div>
+    <div class="line" style="padding-left:0; width:50%;">मोबा. नं. <span class="fill"></span></div>
+  </div>
+  <table class="t" style="border-top:0;">
+    <colgroup><col style="width:8%"><col style="width:44%"><col style="width:14%"><col style="width:14%"><col></colgroup>
+    <tr><th>क्र.</th><th>विवरण</th><th>संख्या</th><th>दर</th><th>रकम</th></tr>
+    <tr style="height:112mm;">
+      <td class="c v"></td>
+      <td class="v" style="font-size:12pt;"></td>
+      <td class="r v"></td>
+      <td class="r v"></td>
+      <td class="r v"></td>
+    </tr>
+    <tr><td colspan="2" rowspan="5" style="font-family:Arial; font-size:8.5pt; line-height:1.45; vertical-align:bottom;">
+        Bank: Union Bank of India<br>Branch: Sagor Kuti (Pithampur)<br>A/c. No.: 452801010034374<br>IFSC: UBIN0545287</td>
+      <td colspan="2" class="small" style="font-family:Arial;">Total Amount Before Tax</td><td class="r v"></td></tr>
+    <tr><td colspan="2" style="font-family:Arial;">CGST <span class="v"></span></td><td class="r v"></td></tr>
+    <tr><td colspan="2" style="font-family:Arial;">SGST <span class="v"></span></td><td class="r v"></td></tr>
+    <tr><td colspan="2" style="font-family:Arial;">IGST</td><td></td></tr>
+    <tr><td colspan="2" class="small b" style="font-family:Arial;">Total Amount After Tax</td><td class="r v" style="font-size:12pt;"></td></tr>
+  </table>
+  <div class="box flex" style="border-top:0; padding:2mm 3mm; align-items:flex-end;">
+    <div class="grow xs">नोट : सभी प्रसंगों का न्याय क्षेत्र इंदौर रहेगा।<br>15 दिन में बिल का भुगतान नहीं होने पर 2% ब्याज लगेगा।</div>
+    <div class="b" style="padding-top:10mm;">वास्ते - गगन इन्टरप्राइसेस</div>
+  </div>
+</section>
+
+<!-- ======================================================================================= -->
+<!-- 4. ZEBABRUSH ENTERPRISES — Invoice 34                                                     -->
+<!-- ======================================================================================= -->
+<section class="page" id="zebabrush">
+  <div class="box">
+    <div class="flex small b" style="padding:1.5mm 2mm 0;">
+      <div class="grow">GSTIN- 05BKNPS2061R1ZG</div>
+      <div class="grow c" style="text-decoration:underline; font-size:10pt;">TAX INVOICE</div>
+      <div class="grow r">Mob.: 9997157350, 9358919214</div>
+    </div>
+    <div class="zb-name">ZEBABRUSH ENTERPRISES</div>
+    <div class="c"><span class="band" style="display:inline-block; padding:0.5mm 4mm; font-size:9.5pt;">Manufacturer of : Industrial Brushes &amp; Plywood Machinery</span></div>
+    <div class="flex" style="align-items:center; padding:0.5mm 2mm 1mm;">
+      <div class="grow c small"><b>48, Mohalla Baharqila, Manglour Town, Distt. Haridwar- 247656 (U.K.) India</b><br>Web.: www.zebabrush.com, Email : zebabrush11@gmail.com</div>
+      <div class="zb-copy">Original - White<br>Duplicate - Pink<br>Triplicate - Yellow</div>
+    </div>
+    <table class="t" style="border-left:0; border-right:0;">
+      <colgroup><col style="width:28%"><col style="width:16%"><col style="width:14%"><col></colgroup>
+      <tr>
+        <td style="border-left:0" class="small">State : Uttarakhand<br>State Code : 05</td>
+        <td class="small" style="vertical-align:middle;">Invoice No.:</td>
+        <td class="c v" style="font-size:15pt; vertical-align:middle;"></td>
+        <td style="border-right:0; vertical-align:middle;">Invoice Date : <span class="v"></span></td>
+      </tr>
+    </table>
+    <table class="t" style="border-left:0; border-right:0; border-top:0;">
+      <colgroup><col style="width:50%"><col></colgroup>
+      <tr><th style="border-left:0">Details of Receiver / Billed to :</th><th style="border-right:0">Details of Consignee / Shipped to :</th></tr>
+      <tr>
+        <td style="border-left:0; padding:0;">
+          <div class="line">Name : <span class="fill v"></span></div>
+          <div class="line">Address : <span class="fill v"></span></div>
+          <div class="line"><span class="fill v"></span></div>
+          <div class="line"><span class="fill v"></span></div>
+          <div class="line">GSTIN : <span class="fill v"></span></div>
+          <div class="line">State : <span class="fill v"></span> State Code : <span class="v"></span></div>
+        </td>
+        <td style="border-right:0; padding:0;">
+          <div class="line">Name : <span class="fill"></span></div>
+          <div class="line">Address : <span class="fill"></span></div>
+          <div class="line"><span class="fill"></span></div>
+          <div class="line"><span class="fill"></span></div>
+          <div class="line">GSTIN : <span class="fill v"></span></div>
+          <div class="line">State : <span class="fill"></span> State Code : ......</div>
+        </td>
+      </tr>
+    </table>
+    <table class="t" style="border-left:0; border-right:0; border-top:0;">
+      <colgroup><col style="width:8%"><col style="width:46%"><col style="width:10%"><col style="width:10%"><col style="width:11%"><col></colgroup>
+      <tr><th style="border-left:0">S.No.</th><th>Name of Product / Service</th><th>HSN Code</th><th>Qty.</th><th>Rate</th><th style="border-right:0">Amount</th></tr>
+      <tr style="height:72mm;">
+        <td class="c v" style="border-left:0; font-size:13pt;"></td>
+        <td class="v" style="font-size:13pt; line-height:1.5;"></td>
+        <td class="c v"></td><td class="c v"></td><td class="r v"></td><td class="r v" style="border-right:0"></td>
+      </tr>
+    </table>
+    <table class="t" style="border-left:0; border-right:0; border-top:0;">
+      <colgroup><col style="width:64%"><col style="width:18%"><col></colgroup>
+      <tr><td style="border-left:0">P.O. No.: ........................................ Date: ....................</td><td>Total Amount</td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">Total Invoice Amount in words: ........................................................</td><td>Amount without Tax</td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">..............................................................................................</td><td>Freight</td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">Place of Supply : <span class="v"></span></td><td>Add CGST &nbsp;&nbsp;&nbsp; %</td><td class="c" style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">Date of Supply : <span class="v"></span></td><td>Add : SGST &nbsp;&nbsp; %</td><td class="c" style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">Vehicle Number : ...........................................................</td><td style="white-space:nowrap;">Add : IGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
+      <tr>
+        <td style="border-left:0; font-size:8.5pt; line-height:1.4;" rowspan="2">
+          <div class="c b" style="text-decoration:underline;">BANK DETAIL :</div>
+          Bank Name : <b>ICICI Bank,</b> &nbsp; Roorkee (Uttarakhand)<br>Account No. : <b>091305002918</b><br>IFSC Code &nbsp;: <b>ICIC0000913</b></td>
+        <td class="b">Net Amount</td><td class="r v" style="border-right:0; font-size:13pt;"></td>
+      </tr>
+      <tr><td colspan="2" style="border-right:0;" class="xs">Certified that particulars Given above are true and correct</td></tr>
+      <tr>
+        <td style="border-left:0; border-bottom:0;" class="xs"><b>Terms &amp; Conditions:</b><br>• All disputer to Roorkee Jurisdiction.<br>• E.&amp;O.E.</td>
+        <td colspan="2" class="r" style="border-right:0; border-bottom:0;"><b>For Zeba Brush Enterprises</b><br><br><br><span class="i small">Proprietor</span></td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ======================================================================================= -->
+<!-- 5. GREEN PLUS ROADLINES — Bill 736                                                        -->
+<!-- ======================================================================================= -->
+<section class="page" id="greenplus">
+  <div class="box">
+    <div class="flex" style="padding:2mm 2mm 1mm; align-items:flex-start;">
+      <div class="grow">
+        <div class="flex small b"><span class="grow">GST No. :- 07BESPS4213Q1ZO</span><span class="grow">Bill Book</span><span class="hindi">!! जय बजरंग बली !!</span></div>
+        <div class="flex" style="align-items:center; margin-top:1mm;"><span class="gp-logo">GPR</span><span class="gp-name">GREEN PLUS ROADLINES</span></div>
+        <div class="c" style="margin-top:1mm;"><span class="gp-tag">Fleet Owners &amp; Transport Contractor</span></div>
+        <div class="c xs b" style="margin-top:1mm;">Tata 407, Canter, Trucks, Trailers, Containers available for all over India &amp; Nepal.</div>
+        <div class="c xs">A-11, 1st Floor, Mandir Mohalla, Near Shanta Nursing Home, Samaypur, Delhi-110042 (Near Sanjay Gandhi Transport Nagar)<br>E-mail : greenplusroadlines@gmail.com</div>
+      </div>
+      <div class="xs b" style="border-left:1px solid #000; padding-left:2mm; margin-left:2mm; line-height:1.4; white-space:nowrap;">
+        Prop. : Sumit<br>98188-24500<br>97113-86801<br>Chennai : 99401-98740<br>Mumbai : 98100-53892<br>Banglore : 93410-42007<br>Kerala : 98730-90177</div>
+    </div>
+    <div style="border-top:1.4px solid #000; padding:1mm 0;">
+      <div class="flex"><div class="line grow">Bill No. <span class="fill v" style="max-width:40mm; font-size:13pt;"></span></div><div class="line" style="width:55mm;">Date <span class="fill v"></span></div></div>
+      <div class="line">M/s. <span class="fill v"></span></div>
+      <div class="line"><span class="fill v"></span> G.S.T. No. <span class="fill v" style="max-width:52mm;"></span></div>
+    </div>
+    <table class="t" style="border-left:0; border-right:0;">
+      <colgroup><col style="width:58%"><col style="width:14%"><col style="width:13%"><col></colgroup>
+      <tr><th style="border-left:0">Description</th><th>Chg Qty/Wt</th><th>Rate (Rs.)</th><th style="border-right:0">Amount (Rs.)</th></tr>
+      <tr><td style="border-left:0">Being charges towards the following :-<br>Transport Doc. No. <span class="v"></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dt. <span class="v"></span><br>(Billty Num.)</td>
+        <td class="c v"></td><td class="r v"></td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">Airway Bill No.</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">a) Freight-Ex Delhi/<span class="v"></span> ........ to <span class="v"></span></td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">&nbsp;&nbsp;&nbsp; For/From M/s. .....................................................</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">b) Vehicle Number <span class="v"></span></td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0; height:9mm;"></td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">c) Halting/Detention Charges</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0; height:9mm;"></td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">d) Labour - Loading/Unloading</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0; height:9mm;"></td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">e) Insurance/Risk Charges</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">f) &nbsp;Escort Charges</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">g) Border Charges</td><td></td><td></td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0">h) <b>GST Charges</b> <span class="v"></span></td><td class="c"></td><td class="c"></td><td class="r v" style="border-right:0"></td></tr>
+      <tr>
+        <td style="border-left:0; padding:0;" rowspan="3">
+          <div class="flex" style="height:100%;">
+            <div class="xs" style="border-right:1px solid #000; padding:1mm 1.5mm; line-height:1.35; width:52mm;">
+              <b>OUR BANK DETAIL</b><br>Name : Green Plus Roadlines<br>Bank Name : AXIS BANK<br>Branch : Sanjay Gandhi Transport, N. Delhi-42<br>A/c. : 917020062675281<br>IFSC : UTIB0001361
+              <div class="c b" style="border-top:1px solid #000; margin:1mm -1.5mm 0; padding-top:0.5mm; font-size:8pt;">OUR GST No.<br>07BESPS4213Q1ZO</div></div>
+            <div class="grow r b" style="padding:1mm 2mm; display:flex; flex-direction:column; justify-content:space-around;"><span>Total</span><span>Less Advance</span><span>Balance</span></div>
+          </div>
+        </td>
+        <td class="c"></td><td class="c"></td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td class="c"></td><td class="c"></td><td class="c" style="border-right:0"></td></tr>
+      <tr><td class="c"></td><td class="c"></td><td class="r v" style="border-right:0"></td></tr>
+    </table>
+    <div class="flex" style="padding:2mm; align-items:flex-end;">
+      <div class="grow">
+        <div class="line" style="padding-left:0;">Amount in words Rs. <span class="fill v"></span></div>
+        <div class="xs" style="margin-top:2mm;">• All Subject to Delhi Jurisdiction. • E. &amp; O. E.</div>
+      </div>
+      <div class="r" style="width:60mm;"><b>For Green Plus Roadlines</b><br><br><br><span class="small">Authorised Signatory</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================================= -->
+<!-- 6. TRACKIT INDIA LOGISTICS — Invoice 065                                                  -->
+<!-- ======================================================================================= -->
+<section class="page" id="trackit">
+  <div class="box" style="padding:2mm 3mm;">
+    <div class="flex small b" style="align-items:flex-start;">
+      <div class="grow">GSTIN : 06CYZPP1933Q1ZB</div>
+      <div class="grow c">TAX_INVOICE</div>
+      <div class="grow r">M: +91-98718130__<br>+91-92665283__</div>
+    </div>
+    <div class="flex" style="align-items:center;">
+      <div style="width:30mm;"></div>
+      <div class="grow c"><div class="tk-name">TRACKIT</div><div class="tk-sub r" style="margin-right:22mm;">India logistics</div></div>
+      <div class="small" style="width:46mm;">INVOICE No. <span class="v" style="font-size:13pt;"></span><br><br>Date <span class="v"></span></div>
+    </div>
+    <div class="c small b">Office Add : Booth No. 86, Sabji Mandi, Sec-16, Faridabad<br>E-mail:trackitindialogistics@gmail.com</div>
+    <div class="line" style="padding-left:0; margin-top:2mm;">M/s <span class="fill v"></span></div>
+    <div class="line" style="padding-left:0;"><span class="fill v"></span> GSTIN No. <span class="fill v" style="max-width:52mm;"></span></div>
+  </div>
+  <table class="t" style="border-top:0;">
+    <colgroup><col style="width:7%"><col style="width:19%"><col style="width:52%"><col></colgroup>
+    <tr><th>S.<br>No.</th><th>Party Bill No</th><th>DESCRIPTION</th><th>AMOUNT<br><span class="xs">Rs.</span></th></tr>
+    <tr style="height:120mm;">
+      <td class="c v"></td>
+      <td class="v"></td>
+      <td class="v" style="font-size:12pt; line-height:2;"></td>
+      <td class="r v"></td>
+    </tr>
+    <tr>
+      <td colspan="2" rowspan="3">Total Invoice Amount In Words:<br><span class="v" style="min-width:45mm; margin-top:4mm;"></span></td>
+      <td class="small">TOTAL</td><td class="r v"></td></tr>
+    <tr><td class="small">C.G.S.T. @ ..........%</td><td class="c"></td></tr>
+    <tr><td class="small">S.G.S.T. @ ..........%</td><td class="c"></td></tr>
+    <tr>
+      <td colspan="2" rowspan="2" class="small" style="line-height:1.4;">Bank Name : HDFC BANK<br>A/C : 50200109724282<br>IFSC Code : HDFC0006023</td>
+      <td class="small">I.G.S.T. @ ..........%</td><td class="c"></td></tr>
+    <tr><td class="b">G. TOTAL</td><td class="r v" style="font-size:13pt;"></td></tr>
+  </table>
+  <div class="box flex" style="border-top:0; padding:2mm 3mm; align-items:flex-end;">
+    <div class="grow small">Service Tax to be paid by consignor or consignee<br><br><br>E. &amp; O.E.</div>
+    <div class="grow c small" style="align-self:flex-end;">Receiver's Signature</div>
+    <div class="r" style="width:60mm;"><b>For TRACKIT INDIA LOGISTICS</b><br><br><br><span class="small">Auth. Signatory</span></div>
+  </div>
+</section>
+
+<!-- ======================================================================================= -->
+<!-- 7. MANILAL C. DESAI & SONS — Tax Invoice 2196                                             -->
+<!-- ======================================================================================= -->
+<section class="page landscape" id="manilal">
+  <div class="box">
+    <div class="flex small b" style="padding:1.5mm 2mm; align-items:flex-start;">
+      <div class="grow">GST IN : 23ABGPD0186M1ZS<br>State : Madhya Pradesh | State Code : 23</div>
+      <div class="grow c">ESTD. 1927<br><span style="font-weight:normal;">Subject to Indore Jurisdiction</span></div>
+      <div class="grow r">☎ Off.: 2533122<br>Email : mr.prdesai@gmail.com<br>Mob. 94250-50800</div>
+    </div>
+    <table class="t" style="border-left:0; border-right:0;">
+      <colgroup><col style="width:56%"><col></colgroup>
+      <tr>
+        <td style="border-left:0; text-align:center; vertical-align:middle;">
+          <div class="md-name">Manilal C. Desai &amp; Sons</div>
+          <div class="b small">87-88, Siyaganj, Telgali, INDORE - 452 007 (M.P.)</div>
+          <div style="margin-top:1mm;"><span class="md-tag">A House of Granding Wheel, Emery Paper &amp; Hand Tools</span></div>
+        </td>
+        <td style="border-right:0; padding:0;">
+          <div class="line" style="border-bottom:1px solid #000;"><b style="white-space:nowrap;">2021 Tax Invoice No.</b> <span class="v" style="font-size:14pt;"></span> <span class="grow"></span> Date <span class="v"></span></div>
+          <div class="line" style="border-bottom:1px solid #000;">Order No. <span class="grow"></span> Date &nbsp; / &nbsp; /</div>
+          <div class="line" style="border-bottom:1px solid #000;">Challan No. <span class="v"></span> <span class="grow"></span> Date &nbsp; / &nbsp; /</div>
+          <div class="line">R.R./M.R. No. <span class="grow"></span> Date &nbsp; / &nbsp; /</div>
+        </td>
+      </tr>
+    </table>
+    <div style="padding:1mm 0;">
+      <div class="flex"><div class="line grow">Buyer M/s. <span class="fill v"></span></div><div class="line" style="width:62mm;">Place <span class="fill v"></span></div></div>
+      <div class="flex"><div class="line grow">GSTIN <span class="fill v"></span></div><div class="line" style="width:58mm;">STATE <span class="fill v"></span></div><div class="line" style="width:36mm;">STATE CODE <span class="fill v"></span></div></div>
+      <div class="flex"><div class="line grow">Despatched to <span class="fill"></span></div><div class="line" style="width:40mm;">Freight <span class="fill"></span></div><div class="line" style="width:64mm;">Through <span class="fill v"></span></div></div>
+    </div>
+    <table class="t" style="border-left:0; border-right:0;">
+      <colgroup><col style="width:5%"><col style="width:35%"><col style="width:10%"><col style="width:7%"><col style="width:12%"><col style="width:7%"><col style="width:7%"><col></colgroup>
+      <tr><th style="border-left:0">S.<br>No.</th><th>Description</th><th>HSN Code</th><th>Qty.</th><th>Rate<br><span class="xs">Rs. &nbsp; P.</span></th><th>Per</th><th>Disc.%</th><th style="border-right:0">TAXABLE VALUE<br><span class="xs">Rs. &nbsp; P.</span></th></tr>
+      <tr style="height:54mm;">
+        <td class="c v" style="border-left:0"></td>
+        <td class="v" style="line-height:1.5;"></td>
+        <td class="c v"></td><td class="c v"></td><td class="r v"></td><td class="c v"></td><td class="c v"></td><td class="r v" style="border-right:0"></td>
+      </tr>
+    </table>
+    <table class="t" style="border-left:0; border-right:0; border-top:0;">
+      <colgroup><col style="width:68%"><col style="width:14%"><col></colgroup>
+      <tr><td style="border-left:0" class="b small">DECLARATION : CERTIFIED THAT THE PARTICULARS GIVEN ABOVE ARE TRUE &amp; CORRECT</td><td class="b">TOTAL</td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td style="border-left:0" class="b small">Our Bank A/c. No. 880327100000027 Bank of India • IFSC CODE : BKID0008803</td><td class="small">P &amp; F / Freight / Cartage</td><td class="c" style="border-right:0"></td></tr>
+      <tr><td style="border-left:0; vertical-align:middle;" rowspan="4" class="c">
+          <div class="flex" style="justify-content:space-around; font-weight:900; font-size:11pt;"><span>CUMI</span><span>AJAX</span><span>JK FILES &amp; TOOLS</span></div>
+          <div class="xs" style="margin-top:3mm;">Interest @ 24% p.a. will be charged. If payment is not Received within 15 days.</div></td>
+        <td style="white-space:nowrap;">CGST@ <span class="v"></span></td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td style="white-space:nowrap;">SGST@ <span class="v"></span></td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td>IGST@ 18%-28%</td><td class="c" style="border-right:0"></td></tr>
+      <tr><td class="b">GRAND TOTAL</td><td class="r v" style="border-right:0; font-size:13pt;"></td></tr>
+      <tr>
+        <td style="border-left:0; border-bottom:0;" class="xs">J.K. : ALL TYPES OF STEEL FILE, TOOLS &amp; DRILLS CUMI : EMERY WHEEL &amp; ABRASIVE GOODS CHAMPION, GLAN ROPE &amp; SHEET, TAPARIA, JHALANI TOOLS, TEFLON, NAYLON, PRODUCT ALL TYPE OF RUBBER SHEET.<br><br><span class="c" style="display:block;">Common Seal</span></td>
+        <td colspan="2" class="r" style="border-right:0; border-bottom:0;"><b>For : Manilal C. Desai &amp; Sons</b><br><br><br><span class="small">Authorised Signatory</span></td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<script>
+  const pages = [...document.querySelectorAll('.page')];
+  const ORIGINAL = {};
+  const KEY = id => 'hw-format:' + id;
+  const store = {
+    get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} },
+    del: k => { try { localStorage.removeItem(k); } catch (e) {} }
+  };
+
+  // Every page is editable; edits are saved per format and restored on reload
+  pages.forEach(p => {
+    ORIGINAL[p.id] = p.innerHTML;
+    const saved = store.get(KEY(p.id));
+    if (saved !== null) p.innerHTML = saved;
+    p.contentEditable = 'true';
+    p.spellcheck = false;
+    p.addEventListener('input', () => store.set(KEY(p.id), p.innerHTML));
+  });
+
+  // "#id" in the URL shows only that format (used for one-PDF-per-invoice export)
+  function showOnly() {
+    const only = location.hash.slice(1);
+    const valid = !!(only && document.getElementById(only));
+    pages.forEach(p => p.classList.toggle('hide', valid && p.id !== only));
+    document.getElementById('fmt').value = valid ? only : '';
+    window.scrollTo(0, 0);
+  }
+  // no focus ring / caret in the printout
+  window.addEventListener('beforeprint', () => { if (document.activeElement) document.activeElement.blur(); });
+  window.addEventListener('hashchange', showOnly);
+  showOnly();
+
+  // Restores the blank format for the visible page(s)
+  function resetPages() {
+    const visible = pages.filter(p => !p.classList.contains('hide'));
+    if (!confirm('Clear your changes on ' + (visible.length === 1 ? 'this format' : 'all 7 formats') + '?')) return;
+    visible.forEach(p => { p.innerHTML = ORIGINAL[p.id]; store.del(KEY(p.id)); });
+  }
+</script>
+</body>
+</html>
