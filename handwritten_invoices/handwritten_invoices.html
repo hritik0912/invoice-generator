@@ -10,6 +10,40 @@
   Open with #id to show a single format (also used for per-invoice PDF export):
     #ece  #shrikrishna  #gagan  #zebabrush  #greenplus  #trackit  #manilal
 -->
+<style id="bill-fonts">
+  /* Typefaces of the printed bill books. The real font is used when installed (local), otherwise a free look-alike from fonts/
+     Arial→Arimo, Arial Narrow→Nimbus Sans Narrow, Arial Black→Archivo Black, Times New Roman→Tinos, Bookman Old Style→TeX Gyre Bonum,
+     Calibri→Carlito, Verdana→DejaVu Sans, Libra BT→Uncial Antiqua,
+     Kruti Dev 010 (legacy non-Unicode Hindi DTP font, so never local())→Noto Serif Devanagari Condensed,
+     brush/heavy Devanagari display lettering→Kalam / Modak / Teko, rounded heavy italic display→Lilita One */
+  @font-face { font-family: "Arial"; src: local("Arial"), local("ArialMT"), url("fonts/arimo.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+  @font-face { font-family: "Arial"; src: local("Arial Bold"), local("Arial-BoldMT"), url("fonts/arimo.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+  @font-face { font-family: "Arial"; src: local("Arial Italic"), local("Arial-ItalicMT"), url("fonts/arimo-i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+  @font-face { font-family: "Arial"; src: local("Arial Bold Italic"), local("Arial-BoldItalicMT"), url("fonts/arimo-i.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: block; }
+  @font-face { font-family: "Arial Narrow"; src: local("Arial Narrow"), local("ArialNarrow"), url("fonts/narrow-regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+  @font-face { font-family: "Arial Narrow"; src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), url("fonts/narrow-bold.otf") format("opentype"); font-weight: 700; font-style: normal; font-display: block; }
+  @font-face { font-family: "Arial Black"; src: local("Arial Black"), local("Arial-Black"), url("fonts/archivo-black.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+  @font-face { font-family: "Times New Roman"; src: local("Times New Roman"), local("TimesNewRomanPSMT"), url("fonts/tinos-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+  @font-face { font-family: "Times New Roman"; src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), url("fonts/tinos-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+  @font-face { font-family: "Times New Roman"; src: local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"), url("fonts/tinos-400i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+  @font-face { font-family: "Bookman Old Style"; src: local("Bookman Old Style Bold"), local("BookmanOldStyle-Bold"), url("fonts/bonum-bold.otf") format("opentype"); font-weight: 400 900; font-style: normal; font-display: block; }
+  @font-face { font-family: "Calibri"; src: local("Calibri Bold"), local("Calibri-Bold"), url("fonts/carlito-700.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+  @font-face { font-family: "Verdana"; src: local("Verdana Bold"), local("Verdana-Bold"), url("fonts/dejavu-700.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+  @font-face { font-family: "Libra BT"; src: local("Libra BT"), local("LibraBT"), local("Libra"), url("fonts/uncial-antiqua.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+  @font-face { font-family: "Kruti Dev 010"; src: url("fonts/noto-serif-devanagari-cond.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block;
+               unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20B9, U+25CC, U+A8E0-A8FF; }
+  @font-face { font-family: "Kalam"; src: local("Kalam"), url("fonts/kalam-devanagari.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block;
+               unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20B9, U+25CC, U+A8E0-A8FF; }
+  @font-face { font-family: "Modak"; src: local("Modak"), url("fonts/modak-devanagari.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block;
+               unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20B9, U+25CC, U+A8E0-A8FF; }
+  @font-face { font-family: "Baloo 2"; src: url("fonts/baloo2-800-devanagari.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block;
+               unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20B9, U+25CC, U+A8E0-A8FF; }
+  @font-face { font-family: "Teko"; src: url("fonts/teko-700-devanagari.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block;
+               unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20B9, U+25CC, U+A8E0-A8FF; }
+  @font-face { font-family: "Khand"; src: url("fonts/khand-700-devanagari.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block;
+               unicode-range: U+0900-097F, U+1CD0-1CF9, U+200C-200D, U+20B9, U+25CC, U+A8E0-A8FF; }
+  @font-face { font-family: "Lilita One"; src: local("Lilita One"), local("LilitaOne"), url("fonts/lilita-one.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+</style>
 <style>
   @page { size: A4; margin: 0; }
   * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -51,35 +85,54 @@
   table.t td, table.t th { border: 1px solid #000; padding: 1.2mm 1.5mm; vertical-align: top; }
   table.t th { font-size: 9pt; }
   .tall td { height: 95mm; }
-  .hindi { font-family: "Kohinoor Devanagari", "Devanagari Sangam MN", "Mangal", "Noto Sans Devanagari", sans-serif; }
+  .hindi { font-family: "Kruti Dev 010", Arial, sans-serif; }   /* Hindi lines; Latin falls through to Arial like on the originals */
   .shade { background: #dcdcdc; }
   .band { background: #000; color: #fff; font-weight: bold; text-align: center; padding: 1mm; }
+  .arial { font-family: Arial, sans-serif; } .narrow { font-family: "Arial Narrow", Arial, sans-serif; } .times { font-family: "Times New Roman", serif; }
+  .nb { font-weight: normal; }
+  /* condensed display lettering: outer box has the printed width, inner span is squeezed horizontally */
+  .squeeze { display: inline-block; white-space: nowrap; overflow: visible; }
+  .squeeze > span { display: inline-block; transform-origin: 0 50%; }
 
-  /* ============ 1. ECE ============ */
-  .ece-name { font-family: "Arial Narrow", Arial, sans-serif; font-size: 25pt; font-weight: bold; letter-spacing: .3px; }
-  .ece-logo { border: 2px solid #000; font-weight: 900; font-size: 18pt; padding: 0 2mm; margin-right: 3mm; }
-  .ece-inv { background: #bbb; color: #fff; font-weight: 900; font-size: 15pt; padding: 0 3mm; letter-spacing: 1px; }
+  /* ============ 1. ECE (Arial labels, Times condensed firm name, Arial Black INVOICE) ============ */
+  #ece { font-family: Arial, sans-serif; }
+  #ece table.t th { font-weight: normal; }
+  .ece-name { font-family: "Times New Roman", serif; font-weight: normal; font-size: 33pt; line-height: 1.05; width: 123mm; }
+  .ece-name > span { transform: scaleX(.6); letter-spacing: .07em; }
+  .ece-logo { border: 2px solid #000; font-family: "Arial Narrow", Arial, sans-serif; font-weight: bold; font-size: 18pt; padding: 0 2mm; margin-right: 3mm; }
+  .ece-inv { font-family: "Arial Black", Arial, sans-serif; font-weight: 900; background: #c4c4c4; color: #111; font-size: 18pt; padding: 0 2mm; letter-spacing: .5px; }
 
-  /* ============ 2/3. Hindi bill books ============ */
-  .sk-name { font-size: 30pt; font-weight: 900; text-align: center; letter-spacing: 1px; text-shadow: 1px 1px 0 #888; }
+  /* ============ 2/3. Hindi bill books (Kruti Dev 010 + Arial/Calibri; display lettering for the firm name) ============ */
+  .sk-name { font-family: "Modak", "Kruti Dev 010", sans-serif; font-size: 30pt; font-weight: normal; text-align: center; line-height: 1.15; color: #000;
+             text-shadow: 0 .6px #fff, .6px 0 #fff, 0 -.6px #fff, -.6px 0 #fff, 2px 2px 0 #000, 2.5px 2.5px 0 #000; }
   .pill { display: inline-block; border: 1.4px solid #000; border-radius: 3mm; padding: 0.5mm 4mm; font-weight: bold; }
-  .gg-name { display: inline-block; background: #000; color: #fff; font-size: 22pt; font-weight: 900; padding: 1mm 4mm; }
+  .calibri { font-family: Calibri, Carlito, Arial, sans-serif; font-weight: bold; }
+  .gg-name { display: inline-block; background: #555; border: 2px solid #000; outline: 1px solid #000; outline-offset: 1.5px; color: #fff;
+             font-family: "Teko", "Kruti Dev 010", sans-serif; font-size: 22pt; font-weight: normal; padding: 0 3mm; line-height: 1.2;
+             text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 2px 2px 0 #000; }
+  .brush { font-family: "Kalam", Arial, sans-serif; }
 
-  /* ============ 4. Zebabrush ============ */
-  .zb-name { font-family: Impact, "Arial Black", sans-serif; font-size: 34pt; text-align: center; letter-spacing: 1px; line-height: 1.1; }
-  .zb-copy { border: 1px solid #000; font-size: 6.5pt; font-weight: bold; padding: 0.5mm 1mm; line-height: 1.25; }
+  /* ============ 4. Zebabrush (Arial Narrow Bold firm name, Arial / Arial Narrow labels, Times Bold signature) ============ */
+  #zebabrush { font-family: "Arial Narrow", Arial, sans-serif; }
+  #zebabrush table.t th { font-weight: bold; }
+  .zb-name { font-family: "Arial Narrow", Arial, sans-serif; font-weight: bold; font-size: 34pt; text-align: center; line-height: 1.1; }
+  .zb-copy { border: 1px solid #000; border-radius: 1mm; font-family: Arial, sans-serif; font-size: 6.5pt; font-weight: bold; padding: 0.5mm 1mm; line-height: 1.25; }
 
-  /* ============ 5. Green Plus ============ */
-  .gp-name { font-size: 24pt; font-weight: 900; font-style: italic; }
-  .gp-logo { border: 2px solid #000; border-radius: 2mm; font-weight: 900; font-style: italic; font-size: 16pt; padding: 0 2mm; margin-right: 2mm; }
-  .gp-tag { display: inline-block; border: 1px solid #000; font-style: italic; padding: 0.3mm 3mm; font-size: 9pt; }
+  /* ============ 5. Green Plus (rounded heavy italic firm name, Times Italic tagline, Arial labels) ============ */
+  #greenplus { font-family: Arial, sans-serif; }
+  .gp-name { font-family: "Lilita One", "Arial Black", sans-serif; font-size: 24pt; font-weight: normal; font-style: italic; color: #333; letter-spacing: .5px; }
+  .gp-logo { border: 2px solid #000; border-radius: 2mm; font-family: "Arial Black", Arial, sans-serif; font-weight: 900; font-style: italic; font-size: 16pt; padding: 0 2mm; margin-right: 2mm; }
+  .gp-tag { display: inline-block; border: 1px solid #000; border-radius: 1mm; font-family: "Times New Roman", serif; font-style: italic; padding: 0.3mm 3mm; font-size: 9pt; }
 
-  /* ============ 6. Trackit ============ */
-  .tk-name { font-size: 40pt; font-weight: 900; font-style: italic; letter-spacing: 2px; line-height: 1; }
-  .tk-sub { font-size: 17pt; font-style: italic; font-weight: bold; }
+  /* ============ 6. Trackit (Verdana Bold Italic logo, Arial / Arial Narrow labels, Libra BT signature line) ============ */
+  #trackit { font-family: Arial, sans-serif; }
+  .tk-name { font-family: Verdana, sans-serif; font-size: 40pt; font-weight: bold; font-style: italic; letter-spacing: 2px; line-height: 1; }
+  .tk-sub { font-family: Verdana, sans-serif; font-size: 17pt; font-style: italic; font-weight: bold; }
+  .libra { font-family: "Libra BT", serif; font-weight: normal; }
 
-  /* ============ 7. Manilal ============ */
-  .md-name { font-family: "Times New Roman", Times, serif; font-size: 27pt; font-weight: bold; }
+  /* ============ 7. Manilal (Bookman Old Style Bold firm name, Arial / Arial Narrow labels) ============ */
+  #manilal { font-family: Arial, sans-serif; }
+  .md-name { font-family: "Bookman Old Style", serif; font-size: 27pt; font-weight: bold; }
   .md-tag { display: inline-block; border: 1.4px solid #000; border-radius: 4mm; padding: 0.5mm 4mm; font-weight: bold; font-size: 9.5pt; }
 </style>
 </head>
@@ -113,7 +166,7 @@
   </div>
   <div class="box">
     <div class="flex" style="align-items:center; justify-content:center; padding:2mm 0 1mm;">
-      <span class="ece-logo">ECE</span><span class="ece-name">Electrical Controls &amp; Equipments</span>
+      <span class="ece-logo">ECE</span><span class="ece-name squeeze"><span>Electrical Controls &amp; Equipments</span></span>
     </div>
     <div class="c b" style="background:#ddd; margin:0 25mm; font-size:9.5pt;">* Electrical Control Panels Manufactures *</div>
     <div class="c small" style="padding:1mm 0 1.5mm; line-height:1.35;">
@@ -148,20 +201,20 @@
         <td class="r v"></td>
         <td class="r v" style="border-right:0"></td>
       </tr>
-      <tr><td style="border-left:0; border-bottom:0;" colspan="2" rowspan="4"></td><td colspan="2">CGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
-      <tr><td colspan="2">SGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
-      <tr><td colspan="2">IGST ...... %</td><td style="border-right:0"></td></tr>
+      <tr><td style="border-left:0; border-bottom:0;" colspan="2" rowspan="4"></td><td colspan="2" class="b">CGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td colspan="2" class="b">SGST <span class="v"></span> %</td><td class="r v" style="border-right:0"></td></tr>
+      <tr><td colspan="2" class="b">IGST ...... %</td><td style="border-right:0"></td></tr>
       <tr><td colspan="2">R.off</td><td class="r v" style="border-right:0"></td></tr>
       <tr>
-        <td colspan="3" style="border-left:0">Rupees in words <span class="v" style="min-width:95mm;"></span></td>
-        <td class="c b">G. TOTAL</td><td class="r v" style="border-right:0; font-size:12pt;"></td>
+        <td colspan="3" style="border-left:0">Rupees In words <span class="v" style="min-width:95mm;"></span></td>
+        <td class="c shade">G. TOTAL</td><td class="r v" style="border-right:0; font-size:12pt;"></td>
       </tr>
     </table>
     <div class="flex" style="padding:2mm; font-size:8.5pt; line-height:1.4;">
       <div class="grow">E. &amp; O. E.<br>State Bank of India, 6 Bank Colony Annpurna Road Indore.<br>Current A/c No. : 63020284558, IFSC : SBIN0030458<br>STATE M.P., STATE CODE : 23</div>
       <div class="r" style="display:flex; flex-direction:column; justify-content:space-between; width:70mm;">
         <div style="height:12mm;"></div>
-        <div class="b">For : Electrical Controls &amp; Equipments</div>
+        <div class="b times">For : Electrical Controls &amp; Equipments</div>
       </div>
     </div>
   </div>
@@ -173,23 +226,23 @@
 <section class="page hindi" id="shrikrishna">
   <div class="box" style="padding:2mm 3mm 0;">
     <div class="flex small b" style="align-items:flex-start;">
-      <div class="grow">प्रो. अभिषेक पटेल<br>9179101183</div>
-      <div class="grow c">|| श्री गणेशाय नमः ||</div>
-      <div class="grow r">बंशीलाल वर्मा<br>99977523851</div>
+      <div class="grow">प्रो. अभिषेक पटेल<br><span class="calibri">9179101183</span></div>
+      <div class="grow c sk-ganesh">|| श्री गणेशाय नमः ||</div>
+      <div class="grow r">बंशीलाल वर्मा<br><span class="calibri">99977523851</span></div>
     </div>
     <div class="sk-name">श्री कृष्णा ट्रेडर्स</div>
-    <div class="c"><span class="band" style="display:inline-block; padding:0.5mm 5mm;">सिमेन्ट, सरिया एवं बिल्डींग मटेरियल सप्लायर</span></div>
-    <div class="c small b" style="margin-top:1mm;">* टोल टैक्स के पास, मण्डलावदा, इण्डोरामा, पीथमपुर से.नं. 3 पीथमपुर, जि. धार *</div>
-    <div class="c" style="margin:1mm 0 2mm;"><span class="pill" style="font-family:Arial;">GSTIN 23FWZPP2237J1ZV</span></div>
+    <div class="c"><span class="band sk-band" style="display:inline-block; padding:0.5mm 5mm;">सिमेन्ट, सरिया एवं बिल्डींग मटेरियल सप्लायर</span></div>
+    <div class="c small b sk-addr" style="margin-top:1mm;">* टोल टैक्स के पास, मण्डलावदा, इण्डोरामा, पीथमपुर से.नं. 3 पीथमपुर, जि. धार *</div>
+    <div class="c" style="margin:1mm 0 2mm;"><span class="pill calibri sk-gst">GSTIN 23FWZPP2237J1ZV</span></div>
     <div class="flex" style="align-items:baseline;">
-      <div class="line grow" style="padding-left:0;">बिल नं. <span class="fill v" style="max-width:40mm;"></span></div>
-      <div class="line" style="width:62mm;">दिनांक <span class="fill v"></span></div>
+      <div class="line grow" style="padding-left:0;"><b>बिल नं.</b> <span class="fill v" style="max-width:40mm;"></span></div>
+      <div class="line" style="width:62mm;"><b>दिनांक</b> <span class="fill v"></span></div>
     </div>
-    <div class="line" style="padding-left:0;">श्रीमान <span class="fill v"></span></div>
-    <div class="line" style="padding-left:0;">पता <span class="fill v"></span></div>
+    <div class="line" style="padding-left:0;"><b>श्रीमान</b> <span class="fill v"></span></div>
+    <div class="line" style="padding-left:0;"><b>पता</b> <span class="fill v"></span></div>
     <div class="flex">
-      <div class="line grow" style="padding-left:0;">Party GSTIN <span class="fill v"></span></div>
-      <div class="line" style="width:52mm;">Party State Code <span class="fill v"></span></div>
+      <div class="line grow" style="padding-left:0;"><b class="sk-lbl">Party GSTIN</b> <span class="fill v"></span></div>
+      <div class="line" style="width:52mm;"><b class="sk-lbl">Party State Code</b> <span class="fill v"></span></div>
     </div>
   </div>
   <table class="t" style="border-top:0;">
@@ -205,8 +258,8 @@
     <tr><td colspan="2" class="b" style="font-family:Arial;">CGST <span class="v"></span> %</td><td class="r v"></td></tr>
     <tr><td colspan="2" class="b" style="font-family:Arial;">SGST <span class="v"></span> %</td><td class="r v"></td></tr>
     <tr><td colspan="2" class="b" style="font-family:Arial;">IGST &nbsp;&nbsp;&nbsp;&nbsp; %</td><td></td></tr>
-    <tr><td colspan="2" class="r">भाड़ा</td><td class="c"></td></tr>
-    <tr><td colspan="2" class="r">हम्माली</td><td class="c"></td></tr>
+    <tr><td colspan="2" class="r b">भाड़ा</td><td class="c"></td></tr>
+    <tr><td colspan="2" class="r b">हम्माली</td><td class="c"></td></tr>
     <tr><td colspan="2" class="r b">टोटल</td><td class="r v" style="font-size:12pt;"></td></tr>
   </table>
   <div class="box flex" style="border-top:0; padding:10mm 3mm 2mm; justify-content:space-between; align-items:flex-end;">

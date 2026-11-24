@@ -5,6 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Master Invoice Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style id="bill-fonts">
+    /* Bill fonts: the real font is used when installed (local), otherwise a free metric-compatible clone from fonts/
+       Calibri→Carlito, Cambria→Caladea, Bookman Old Style→TeX Gyre Bonum, Century Gothic→TeX Gyre Adventor, Arial→Arimo, Times New Roman→Tinos,
+       Verdana/Tahoma→DejaVu Sans, Arial Narrow→Nimbus Sans Narrow, Impact→Anton, Arial Black→Archivo Black, Castellar→Cinzel */
+    @font-face { font-family: "Calibri"; src: local("Calibri"), url("fonts/carlito-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Calibri"; src: local("Calibri Bold"), local("Calibri-Bold"), url("fonts/carlito-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Calibri"; src: local("Calibri Italic"), local("Calibri-Italic"), url("fonts/carlito-400i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Calibri"; src: local("Calibri Bold Italic"), local("Calibri-BoldItalic"), url("fonts/carlito-700i.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Cambria"; src: local("Cambria"), url("fonts/caladea-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Cambria"; src: local("Cambria Bold"), local("Cambria-Bold"), url("fonts/caladea-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Cambria"; src: local("Cambria Italic"), local("Cambria-Italic"), url("fonts/caladea-400i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Cambria"; src: local("Cambria Bold Italic"), local("Cambria-BoldItalic"), url("fonts/caladea-700i.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Bookman Old Style"; src: local("Bookman Old Style"), local("BookmanOldStyle"), url("fonts/bonum-regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Bookman Old Style"; src: local("Bookman Old Style Bold"), local("BookmanOldStyle-Bold"), url("fonts/bonum-bold.otf") format("opentype"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Bookman Old Style"; src: local("Bookman Old Style Italic"), local("BookmanOldStyle-Italic"), url("fonts/bonum-italic.otf") format("opentype"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Bookman Old Style"; src: local("Bookman Old Style Bold Italic"), local("BookmanOldStyle-BoldItalic"), url("fonts/bonum-bolditalic.otf") format("opentype"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Century Gothic"; src: local("Century Gothic"), local("CenturyGothic"), url("fonts/adventor-regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Century Gothic"; src: local("Century Gothic Bold"), local("CenturyGothic-Bold"), url("fonts/adventor-bold.otf") format("opentype"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Century Gothic"; src: local("Century Gothic Italic"), local("CenturyGothic-Italic"), url("fonts/adventor-italic.otf") format("opentype"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Century Gothic"; src: local("Century Gothic Bold Italic"), local("CenturyGothic-BoldItalic"), url("fonts/adventor-bolditalic.otf") format("opentype"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Arial"; src: local("Arial"), local("ArialMT"), url("fonts/arimo.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Arial"; src: local("Arial Bold"), local("Arial-BoldMT"), url("fonts/arimo.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Arial"; src: local("Arial Italic"), local("Arial-ItalicMT"), url("fonts/arimo-i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Arial"; src: local("Arial Bold Italic"), local("Arial-BoldItalicMT"), url("fonts/arimo-i.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Times New Roman"; src: local("Times New Roman"), local("TimesNewRomanPSMT"), url("fonts/tinos-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Times New Roman"; src: local("Times New Roman Bold"), local("TimesNewRomanPS-BoldMT"), url("fonts/tinos-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Times New Roman"; src: local("Times New Roman Italic"), local("TimesNewRomanPS-ItalicMT"), url("fonts/tinos-400i.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Times New Roman"; src: local("Times New Roman Bold Italic"), local("TimesNewRomanPS-BoldItalicMT"), url("fonts/tinos-700i.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Verdana"; src: local("Verdana"), url("fonts/dejavu-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Verdana"; src: local("Verdana Bold"), local("Verdana-Bold"), url("fonts/dejavu-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Tahoma"; src: local("Tahoma"), url("fonts/dejavu-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Tahoma"; src: local("Tahoma Bold"), local("Tahoma-Bold"), url("fonts/dejavu-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Arial Narrow"; src: local("Arial Narrow"), local("ArialNarrow"), url("fonts/narrow-regular.otf") format("opentype"); font-weight: 400; font-style: normal; font-display: block; }
+    @font-face { font-family: "Arial Narrow"; src: local("Arial Narrow Bold"), local("ArialNarrow-Bold"), url("fonts/narrow-bold.otf") format("opentype"); font-weight: 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Arial Narrow"; src: local("Arial Narrow Italic"), local("ArialNarrow-Italic"), url("fonts/narrow-italic.otf") format("opentype"); font-weight: 400; font-style: italic; font-display: block; }
+    @font-face { font-family: "Arial Narrow"; src: local("Arial Narrow Bold Italic"), local("ArialNarrow-BoldItalic"), url("fonts/narrow-bolditalic.otf") format("opentype"); font-weight: 700; font-style: italic; font-display: block; }
+    @font-face { font-family: "Impact"; src: local("Impact"), url("fonts/anton.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+    @font-face { font-family: "Arial Black"; src: local("Arial Black"), local("Arial-Black"), url("fonts/archivo-black.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+    @font-face { font-family: "Castellar"; src: local("Castellar"), url("fonts/cinzel.woff2") format("woff2"); font-weight: 400 900; font-style: normal; font-display: block; }
+    @font-face { font-family: "Comfortaa"; src: local("Comfortaa"), url("fonts/comfortaa.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: block; }
+    @font-face { font-family: "Montserrat"; src: local("Montserrat"), url("fonts/montserrat.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: block; }
+  </style>
   <style>
     /* ================= FORM UI (screen only) ================= */
     body { font-family: Arial, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
@@ -1101,6 +1143,10 @@
       lb.innerHTML = alts[t] || alts[fam] || (ewbOn && alts.ewb) || lb.dataset.def;
     });
   }
+
+  // Load every bill font up-front so pagination is measured with the final fonts
+  let FONTS_OK = false;
+  const FONTS_READY = Promise.all([...document.fonts].map(f => f.load().catch(() => null))).then(() => document.fonts.ready).then(() => { FONTS_OK = true; });
 
   window.onload = function () {
     fillStateSelects();
@@ -3244,6 +3290,11 @@
 
   // ======================= GENERATE =======================
   function generateInvoice() {
+    generateInvoiceNow();
+    if (!FONTS_OK) FONTS_READY.then(() => { if (document.body.classList.contains('preview-mode')) generateInvoiceNow(); });
+  }
+
+  function generateInvoiceNow() {
     const copies = COPY_DEFS.filter(c => checked('cp_' + c.key)).map(c => ({
       label: c.label, showIrnQr: checked('irn_' + c.key), ewb: checked('ewb_' + c.key)
     }));
@@ -3391,7 +3442,7 @@
                 <div><b>Bill Amount :</b> <i>${esc(wordsPlain(d.grandTotal, ''))}</i></div>
               </div>
               <div class="ab-ob">
-                <table class="ab-obt"><colgroup><col><col style="width:22mm"></colgroup>
+                <table class="ab-obt"><colgroup><col><col style="width:24.5mm"></colgroup>
                   <tr><td class="b u">Current Oustanding :</td><td class="v"></td></tr>
                   <tr><td class="ind">Old Balance Due</td><td class="v r b">${ob === null ? '' : num(ob)}</td></tr>
                   <tr><td>Today Bill No. <b class="bn">${esc(d.invNo)}</b></td><td class="v r b">${num(d.grandTotal)}</td></tr>
@@ -3399,8 +3450,8 @@
                 </table>
                 <div class="ab-bank">
                   <div class="h">-::BANK DETAILS::-</div>
-                  <div class="n">${fit(esc(bankLine))}</div>
-                  <div>${fit([d.bank.acc ? `A/c No. ${esc(d.bank.acc)}` : '', d.bank.ifsc ? `IFSC : ${esc(d.bank.ifsc)}` : ''].filter(Boolean).join(' '))}</div>
+                  <div class="n">${esc(bankLine)}</div>
+                  <div>${[d.bank.acc ? `A/c No. ${esc(d.bank.acc)}` : '', d.bank.ifsc ? `IFSC : ${esc(d.bank.ifsc)}` : ''].filter(Boolean).join(' ')}</div>
                 </div>
               </div>
             </div>
@@ -3435,64 +3486,67 @@
       { id: 'packNosMtr', label: 'Packing Summary — Nos & Mtr' }, { id: 'strip', label: 'Bottom strip text (brand logos on the original)', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Verdana, "DejaVu Sans", Tahoma, Arial, sans-serif; font-size: 7.4pt; line-height: 1.3; padding-top: 6mm; }
+      #print-root .${K} { font-family: Verdana, sans-serif; font-size: 7.4pt; line-height: 1.3; padding-top: 6mm; }
       #print-root .${K} .ab-box { border: 1.3px solid #000; display: flex; flex-direction: column; }
-      #print-root .${K} .ab-name { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 22pt; text-align: center;
-        line-height: 1.1; padding: 1.5mm 6mm 1mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .ab-addr { font-family: "Times New Roman", Times, serif; font-size: 10pt; text-align: center; line-height: 1.3;
+      #print-root .${K} .ab-name { font-family: "Times New Roman", serif; font-weight: bold; font-size: 18.8pt; text-align: center;
+        line-height: 1.1; padding: 1.6mm 6mm 1.2mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .ab-addr { font-family: "Times New Roman", serif; font-size: 10pt; text-align: center; line-height: 1.3;
         padding: 1.6mm 4mm 2mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .ab-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; font-weight: bold; font-size: 8pt;
+      #print-root .${K} .ab-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; font-weight: bold; font-size: 8.3pt;
         padding: 0.6mm 1.2mm 0.2mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .ab-bar .t { font-size: 11pt; }
+      #print-root .${K} .ab-bar .t { font-size: 10.3pt; }
       #print-root .${K} .ab-bar .cp { text-align: right; }
       #print-root .${K} .ab-party { display: grid; grid-template-columns: 58% 42%; min-height: 31.5mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ab-buyer { padding: 1mm 1.2mm 0.5mm; display: flex; flex-direction: column; }
-      #print-root .${K} .ab-ms { font-size: 9.6pt; }
+      #print-root .${K} .ab-ms { font-size: 9pt; }
       #print-root .${K} .ab-pn { font-weight: bold; }
-      #print-root .${K} .ab-ad { padding-left: 13mm; font-size: 7.8pt; margin-top: 0.6mm; }
+      #print-root .${K} .ab-ad { padding-left: 11mm; font-size: 8.1pt; margin-top: 0.6mm; }
       #print-root .${K} .ab-city { font-weight: bold; margin-top: 4mm; font-size: 8pt; }
       #print-root .${K} .ab-pk { margin-top: auto; width: 100%; }
       #print-root .${K} .ab-pk td { padding: 0.1mm 0; font-size: 8pt; }
+      #print-root .${K} .ab-pk td:first-child { font-size: 7.7pt; }
       #print-root .${K} .ab-pk td:first-child { font-weight: bold; }
       #print-root .${K} .ab-meta { border-left: 1px solid #000; display: flex; flex-direction: column; font-weight: bold; }
       #print-root .${K} .ab-gst { text-align: center; border-bottom: 1px solid #000; padding: 0.6mm 0 0.4mm; }
-      #print-root .${K} .ab-gst .h { text-decoration: underline; font-size: 9pt; }
-      #print-root .${K} .ab-gst .g { font-size: 13.5pt; letter-spacing: 0.2px; }
-      #print-root .${K} .ab-inv { padding: 0.8mm 1mm; font-size: 8pt; line-height: 1.55; }
+      #print-root .${K} .ab-gst .h { text-decoration: underline; font-size: 10.2pt; }
+      #print-root .${K} .ab-gst .g { font-size: 12.2pt; letter-spacing: 0.2px; }
+      #print-root .${K} .ab-inv { padding: 0.8mm 1mm; font-size: 8.3pt; line-height: 1.55; }
       #print-root .${K} .ab-r2 { display: flex; justify-content: space-between; }
-      #print-root .${K} .ab-items th { font-size: 7.4pt; padding: 0.8mm 1mm 0.6mm; text-align: left; border-top: 0; }
+      #print-root .${K} .ab-items th { font-size: 7.1pt; padding: 1.3mm 1mm 1.1mm; text-align: left; border-top: 0; }
       #print-root .${K} .ab-items th:nth-child(n+3) { text-align: center; }
-      #print-root .${K} .ab-items td { padding-left: 1mm; padding-right: 1mm; font-size: 7.6pt; }
+      #print-root .${K} .ab-items td { padding-left: 1mm; padding-right: 1mm; font-size: 7.9pt; }
       #print-root .${K} .ab-items tr.it td { padding-top: 1.4mm; }
       #print-root .${K} .ab-items .ab-pcs { font-size: 6.6pt; }
-      #print-root .${K} .ab-items .ab-mrp { font-size: 8.4pt; }
-      #print-root .${K} .ab-qty { display: flex; justify-content: space-between; gap: 1.5mm; padding-left: 4mm; padding-right: 0.5mm; white-space: nowrap; }
+      #print-root .${K} .ab-items .ab-mrp { font-size: 8.2pt; }
+      #print-root .${K} .ab-qty { display: flex; justify-content: space-between; padding-left: 9mm; white-space: nowrap; }
       #print-root .${K} .ab-items tr.cont td { border-top: 1px solid #000; }
       #print-root .${K} .ab-bot { display: grid; grid-template-columns: 69% 31%; border-top: 1px solid #000; }
       #print-root .${K} .ab-l1 { display: flex; flex-direction: column; }
       #print-root .${K} .ab-note { padding: 0.6mm 1.2mm; border-bottom: 1px solid #000; min-height: 5mm; box-sizing: border-box; }
-      #print-root .${K} .ab-words { padding: 1.2mm 1.2mm 1mm; border-bottom: 1px solid #000; line-height: 1.5; font-size: 7.8pt; }
-      #print-root .${K} .ab-words b { font-size: 7pt; }
-      #print-root .${K} .ab-ob { display: grid; grid-template-columns: 47% 53%; flex: 1; }
-      #print-root .${K} .ab-obt { width: 100%; height: 100%; font-size: 8pt; }
-      #print-root .${K} .ab-obt td { padding: 0.8mm 1.2mm; vertical-align: middle; white-space: nowrap; }
+      #print-root .${K} .ab-words { padding: 1.2mm 1.2mm 1mm; border-bottom: 1px solid #000; line-height: 1.5; font-size: 8.1pt; }
+      #print-root .${K} .ab-words b { font-size: 7.35pt; display: inline-block; min-width: 19.5mm; }
+      #print-root .${K} .ab-ob { display: grid; grid-template-columns: 46.7% 53.3%; flex: 1; }
+      #print-root .${K} .ab-obt { width: 100%; height: 100%; font-size: 8.3pt; }
+      #print-root .${K} .ab-obt td.v { font-size: 7.4pt; }
+      #print-root .${K} .ab-obt td { padding: 0.8mm 1.2mm; vertical-align: middle; }
       #print-root .${K} .ab-obt td.v { border-left: 1px solid #000; border-right: 1px solid #000; }
-      #print-root .${K} .ab-obt td.ind { padding-left: 6mm; }
-      #print-root .${K} .ab-obt .bn { font-size: 7pt; padding-left: 3mm; }
+      #print-root .${K} .ab-obt td.ind { padding-left: 7mm; }
+      #print-root .${K} .ab-obt .bn { font-size: 7pt; padding-left: 4mm; }
       #print-root .${K} .ab-obt tr.t td { border-top: 1px solid #000; font-size: 8.4pt; }
+      #print-root .${K} .ab-obt tr.t td.v { font-size: 8pt; }
       #print-root .${K} .ab-bank { text-align: center; padding: 1mm 1mm; font-size: 8pt; }
       #print-root .${K} .ab-bank .h { font-weight: bold; text-decoration: underline; margin-bottom: 1.8mm; }
-      #print-root .${K} .ab-bank .n { font-weight: bold; font-size: 8.6pt; margin-bottom: 0.4mm; }
+      #print-root .${K} .ab-bank .n { font-weight: bold; font-size: 8pt; white-space: nowrap; margin-bottom: 0.4mm; }
       #print-root .${K} .ab-r1 { border-left: 1px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .ab-lad { width: 100%; margin-bottom: 1mm; }
       #print-root .${K} .ab-lad td { padding: 0.45mm 1.2mm; font-size: 8pt; white-space: nowrap; }
       #print-root .${K} .ab-lad tr.b td { font-weight: bold; }
       #print-root .${K} .ab-lad tr:first-child td { border-bottom: 1px solid #000; }
-      #print-root .${K} .ab-gt { margin-top: auto; display: flex; justify-content: space-between; font-weight: bold; font-size: 9.6pt;
+      #print-root .${K} .ab-gt { margin-top: auto; display: flex; justify-content: space-between; font-weight: bold; font-size: 9.2pt;
         border-top: 1.3px solid #000; padding: 0.8mm 1.2mm; }
-      #print-root .${K} .ab-terms { border-top: 1px solid #000; padding: 1mm 1.2mm; font-size: 7pt; line-height: 1.6; min-height: 25mm; box-sizing: border-box; }
+      #print-root .${K} .ab-terms { border-top: 1px solid #000; padding: 1mm 1.2mm; font-size: 7.2pt; line-height: 1.6; min-height: 25mm; box-sizing: border-box; }
       #print-root .${K} .ab-terms .b { font-size: 7.4pt; }
-      #print-root .${K} .ab-pack { border-top: 1px solid #000; border-left: 1px solid #000; padding: 1mm 1.2mm; font-size: 8pt; line-height: 1.55; }
+      #print-root .${K} .ab-pack { border-top: 1px solid #000; border-left: 1px solid #000; padding: 1mm 1.2mm; font-size: 8.1pt; line-height: 1.55; }
       #print-root .${K} .ab-pack .h { text-align: center; font-weight: bold; text-decoration: underline; }
       #print-root .${K} .ab-strip { border-top: 1px solid #000; min-height: 19mm; padding: 1mm; }
       #print-root .${K} .ab-sign { border-top: 1px solid #000; border-left: 1px solid #000; display: flex; flex-direction: column;
@@ -3614,16 +3668,16 @@
             </div>
             <div class="ac-r">
               <div class="ac-inv">
-                <table><colgroup><col style="width:40%"><col></colgroup>
+                <table><colgroup><col style="width:34%"><col></colgroup>
                   <tr class="big"><td>Invoice No.</td><td>${esc(d.invNo)}</td></tr>
                   <tr class="big"><td>Invoice Dt.</td><td>${esc(dmy(d.iso.date))}</td></tr>
                   <tr><td>E Way Bill No.</td><td class="r">${esc(m.eway)}</td></tr>
                 </table>
               </div>
               <div class="ac-dt">
-                <table><colgroup><col style="width:47%"><col></colgroup>
-                  <tr><td>Date &amp; Time of Prep. of Invoice</td><td class="r">${esc(dmy(d.iso.prep))}</td></tr>
-                  <tr><td>Date &amp; Time of Removal of Goods</td><td class="r">${esc(dmy(d.iso.removal))}</td></tr>
+                <table><colgroup><col style="width:27%"><col></colgroup>
+                  <tr><td>Date &amp; Time of Prep. of Invoice</td><td class="ac-dv">${esc(dmy(d.iso.prep))}</td></tr>
+                  <tr><td>Date &amp; Time of Removal of Goods</td><td class="ac-dv">${esc(dmy(d.iso.removal))}</td></tr>
                   <tr><td>Mode of Transport</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${esc(x.mode)}</td></tr>
                   <tr><td>Transporter Name</td><td>${fit(esc(m.thru))}</td></tr>
                   <tr><td>Destination</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${esc(m.dest)}</td></tr>
@@ -3632,7 +3686,7 @@
             </div>
           </div>
           <div class="ac-row3">
-            <div><table class="ac-kv2"><colgroup><col style="width:30%"><col></colgroup>
+            <div><table class="ac-kv2"><colgroup><col style="width:28.5%"><col></colgroup>
               <tr><td>Place of Supply</td><td>${pos ? `${esc(pos.name.toUpperCase())} Code : ${pos.code}` : ''}</td></tr>
               <tr><td>Payment Terms</td><td>${esc(m.pay)}</td></tr></table></div>
             <div class="ac-ft"><span class="b">Freight Terms</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${esc(x.freightTerms)}</div>
@@ -3689,75 +3743,77 @@
       #print-root .${K} { font-family: Arial, Helvetica, sans-serif; font-size: 7.4pt; line-height: 1.22; padding: 6mm 13mm 3mm 14mm; }
       #print-root .${K} .ac-above { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; }
       #print-root .${K} .ac-div { font-weight: bold; font-size: 8.4pt; padding-bottom: 0.3mm; }
-      #print-root .${K} .ac-title { font-weight: bold; font-size: 15pt; padding-bottom: 2.4mm; }
+      #print-root .${K} .ac-title { font-weight: bold; font-size: 12.3pt; line-height: 18.3pt; padding-bottom: 2.4mm; }
       #print-root .${K} .ac-copy { text-align: right; font-weight: bold; font-size: 8.6pt; padding-bottom: 3mm; }
       #print-root .${K} .ac-box { border: 1px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .ac-hd { display: grid; grid-template-columns: 16% 1fr 12% 12%; grid-template-rows: auto auto; position: relative; }
       #print-root .${K} .ac-ids { grid-column: 1; grid-row: 1; padding: 0.4mm 0.4mm 0; }
       #print-root .${K} .ac-kv td { padding: 0 0.4mm; font-weight: bold; font-size: 6.8pt; line-height: 1.32; white-space: nowrap; }
       #print-root .${K} .ac-kv td:first-child { width: 15mm; }
-      #print-root .${K} .ac-co { grid-column: 2; grid-row: 1; text-align: center; font-size: 7.6pt; line-height: 1.25; padding-top: 0.2mm; }
-      #print-root .${K} .ac-rule { font-weight: bold; text-decoration: underline; font-size: 9pt; }
-      #print-root .${K} .ac-name { font-weight: bold; text-decoration: underline; font-size: 16.5pt; line-height: 1.15; margin-bottom: 0.6mm; }
-      #print-root .${K} .ac-logo { grid-column: 3; grid-row: 1; text-align: right; padding: 4.5mm 3mm 0 0; font-family: "Arial Black", "Helvetica Neue", Arial, sans-serif;
-        font-weight: 900; font-size: 15pt; letter-spacing: 0.3px; font-style: italic; white-space: nowrap; }
+      #print-root .${K} .ac-co { grid-column: 2; grid-row: 1; text-align: center; font-size: 7.05pt; line-height: 9.5pt; padding-top: 0.2mm; }
+      #print-root .${K} .ac-rule { font-weight: bold; text-decoration: underline; font-size: 7.8pt; line-height: 11.25pt; }
+      #print-root .${K} .ac-name { font-weight: bold; text-decoration: underline; font-size: 12.2pt; line-height: 19pt; margin-bottom: 0.6mm; }
+      #print-root .${K} .ac-name + div { font-size: 8pt; }
+      #print-root .${K} .ac-logo { grid-column: 3; grid-row: 1; text-align: right; padding: 4mm 1.5mm 0 0; font-family: "Arial Black", sans-serif;
+        font-weight: 900; font-size: 14.7pt; letter-spacing: -2px; }
       #print-root .${K} .ac-qr { grid-column: 4; grid-row: 1 / 3; border-left: 1px solid #000; display: flex; justify-content: center; padding-top: 0.6mm; }
       #print-root .${K} .ac-qr .qr { margin: 0; }
       #print-root .${K} .ac-irn { grid-column: 1 / 3; grid-row: 2; font-weight: bold; font-size: 6.8pt; padding: 0 0.4mm 0.3mm; white-space: nowrap; align-self: end; }
-      #print-root .${K} .ac-ack { grid-column: 2 / 4; grid-row: 2; font-weight: bold; font-size: 7.2pt; text-align: right; padding: 0 9mm 0.6mm 0; align-self: end; margin-top: -3.6mm; }
+      #print-root .${K} .ac-ack { grid-column: 2 / 4; grid-row: 2; font-weight: bold; font-size: 6.85pt; text-align: right; padding: 0 9mm 0.6mm 0; align-self: end; margin-top: -3.6mm; }
       #print-root .${K} .ac-mid { display: grid; grid-template-columns: 36.4% 30.9% 32.7%; border-top: 1px solid #000; }
       #print-root .${K} .ac-p { padding: 0.3mm 0.4mm 0.3mm; font-weight: bold; font-size: 7pt; line-height: 1.32; }
       #print-root .${K} .ac-p + .ac-p { border-left: 1px solid #000; }
-      #print-root .${K} .ac-ph { font-family: "Times New Roman", Times, serif; text-decoration: underline; font-size: 9pt; }
+      #print-root .${K} .ac-ph { font-family: "Times New Roman", serif; text-decoration: underline; font-size: 8.5pt; line-height: 11.9pt; }
       #print-root .${K} .ac-pa { margin-top: 2.6mm; }
-      #print-root .${K} .ac-st { font-size: 8.4pt; font-weight: normal; display: flex; gap: 4mm; }
+      #print-root .${K} .ac-st { font-size: 7.8pt; line-height: 11.1pt; font-weight: normal; display: flex; gap: 4mm; }
       #print-root .${K} .ac-st span:last-child { font-weight: normal; }
       #print-root .${K} .ac-gp { display: flex; justify-content: space-between; padding-right: 14mm; }
       #print-root .${K} .ac-r { border-left: 1px solid #000; }
       #print-root .${K} .ac-inv { width: 65%; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 0.3mm 0.4mm; }
       #print-root .${K} .ac-inv td { padding: 0; font-weight: bold; font-size: 7.6pt; }
-      #print-root .${K} .ac-inv tr.big td { font-size: 10.2pt; line-height: 1.3; }
+      #print-root .${K} .ac-inv tr.big td { font-size: 8.6pt; line-height: 13.26pt; }
       #print-root .${K} .ac-dt { padding: 0.6mm 0.4mm 0.4mm; font-weight: bold; font-size: 6.9pt; }
-      #print-root .${K} .ac-dt td { padding: 0 0.3mm; line-height: 1.5; }
+      #print-root .${K} .ac-dt td { padding: 0 0.3mm; line-height: 1.5; white-space: nowrap; overflow: visible; }
+      #print-root .${K} .ac-dt td.ac-dv { font-family: "Arial Narrow", sans-serif; padding-left: 22.6mm; }
       #print-root .${K} .ac-row3 { display: grid; grid-template-columns: 36.4% 17.6% 13.3% 32.7%; font-weight: bold; font-size: 6.9pt; align-items: end; }
       #print-root .${K} .ac-kv2 td { padding: 0.2mm 0.4mm; line-height: 1.45; }
-      #print-root .${K} .ac-kv2 td:last-child { font-size: 7.5pt; }
-      #print-root .${K} .ac-ft { padding: 0 0 0.6mm 0; font-weight: normal; font-size: 7.4pt; }
-      #print-root .${K} .ac-ft .b { font-size: 6.9pt; }
+      #print-root .${K} .ac-kv2 td:last-child { font-size: 7pt; }
+      #print-root .${K} .ac-ft { padding: 0 0 0.6mm 0; font-weight: normal; font-size: 6.95pt; }
+      #print-root .${K} .ac-ft .b { font-size: 6.6pt; }
       #print-root .${K} .ac-veh { border-top: 1px solid #000; border-left: 1px solid #000; align-self: stretch; padding-top: 0.6mm; }
       #print-root .${K} .ac-veh td { padding: 0 0.4mm; line-height: 1.5; }
       #print-root .${K} .ac-items { font-size: 7.6pt; }
       #print-root .${K} .ac-items th { font-weight: bold; font-size: 7.4pt; line-height: 1.3; padding: 0.3mm 0.3mm; vertical-align: top; border-top: 1px solid #000; }
       #print-root .${K} .ac-items th.ac-l { text-align: left; }
-      #print-root .${K} .ac-items tr.ac-sub th { font-family: "Times New Roman", Times, serif; font-size: 7.4pt; padding: 0.4mm 0; }
+      #print-root .${K} .ac-items tr.ac-sub th { font-family: "Times New Roman", serif; font-size: 7.4pt; padding: 0.4mm 0; }
       #print-root .${K} .ac-items td { padding: 0.2mm 0.4mm; }
       #print-root .${K} .ac-items tr.it td { padding-top: 0.6mm; font-size: 7.6pt; }
-      #print-root .${K} .ac-in { font-family: Calibri, Carlito, "Arial Narrow", Arial, sans-serif; font-weight: bold; font-size: 5.8pt; text-transform: uppercase; }
+      #print-root .${K} .ac-in { font-family: Calibri, sans-serif; font-weight: bold; font-size: 6.3pt; text-transform: uppercase; }
       #print-root .${K} .ac-sp { margin-top: 4.6mm; }
-      #print-root .${K} .ac-po { font-family: Calibri, Carlito, "Arial Narrow", Arial, sans-serif; font-weight: bold; font-size: 6.4pt; line-height: 1.75; word-break: break-all; }
+      #print-root .${K} .ac-po { font-family: Calibri, sans-serif; font-weight: bold; font-size: 6.3pt; line-height: 1.6; word-break: break-all; }
       #print-root .${K} .ac-items tr.tot td { border-top: 1px solid #000; font-size: 7.8pt; padding-top: 0.6mm; height: 4.4mm; }
       #print-root .${K} .ac-items td.ac-tch { border-bottom: 0; font-size: 7.8pt; vertical-align: bottom; padding-bottom: 0; }
       #print-root .${K} .ac-foot { display: grid; grid-template-columns: 43.4% 29.6% 27%; }
-      #print-root .${K} .ac-fl { padding: 0 0.4mm 1.5mm; font-size: 7.6pt; line-height: 1.5; }
-      #print-root .${K} .ac-terms { padding-right: 6mm; }
-      #print-root .${K} .ac-bank { margin-top: 4.5mm; font-size: 7.2pt; line-height: 1.55; }
+      #print-root .${K} .ac-fl { padding: 0 0.4mm 1.5mm; font-size: 7pt; line-height: 10.4pt; }
+      #print-root .${K} .ac-terms { max-width: 100.5mm; }
+      #print-root .${K} .ac-bank { margin-top: 4.5mm; font-size: 6.8pt; line-height: 9.5pt; }
       #print-root .${K} .ac-fm { border-left: 1px solid #000; display: flex; flex-direction: column; }
-      #print-root .${K} .ac-rc { display: grid; grid-template-columns: 18% 82%; border-bottom: 1px solid #000; font-weight: bold; font-size: 7pt; }
+      #print-root .${K} .ac-rc { display: grid; grid-template-columns: 18% 82%; border-bottom: 1px solid #000; font-weight: bold; font-size: 6.85pt; }
       #print-root .${K} .ac-rc > span { padding: 0.5mm 0.4mm; }
       #print-root .${K} .ac-rem { font-style: italic; }
       #print-root .${K} .ac-rcv { border-left: 1px solid #000; border-bottom: 0; text-align: right; white-space: nowrap; }
       #print-root .${K} .ac-remv { flex: 1; padding: 0.4mm; min-height: 18mm; }
-      #print-root .${K} .ac-words { border-top: 1px solid #000; padding: 0.6mm 0.5mm; font-size: 8.4pt; line-height: 1.5; min-height: 19.5mm; }
-      #print-root .${K} .ac-words .b { font-size: 8.2pt; }
+      #print-root .${K} .ac-words { border-top: 1px solid #000; padding: 0.6mm 0.5mm; font-size: 8.05pt; line-height: 1.5; min-height: 19.5mm; }
+      #print-root .${K} .ac-words .b { font-size: 7.65pt; max-width: 70mm; }
       #print-root .${K} .ac-fr { border-left: 1px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .ac-lad { flex: 1; }
       #print-root .${K} .ac-lad td { font-weight: bold; font-size: 7.6pt; padding: 0 0.6mm; line-height: 1.4; }
       #print-root .${K} .ac-lad tr:first-child td { padding-top: 0.4mm; }
-      #print-root .${K} .ac-gt { display: flex; justify-content: space-between; font-weight: bold; font-size: 9pt; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 0.4mm 0.6mm; margin-top: 15mm; }
+      #print-root .${K} .ac-gt { display: flex; justify-content: space-between; font-weight: bold; font-size: 8.3pt; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 0.4mm 0.6mm; margin-top: 15mm; }
       #print-root .${K} .ac-sign { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; font-size: 7.6pt; padding: 0.8mm 0.6mm 1.2mm; min-height: 20mm; }
       #print-root .${K} .ac-below { position: relative; padding-left: 0.6mm; }
-      #print-root .${K} .ac-gen { font-weight: bold; font-size: 6.4pt; margin-top: 0.8mm; }
-      #print-root .${K} .ac-prep { font-size: 8.6pt; }
+      #print-root .${K} .ac-gen { font-weight: bold; font-size: 6pt; margin-top: 0.8mm; }
+      #print-root .${K} .ac-prep { font-size: 7.8pt; }
       #print-root .${K} .ac-pgno { position: absolute; right: 0; top: 0.8mm; font-size: 7pt; }
     `,
     preset: {
@@ -3798,13 +3854,12 @@
     return n >= 100 && t ? `${numberToWords(n - t)} And ${numberToWords(t)}` : numberToWords(n);
   };
   const words = n => { const { rupees, paise } = splitAmount(n); return `${enAnd(rupees)} Rupees${paise ? ` And ${numberToWords(paise)} Paise` : ''} Only`; };
-  // "ORIGINAL FOR RECIPIENT" -> "Original for Receipient" (this billing software's wording)
-  const copyText = l => l.toLowerCase().replace('recipient', 'receipient').replace(/\b[a-z]/g, ch => ch.toUpperCase()).replace(/ For /g, ' for ');
+  const copyText = l => l.toLowerCase().replace(/recipient/, 'receipient').replace(/\b\w/g, (c, i) => (i ? c.toUpperCase() : c.toUpperCase())).replace(/ For /, ' for ');
 
   const COLS = [
     { w: 3.2, h: 'S/N' }, { w: null, h: 'Description Of Goods / Service', wrap: true }, { w: 8, h: 'HSN/SAC' },
     { w: 7.5, h: 'Quantity', a: 'r' }, { w: 4.3, h: 'UQC' }, { w: 9.2, h: 'Price', a: 'r' }, { w: 6.4, h: 'Disc', a: 'r' },
-    { w: 4.3, h: 'GST', a: 'c' }, { w: 8.4, h: 'Price<br>With&nbsp;GST', a: 'r' }, { w: 8.1, h: 'Taxable<br>Rate', a: 'r' }, { w: 9.6, h: 'Amount', a: 'r' }
+    { w: 4.3, h: 'GST', a: 'c' }, { w: 8.4, h: 'Price<br>With GST', a: 'r' }, { w: 8.1, h: 'Taxable<br>Rate', a: 'r' }, { w: 9.6, h: 'Amount', a: 'r' }
   ];
   const N = COLS.length;
   const blank = i => `<td class="${COLS[i].a || ''}"></td>`;
@@ -3818,14 +3873,14 @@
         amt(round2(tr * (1 + it.tax.rate / 100))), amt(tr), `<b>${fmt2(round2(it.taxable + it.lineTax))}</b>`
       ]);
     });
-    // last page: total quantity under the Quantity column, freight line, then the UQC-wise quantity box
+    // last page: total quantity under the Quantity column, freight / cess lines, then the UQC-wise quantity box
     const summary = [];
     summary.push(`<tr class="sm cb-qt">${COLS.map((c, i) => i === 3 ? `<td class="r q">${fit(fmtQtyPlain(d.totalQty))}</td>`
       : i === N - 1 ? '<td class="r q"></td>' : blank(i)).join('')}</tr>`);
     const line = (label, val) => `<tr class="sm cb-xl">${COLS.map((c, i) => i === 1 ? `<td class="r"><b>${label}</b></td>`
       : i === N - 1 ? `<td class="r"><b>${val}</b></td>` : blank(i)).join('')}</tr>`;
-    // item amounts already include GST, cess and taxable freight; only non-taxable freight is a separate line
-    if (d.freightAfterTax) summary.push(line(esc(d.freightLabel), fmt2(d.freightAfterTax)));
+    if (d.cess) summary.push(line('CESS', fmt2(d.cess)));
+    if (d.freight > 0) summary.push(line(esc(d.freightLabel), fmt2(d.freight)));
     const byUnit = {};
     d.items.forEach(it => { const u = it.unit || ''; byUnit[u] = round2((byUnit[u] || 0) + it.qty); });
     summary.push(`<tr class="sm cb-uq">${COLS.map((c, i) => i === 1 ? `<td><table class="cb-uqt"><tr><th>UQC</th><th>Quantity</th></tr>
@@ -3836,16 +3891,17 @@
   function page(d, copy, pg) {
     const s = d.supplier, b = d.buyer, c = d.consignee, m = d.meta, x = d.x, pos = findState(b.pos);
     const ob = d.oldBalance === null ? 0 : d.oldBalance, nb = round2(ob + d.grandTotal);
+    const igst = d.igst > 0 && !d.cgst;
     const meta = [
       ['<b class="big">Invoice No.</b>', `<b class="big">:${esc(d.invNo)}</b>`, '<b class="big">Invoice Date</b>',
         `<span class="cb-dt"><b class="big">: ${esc(fmtDMY(d.iso.date))}</b><small>${esc(x.time)}</small></span>`],
-      ['P.O. No.', `:${esc(m.buyersOrder)}`, 'P.O. Date', `<span>:</span><span>${esc(fmtDMY(d.iso.buyersOrderDate))}</span>`],
-      ['Challan No.', `:${esc(m.deliveryNote)}`, 'Category', `<span>:</span><span>${esc(x.category)}</span>`],
-      ['Pay. Mode', `:${esc(m.pay)}`, 'Bill Pay Status', `<span>:</span><span>${esc(x.payStatus || `Due ${amt(d.balance)}`)}</span>`],
-      ['Bill Credit', `:${esc(x.billCredit)}`, 'Due Date', `<span>:</span><span>${esc(fmtDMY(d.iso.due))}</span>`],
+      ['P.O. No.', `:${esc(m.buyersOrder)}`, 'P.O. Date', `<span class="cb-c">:</span>${esc(fmtDMY(d.iso.buyersOrderDate))}`],
+      ['Challan No.', `:${esc(m.deliveryNote)}`, 'Category', `<span class="cb-c">:</span>${esc(x.category)}`],
+      ['Pay. Mode', `:${esc(m.pay)}`, 'Bill Pay Status', `<span class="cb-c">:</span>${esc(x.payStatus || `Due ${amt(d.balance)}`)}`],
+      ['Bill Credit', `:${esc(x.billCredit)}`, 'Due Date', `<span class="cb-c">:</span>${esc(fmtDMY(d.iso.due))}`],
       ['<b>DISPATCH</b>', `<b>:${esc(x.dispatch)}</b>`, '<b>Pickup Person :</b>', `<b>${esc(x.pickup)}</b>`],
       ['<b>Delivery From</b>', `<b>:${esc(x.deliveryFrom)}</b>`, '', ''],
-      ['Delivery By', `:${esc(m.thru)}`, 'LR No.', `<span>:</span><span>${esc(m.lrNo)}</span>`]
+      ['Delivery By', `:${esc(m.thru)}`, 'LR No.', `<span class="cb-c">:</span>${esc(m.lrNo)}`]
     ];
     const party = (p, withMail) => `
       <div class="cb-pn">${esc(p.name)}</div>
@@ -3854,8 +3910,9 @@
       ${withMail && p.email ? `<div>Email :${esc(p.email)}</div>` : ''}
       ${p.gst ? `<div class="b">GSTIN :${esc(p.gst)}</div>` : ''}`;
     const tl = [['Taxable Amt', d.taxable]];
-    if (d.cgst || !d.igst) tl.push(['CGST', d.cgst], ['SGST', d.sgst]);
-    if (d.igst) tl.push(['IGST', d.igst]);
+    if (igst) tl.push(['IGST', d.igst]); else tl.push(['CGST', d.cgst], ['SGST', d.sgst]);
+    if (igst && d.cgst) tl.push(['CGST', d.cgst], ['SGST', d.sgst]);
+    if (d.igst && d.cgst) tl.splice(1, 0, ['IGST', d.igst]);
     tl.push(['Total GST', round2(d.cgst + d.sgst + d.igst)]);
     const closing = `<tr class="cb-close"><td></td><td colspan="${N - 1}">
         <div class="cb-cl">
@@ -3916,7 +3973,7 @@
             </div>
             <div class="cb-right">
               <table class="cb-meta"><colgroup><col style="width:19.8%"><col style="width:30.6%"><col style="width:20.6%"><col></colgroup>
-                ${meta.map(r => `<tr>${r.map((cell, i) => i === 3 ? `<td><div class="cb-v4">${cell}</div></td>` : `<td>${fit(cell)}</td>`).join('')}</tr>`).join('')}
+                ${meta.map(r => `<tr>${r.map((cell, i) => `<td${i === 3 ? ' class="r"' : ''}>${fit(cell)}</td>`).join('')}</tr>`).join('')}
               </table>
               ${d.oldBalance === null ? '' : `<div class="cb-last">
                 <div class="b big">Last Transaction:</div>
@@ -3968,28 +4025,27 @@
       { id: 'scanLabel', label: 'QR caption (QR from UPI ID)' }, { id: 'decl', label: 'Declaration (one line each)', type: 'textarea', wide: true }
     ],
     css: `
-      #print-root .${K} { padding: 3mm 5mm 26mm; font-family: Arial, Helvetica, sans-serif; font-size: 8.1pt; line-height: 1.12; }
-      #print-root .${K} .big { font-size: 9.1pt; }
-      #print-root .${K} .cb-last .big { font-size: 8.8pt; }
+      #print-root .${K} { padding: 3mm 5mm 26mm; font-family: Arial, sans-serif; font-size: 8.6pt; line-height: 1.17; }
+      #print-root .${K} .big { font-size: 9.8pt; }
       #print-root .${K} .cb-banner { display: grid; grid-template-columns: 35% 1fr 33%; height: 40mm; padding: 0 2mm 1mm;
         background: linear-gradient(90deg, #fff 0%, #fff 55%, #d6d6d6 80%, #bdbdbd 100%); }
       #print-root .${K} .cb-bl { display: flex; align-items: flex-end; padding-left: 9mm; }
-      #print-root .${K} .cb-web { font-weight: bold; font-size: 9pt; font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif; }
+      #print-root .${K} .cb-web { font-weight: bold; font-size: 9pt; font-family: "Arial Narrow", sans-serif; }
       #print-root .${K} .cb-bc { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
       #print-root .${K} .cb-mark { display: flex; flex-direction: column; align-items: flex-start; margin-bottom: 0.6mm; }
-      #print-root .${K} .cb-w1 { font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", "Arial Narrow", sans-serif; font-size: 30pt; line-height: 0.95; letter-spacing: 0.6px; }
-      #print-root .${K} .cb-w2 { font-family: Impact, "Arial Narrow", sans-serif; font-size: 13pt; line-height: 1.05; letter-spacing: 0.4px; }
+      #print-root .${K} .cb-w1 { font-family: Impact, sans-serif; font-size: 30pt; line-height: 0.95; letter-spacing: 0.6px; }
+      #print-root .${K} .cb-w2 { font-family: Impact, sans-serif; font-size: 13pt; line-height: 1.05; letter-spacing: 0.4px; }
       #print-root .${K} .cb-bar { width: 100%; height: 2.6mm; background: #111; margin-top: 0.8mm; }
       #print-root .${K} .cb-since { font-weight: bold; font-size: 11pt; margin-bottom: 1mm; }
-      #print-root .${K} .cb-addr { font-weight: bold; font-size: 9.4pt; font-family: "Arial Narrow", "Roboto Condensed", Arial, sans-serif; white-space: nowrap; }
+      #print-root .${K} .cb-addr { font-weight: bold; font-size: 9.4pt; font-family: "Arial Narrow", sans-serif; white-space: nowrap; }
       #print-root .${K} .cb-br { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
       #print-root .${K} .cb-badge { background: #111; color: #fff; padding: 1mm 5mm 0.8mm; transform: skewX(-12deg); text-align: center; margin-bottom: 1mm; }
-      #print-root .${K} .cb-q { font-size: 23pt; font-weight: bold; font-style: italic; line-height: 1; }
-      #print-root .${K} .cb-q2 { font-size: 10pt; font-weight: bold; font-style: italic; }
-      #print-root .${K} .cb-insta { font-weight: bold; font-size: 9.4pt; font-family: "Arial Narrow", Arial, sans-serif; margin-bottom: 4.5mm; display: flex; align-items: center; gap: 1mm; }
+      #print-root .${K} .cb-q { font-family: Montserrat, sans-serif; font-size: 23pt; font-weight: 800; font-style: italic; line-height: 1; }
+      #print-root .${K} .cb-q2 { font-family: Montserrat, sans-serif; font-size: 8.4pt; font-weight: 600; font-style: italic; }
+      #print-root .${K} .cb-insta { font-weight: bold; font-size: 9.4pt; font-family: "Arial Narrow", sans-serif; margin-bottom: 4.5mm; display: flex; align-items: center; gap: 1mm; }
       #print-root .${K} .cb-ig { display: inline-block; width: 3mm; height: 3mm; border-radius: 50%; background: #111; }
-      #print-root .${K} .cb-gst { font-weight: bold; font-size: 9.4pt; font-family: "Arial Narrow", Arial, sans-serif; }
-      #print-root .${K} .cb-band { background: #111; color: #fff; text-align: center; font-weight: bold; font-size: 9.6pt; letter-spacing: 1.6px; padding: 1.6mm 0 1.8mm; margin: 0 0 1mm; }
+      #print-root .${K} .cb-gst { font-weight: bold; font-size: 9.4pt; font-family: "Arial Narrow", sans-serif; }
+      #print-root .${K} .cb-band { background: #111; color: #fff; text-align: center; font-family: Calibri, sans-serif; font-weight: bold; font-size: 9.5pt; letter-spacing: 0.3mm; padding: 1.6mm 0 1.8mm; margin: 0 0 1mm; }
       #print-root .${K} .cb-box { border: 1px solid #000; margin: 0 4mm 0 9mm; display: flex; flex-direction: column; }
       #print-root .${K} .cb-title { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; border-bottom: 1px solid #000; padding: 0.3mm 2mm 0.2mm; }
       #print-root .${K} .cb-title .t { font-weight: bold; font-size: 13pt; text-decoration: underline; }
@@ -3999,13 +4055,12 @@
       #print-root .${K} .cb-buyer { padding: 0.6mm 1.2mm 0.8mm 0.4mm; border-bottom: 1px solid #000; margin-right: 2mm; }
       #print-root .${K} .cb-ship { padding: 0.6mm 1.2mm 1mm 0.4mm; }
       #print-root .${K} .cb-h { font-weight: bold; text-decoration: underline; font-size: 8.2pt; }
-      #print-root .${K} .cb-pn { font-weight: bold; font-size: 9.4pt; margin: 0.3mm 0 0.2mm; }
+      #print-root .${K} .cb-pn { font-weight: bold; font-size: 10.6pt; margin: 0.3mm 0 0.2mm; }
       #print-root .${K} .cb-right { padding: 0.3mm 0 0.6mm 0.3mm; }
       #print-root .${K} .cb-meta td { padding: 0 0.6mm 0.1mm 0; white-space: nowrap; }
       #print-root .${K} .cb-meta td:last-child { padding-right: 0.4mm; }
-      #print-root .${K} .cb-v4 { display: flex; justify-content: space-between; white-space: nowrap; overflow: hidden; }
-      #print-root .${K} .cb-v4 > :last-child { margin-left: auto; }
-      #print-root .${K} .cb-v4 > .cb-dt { flex: 1; }
+      #print-root .${K} .cb-c { float: left; }
+      #print-root .${K} .cb-meta td.r .fit { padding-left: 1px; }  /* floated ":" + right-aligned value span the whole cell; keep shrinkToFit from shrinking it */
       #print-root .${K} .cb-dt { display: flex; justify-content: space-between; align-items: baseline; }
       #print-root .${K} .cb-dt small { font-size: 7.6pt; }
       #print-root .${K} .cb-last { margin-top: 0.1mm; }
@@ -4015,20 +4070,19 @@
       #print-root .${K} .cb-small { font-size: 5.9pt; line-height: 1.22; margin-top: 0.4mm; }
       #print-root .${K} .cb-small .u { font-size: 7pt; }
       #print-root .${K} .cb-items { border-top: 1px solid #000; }
-      #print-root .${K} .cb-items > thead th { text-align: left; vertical-align: top; font-size: 9pt; padding: 0.4mm 0.6mm 0; height: 8mm; }
-      #print-root .${K} .cb-items > thead th:nth-child(n+4) { text-align: center; }
-      #print-root .${K} .cb-items > thead th:last-child { text-align: right; }
+      #print-root .${K} .cb-items th { text-align: left; vertical-align: top; font-size: 9pt; padding: 0.4mm 0.6mm 0; height: 8mm; }
+      #print-root .${K} .cb-items th:nth-child(n+4) { text-align: center; }
+      #print-root .${K} .cb-items th:last-child { text-align: right; }
       #print-root .${K} .cb-items td { padding-left: 0.6mm; padding-right: 0.6mm; font-size: 9pt; }
       #print-root .${K} .cb-items tr.it td { padding-top: 1.3mm; padding-bottom: 0.3mm; }
       #print-root .${K} .cb-spec { font-size: 7.6pt; }
       #print-root .${K} .cb-items tr.sm td { border-top: 0; border-bottom: 0; padding-top: 0.2mm; padding-bottom: 0.2mm; }
       #print-root .${K} .cb-items tr.cb-qt td.q { border-top: 1px solid #000; }
-      #print-root .${K} .cb-items tr.cb-uq > td { padding: 2.5mm 0 0; }
+      #print-root .${K} .cb-items tr.cb-uq td { padding: 2.5mm 0 0; }
       #print-root .${K} .cb-uqt { width: 100%; }
       #print-root .${K} .cb-uqt th, #print-root .${K} .cb-uqt td { border: 0; border-top: 1px solid #000; padding: 0 3.5mm; font-size: 8.8pt; text-align: left; }
-      #print-root .${K} .cb-uqt th { font-weight: bold; }
-      #print-root .${K} .cb-uqt th:first-child { width: 16%; }
-      #print-root .${K} .cb-uqt th, #print-root .${K} .cb-uqt tr:last-child td { border-bottom: 1px solid #000; }
+      #print-root .${K} .cb-uqt th { font-weight: bold; width: 50%; }
+      #print-root .${K} .cb-uqt tr:last-child td { border-bottom: 1px solid #000; }
       #print-root .${K} .cb-items tr.cb-close > td { padding: 0; border-bottom: 0; }
       #print-root .${K} .cb-items tr.cb-close > td:first-child { border-right: 0; }
       #print-root .${K} .cb-cl { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -4037,8 +4091,8 @@
       #print-root .${K} .cb-tt th:first-child { text-align: center; }
       #print-root .${K} .cb-tt tr > *:first-child { border-left: 0; }
       #print-root .${K} .cb-gt { width: 24.5%; border-left: 1px solid #000; }
-      #print-root .${K} .cb-gt tr td { border: 0; padding: 0.2mm 0.6mm; font-size: 9pt; border-bottom: 1px solid #000; white-space: nowrap; }
-      #print-root .${K} .cb-gt tr.g td, #print-root .${K} .cb-gt tr.g:last-child td { font-weight: bold; font-size: 9.8pt; border-bottom: 0; }
+      #print-root .${K} .cb-gt td { padding: 0.2mm 0.6mm; font-size: 9pt; border-bottom: 1px solid #000; white-space: nowrap; }
+      #print-root .${K} .cb-gt tr.g td { font-weight: bold; font-size: 9.8pt; border-bottom: 0; }
       #print-root .${K} .cb-words { border-top: 1px solid #000; padding: 0.2mm 0.6mm 0.8mm; font-size: 9.4pt; }
       #print-root .${K} .cb-words .b + .b { font-size: 10pt; margin-top: 0.4mm; }
       #print-root .${K} .cb-foot { border-top: 1px solid #000; padding: 0.4mm 0 0; display: flex; flex-direction: column; }
@@ -4161,7 +4215,7 @@
     TAX[m].forEach(t => lad.push([`Add: ${t}`, taxTot(d, t)]));
     if (d.freightAfterTax) lad.push([`Add: ${esc(d.freightLabel)}`, d.freightAfterTax]);
     lad.push(['Total Amount After Tax', d.taxable + d.totalTax + d.freightAfterTax], ['Total Amount', d.grandTotal]);
-    const ladRow = ([k, val]) => `<td colspan="${NT}" class="b">${fit(k)}</td><td class="r R">${fit(n0(val))}</td>`;
+    const ladRow = ([k, val]) => `<td colspan="${NT}" class="b">${fit(k)}</td><td class="c R ec-lv">${fit(n0(val))}</td>`;
     const words = numberToWords(Math.round(d.grandTotal)).toUpperCase();
     const bank = d.bank;
     const sum = `
@@ -4184,8 +4238,8 @@
           <div class="ec-hd">
             <div class="ec-name">${esc(s.name)}</div>
             ${s.addr.map(l => `<div>${esc(l)}</div>`).join('')}
-            ${s.phone ? `<div>Tel: ${esc(s.phone)}</div>` : ''}
-            ${s.gst ? `<div>GSTIN: ${esc(s.gst)}</div>` : ''}
+            ${s.phone ? `<div class="t">Tel: ${esc(s.phone)}</div>` : ''}
+            ${s.gst ? `<div class="t">GSTIN: ${esc(s.gst)}</div>` : ''}
           </div>
           <table class="ec-grid">${colg(hcols)}
             ${gap}
@@ -4218,40 +4272,42 @@
       { id: 'forName', label: 'Signature: "For:" company name' }, { id: 'certify', label: 'Certificate line (above signature)', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size: 8.6pt; line-height: 1.2; padding-top: 22mm; }
+      #print-root .${K} { font-family: Calibri, sans-serif; font-size: 8.35pt; line-height: 1.2; padding-top: 18mm; }
       #print-root .${K} .ec-pno { width: 176mm; margin: 0 auto; font-size: 6.5pt; padding-left: 3mm; height: 3mm; }
       #print-root .${K} .ec-box { width: 176mm; margin: 0 auto; border: 1.3px solid #000; }
-      #print-root .${K} .ec-hd { text-align: center; padding: 1.2mm 0 1.4mm; font-family: "Bookman Old Style", Bookman, "URW Bookman", Rockwell, Georgia, serif;
-        font-weight: bold; font-size: 9.6pt; line-height: 1.32; border-bottom: 1px solid #000; }
-      #print-root .${K} .ec-name { font-size: 14.5pt; line-height: 1.25; }
+      #print-root .${K} .ec-hd { text-align: center; padding: 1.2mm 0 1.4mm; font-family: "Bookman Old Style", serif;
+        font-weight: bold; font-size: 9.1pt; line-height: 1.32; border-bottom: 1px solid #000; }
+      #print-root .${K} .ec-name { font-size: 13.2pt; line-height: 1.3; }
+      #print-root .${K} .ec-hd .t { font-family: "Times New Roman", serif; font-size: 9.8pt; line-height: 1.28; }
       #print-root .${K} .ec-grid td, #print-root .${K} .ec-sum td { border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 0 1mm;
-        height: 3.6mm; vertical-align: bottom; font-weight: bold; overflow: hidden; }
+        height: 3.9mm; vertical-align: bottom; font-weight: bold; overflow: hidden; }
       #print-root .${K} .ec-grid td.R, #print-root .${K} .ec-sum td.R { border-right: 0; }
       #print-root .${K} .ec-sum td.B { border-bottom: 0; }
-      #print-root .${K} .ec-grid tr.ec-gap td { height: 2.3mm; }
-      #print-root .${K} .ec-grid tr.ec-band td { background: ${BLUE}; color: #fff; text-align: center; height: 7.6mm; vertical-align: middle;
-        font-family: Cambria, Georgia, "Times New Roman", serif; font-size: 19pt; letter-spacing: 0.3px; }
+      #print-root .${K} .ec-grid tr.ec-gap td { height: 2.5mm; }
+      #print-root .${K} .ec-grid tr.ec-band td { background: ${BLUE}; color: #fff; text-align: center; height: 8.2mm; vertical-align: middle;
+        font-family: Cambria, serif; font-size: 20pt; letter-spacing: 0.3px; }
       #print-root .${K} .ec-grid tr.ec-ph td { background: ${BLUE}; color: #fff; text-align: center; height: 4.2mm; font-size: 8.4pt; }
-      #print-root .${K} .ec-grid td.ec-adr { height: 9.8mm; vertical-align: top; padding-top: 0.4mm; }
-      #print-root .${K} .ec-items th { background: ${BLUE}; color: #fff; font-weight: bold; font-size: 6.4pt; vertical-align: bottom; padding: 0.3mm 0.5mm; }
-      #print-root .${K} .ec-items th.ec-grp { font-size: 8.4pt; vertical-align: middle; height: 3.7mm; }
-      #print-root .${K} .ec-items th.ec-sub { height: 3.5mm; }
-      #print-root .${K} .ec-items th.ec-big { font-size: 10.5pt; vertical-align: middle; }
-      #print-root .${K} .ec-items td { vertical-align: bottom; font-size: 8.8pt; padding: 0.4mm 0.5mm 0.2mm; }
+      #print-root .${K} .ec-grid td.ec-adr { height: 10.5mm; vertical-align: top; padding-top: 0.4mm; }
+      #print-root .${K} .ec-items th { background: ${BLUE}; color: #fff; font-weight: bold; font-size: 6.1pt; vertical-align: bottom; padding: 0.3mm 0.5mm; }
+      #print-root .${K} .ec-items th.ec-grp { font-size: 8pt; vertical-align: middle; height: 4mm; }
+      #print-root .${K} .ec-items th.ec-sub { height: 3.8mm; }
+      #print-root .${K} .ec-items th.ec-big { font-size: 9.3pt; vertical-align: middle; }
+      #print-root .${K} .ec-items td { vertical-align: bottom; font-size: 8.35pt; padding: 0.4mm 0.8mm 0.2mm; }
       #print-root .${K} .ec-items tr.it td { border-bottom: 1px solid #000; padding-top: 0.4mm; padding-bottom: 0.2mm; line-height: 1.3; }
-      #print-root .${K} .ec-items tr.ec-blank td { height: 3.5mm; padding: 0; }
-      #print-root .${K} .ec-items tr.ec-tot td { border-top: 1px solid #000; height: 6.2mm; font-weight: bold; vertical-align: bottom; }
+      #print-root .${K} .ec-items tr.ec-blank td { height: 3.8mm; padding: 0; }
+      #print-root .${K} .ec-items tr.ec-tot td { border-top: 1px solid #000; height: 6.6mm; font-weight: bold; vertical-align: bottom; }
       #print-root .${K} .ec-items tr.ec-tot td.ec-totl { background: ${BLUE}; color: #fff; text-align: center; vertical-align: middle;
-        font-family: Cambria, Georgia, "Times New Roman", serif; font-size: 17pt; }
+        font-family: Cambria, serif; font-size: 17pt; }
       #print-root .${K} .ec-sum tr:first-child td { border-top: 1px solid #000; }
       #print-root .${K} .ec-sum td.ec-blue { background: ${BLUE}; }
-      #print-root .${K} .ec-sum td.ec-words { text-align: center; vertical-align: middle; font-weight: normal; font-size: 9pt; }
+      #print-root .${K} .ec-sum td.ec-words { text-align: center; vertical-align: middle; font-weight: normal; font-size: 8.25pt; }
+      #print-root .${K} .ec-sum td.ec-lv { font-weight: normal; }
       #print-root .${K} .ec-sum td.ec-cert { text-align: center; vertical-align: top; padding-top: 0.6mm; }
-      #print-root .${K} .ec-sum td.ec-cert > div:first-child { font-family: "Times New Roman", Times, serif; font-weight: normal; font-size: 6.2pt; white-space: nowrap; }
-      #print-root .${K} .ec-sum td.ec-cert > div + div { font-size: 8.6pt; padding-top: 0.4mm; }
+      #print-root .${K} .ec-sum td.ec-cert > div:first-child { font-family: "Times New Roman", serif; font-weight: normal; font-size: 6.5pt; white-space: nowrap; }
+      #print-root .${K} .ec-sum td.ec-cert > div + div { font-size: 8.45pt; padding-top: 0.4mm; }
       #print-root .${K} .ec-sum tr.ec-r1 td, #print-root .${K} .ec-sum tr.ec-r2 td { height: 3.6mm; }
       #print-root .${K} .ec-sum tr.ec-r3 td { height: 4.2mm; }
-      #print-root .${K} .ec-sum tr.ec-r4 td { height: 10mm; }
+      #print-root .${K} .ec-sum tr.ec-r4 td { height: 11mm; }
       #print-root .${K} .ec-sum td.ec-terms { vertical-align: top; font-weight: normal; padding-top: 0.5mm; }
       #print-root .${K} .ec-sum tr.ec-r5 td { height: 4.6mm; vertical-align: middle; }
     `,
@@ -4434,7 +4490,7 @@
       { id: 'dsDate', label: 'Digital signature: date (text)' }
     ],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size: 7.5pt; line-height: 1.2; padding: 10.5mm 24mm 3mm 27mm; }
+      #print-root .${K} { font-family: Arial, sans-serif; font-size: 7.5pt; line-height: 1.2; padding: 10.5mm 24mm 3mm 27mm; }
       #print-root .${K} .el-box { border: 1.3px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .el-r { display: flex; padding: 0.9mm 0.8mm 0.6mm; }
       #print-root .${K} .el-k { flex: none; width: 32mm; white-space: nowrap; }
@@ -4550,7 +4606,7 @@
 
   const COLS = [
     { w: 3.1, h: 'S/N' }, { w: null, h: 'Description Of Goods / Service', wrap: true }, { w: 7.1, h: 'Rate' }, { w: 8.1, h: 'HSN/SAC' },
-    { w: 3.9, h: 'GST' }, { w: 4.6, h: 'CESS' }, { w: 7.6, h: 'Quantit<br>y', a: 'c' }, { w: 4.1, h: 'UQC' }, { w: 9.4, h: 'Price', a: 'r' },
+    { w: 4, h: 'GST' }, { w: 4, h: 'CESS' }, { w: 7.6, h: 'Quantit<br>y', a: 'c' }, { w: 4.1, h: 'UQC' }, { w: 9.4, h: 'Price', a: 'r' },
     { w: 6.1, h: 'Disc', a: 'r' }, { w: 8.2, h: 'Taxable<br>Rate', a: 'r' }, { w: 9.7, h: 'Amount', a: 'r' }
   ];
   const N = COLS.length;
@@ -4589,7 +4645,7 @@
     tl.push(['CESS', d.cess], ['Total GST', d.totalTax]);
     const closing = `<tr class="fk-close"><td></td><td colspan="${N - 1}">
         <div class="fk-cl">
-          <table class="fk-tt" style="width:${11.7 + (tl.length - 1) * 10.6}%"><colgroup><col style="width:${1170 / (11.7 + (tl.length - 1) * 10.6)}%"><col></colgroup><tr>${tl.map(([k]) => `<th>${k}</th>`).join('')}</tr>
+          <table class="fk-tt" style="width:${tl.length * 10.6}%"><tr>${tl.map(([k]) => `<th>${k}</th>`).join('')}</tr>
             <tr>${tl.map(([, a]) => `<td>${fit(amt(a))}</td>`).join('')}</tr></table>
           <table class="fk-gt"><tr><td>Roundup</td><td class="r">${amt(d.roundOff)}</td></tr>
             <tr class="g"><td>Grand Total</td><td class="r">${amt(d.grandTotal)}</td></tr></table>
@@ -4679,7 +4735,7 @@
       { id: 'decl', label: 'Declaration (one line each)', type: 'textarea', wide: true }
     ],
     css: `
-      #print-root .${K} { padding: 10mm 9.5mm 18mm 12mm; font-family: Arial, Helvetica, sans-serif; font-size: 8.4pt; line-height: 1.13; }
+      #print-root .${K} { padding: 10mm 9.5mm 18mm 12mm; font-family: Arial, sans-serif; font-size: 8.4pt; line-height: 1.13; }
       #print-root .${K} .big { font-size: 9.6pt; }
       #print-root .${K} .fk-box { border: 1px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .fk-top { display: grid; grid-template-columns: 1fr auto 1fr; border-bottom: 1px solid #000; min-height: 15mm; }
@@ -4707,19 +4763,19 @@
       #print-root .${K} .fk-lt td { padding: 0; white-space: nowrap; }
       #print-root .${K} .fk-lt td.ul { border-bottom: 1px solid #000; }
       #print-root .${K} .fk-items { border-top: 1px solid #000; }
-      #print-root .${K} .fk-items > thead th { text-align: left; vertical-align: top; font-size: 8.8pt; letter-spacing: -0.15px; padding: 0.3mm 0.4mm 0; height: 8.4mm; }
+      #print-root .${K} .fk-items > thead th { text-align: left; vertical-align: top; font-size: 9pt; padding: 0.3mm 0.4mm 0; height: 8.4mm; }
       #print-root .${K} .fk-items > thead th:nth-child(7) { text-align: center; }
       #print-root .${K} .fk-items > thead th:nth-child(n+9) { text-align: right; }
       #print-root .${K} .fk-items td { padding-left: 0.4mm; padding-right: 0.4mm; font-size: 9pt; }
       #print-root .${K} .fk-items tr.it td { padding-top: 1.6mm; padding-bottom: 0.2mm; }
       #print-root .${K} .fk-spec { font-size: 7.6pt; }
-      #print-root .${K} .fk-items tr.sm td { border-top: 0; border-bottom: 0; padding-top: 0.2mm; padding-bottom: 0; }
+      #print-root .${K} .fk-items tr.sm td { padding-top: 0.2mm; padding-bottom: 0; }
       #print-root .${K} .fk-items tr.fk-qt td.q { border-top: 1px solid #000; }
       #print-root .${K} .fk-items tr.fk-qt + tr.fk-xl td { padding-top: 0.9mm; }
       #print-root .${K} .fk-items tr.fk-xl td { padding-right: 1.4mm; }
       #print-root .${K} .fk-items tr.fk-close > td { padding: 0; border-bottom: 0; }
       #print-root .${K} .fk-cl { display: flex; justify-content: space-between; align-items: flex-start; }
-      #print-root .${K} .fk-tt tr th, #print-root .${K} .fk-tt tr td { border: 1px solid #000; border-top: 0; text-align: right; padding: 0 0.6mm; font-size: 9.2pt; line-height: 1.12; white-space: nowrap; }
+      #print-root .${K} .fk-tt tr th, #print-root .${K} .fk-tt tr td { border: 1px solid #000; border-top: 0; text-align: right; padding: 0 0.6mm; font-size: 9.4pt; line-height: 1.12; }
       #print-root .${K} .fk-tt th { font-weight: bold; }
       #print-root .${K} .fk-tt th:first-child { text-align: center; }
       #print-root .${K} .fk-tt tr > *:first-child { border-left: 0; }
@@ -4925,10 +4981,10 @@
       { id: 'barCorp', label: 'Bar: corporate office' }
     ],
     css: `
-      #print-root .${K} { font-family: Arial, Helvetica, "Liberation Sans", sans-serif; font-size: 8.4pt; line-height: 1.25; padding: 4mm 6mm 2mm 10mm; }
+      #print-root .${K} { font-family: Arial, sans-serif; font-size: 8.4pt; line-height: 1.25; padding: 4mm 6mm 2mm 10mm; }
       #print-root .${K} .ht-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; font-weight: bold; padding-bottom: 1mm; }
       #print-root .${K} .ht-top .t { font-size: 12.5pt; }
-      #print-root .${K} .ht-top .cp { text-align: right; font-size: 9.6pt; font-family: Verdana, Tahoma, Arial, sans-serif; }
+      #print-root .${K} .ht-top .cp { text-align: right; font-size: 9pt; font-family: Tahoma, sans-serif; }
       #print-root .${K} .ht-box { border: 1.5px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .ht-kv td { padding: 0 0.8mm; white-space: nowrap; }
       #print-root .${K} .ht-kv tr.b td:first-child { font-weight: bold; }
@@ -4937,7 +4993,7 @@
       #print-root .${K} .ht-co { display: grid; grid-template-columns: 29mm 1fr; border-bottom: 1px solid #000; }
       #print-root .${K} .ht-logo { border-right: 1px solid #000; min-height: 24mm; }
       #print-root .${K} .ht-cod { padding: 0.5mm 1.5mm 0.3mm; }
-      #print-root .${K} .ht-name { font-family: "Times New Roman", Times, "Liberation Serif", serif; font-weight: bold; font-size: 18pt; line-height: 1.2; }
+      #print-root .${K} .ht-name { font-family: "Times New Roman", serif; font-weight: bold; font-size: 16.3pt; line-height: 1.2; }
       #print-root .${K} .ht-addr { font-size: 8.2pt; margin: 0.5mm 0 1.6mm; line-height: 1.2; }
       #print-root .${K} .ht-l { display: inline-block; width: 10mm; }
       #print-root .${K} .ht-ph { margin-bottom: 0.8mm; }
@@ -4960,38 +5016,38 @@
       #print-root .${K} .ht-parties { display: grid; grid-template-columns: 49.5% 50.5%; }
       #print-root .${K} .ht-parties > div { display: flex; flex-direction: column; }
       #print-root .${K} .ht-parties > div + div { border-left: 1px solid #000; }
-      #print-root .${K} .ht-pn { font-size: 9.6pt; font-weight: bold; padding: 0.8mm 1.5mm 0; }
-      #print-root .${K} .ht-pa { padding: 3.8mm 1.5mm 0; font-size: 8.8pt; }
-      #print-root .${K} .ht-pp { flex: 1; display: flex; align-items: flex-end; padding: 0 1.5mm 0.4mm; min-height: 9mm; font-size: 8.8pt; }
+      #print-root .${K} .ht-pn { font-size: 9pt; font-weight: bold; padding: 0.8mm 1.5mm 0; }
+      #print-root .${K} .ht-pa { padding: 3.8mm 1.5mm 0; font-size: 8.25pt; }
+      #print-root .${K} .ht-pp { flex: 1; display: flex; align-items: flex-end; padding: 0 1.5mm 0.4mm; min-height: 9mm; font-size: 8.25pt; }
       #print-root .${K} .ht-l2 { display: inline-block; width: 11.5mm; }
-      #print-root .${K} .ht-pg { border-top: 1px solid #000; padding: 0.3mm 1.5mm 0.3mm; font-size: 8.8pt; }
+      #print-root .${K} .ht-pg { border-top: 1px solid #000; padding: 0.3mm 1.5mm 0.3mm; font-size: 8.25pt; }
       #print-root .${K} .ht-items thead th { background: #2e2e2e; color: #eee; font-size: 8.6pt; padding: 1.2mm 0.5mm; border-top: 1px solid #000; }
       #print-root .${K} .ht-items td { font-size: 8.1pt; padding-left: 1.2mm; padding-right: 1.2mm; }
       #print-root .${K} .ht-items tr.it td { vertical-align: bottom; padding-top: 1mm; padding-bottom: 0.4mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ht-items tr.it td:nth-child(-n+2) { vertical-align: top; padding-top: 2mm; }
       #print-root .${K} .ht-items tr.it td:nth-child(4) { line-height: 1.1; }
       #print-root .${K} .ht-items tr.cont td { border-top: 1px solid #000; }
-      #print-root .${K} .ht-note { padding: 0.4mm 1mm 0; font-size: 9.6pt; min-height: 4.2mm; }
+      #print-root .${K} .ht-note { padding: 0.4mm 1mm 0; font-size: 8.9pt; min-height: 4.2mm; }
       #print-root .${K} .ht-sum { display: grid; grid-template-columns: 62.5% 37.5%; border-top: 1px solid #000; }
       #print-root .${K} .ht-sl { display: flex; flex-direction: column; }
       #print-root .${K} .ht-sl2 { flex: 1; display: grid; grid-template-columns: 55.2% 44.8%; }
       #print-root .${K} .ht-terms { padding-bottom: 1mm; }
-      #print-root .${K} .ht-t { display: grid; grid-template-columns: 3.6mm 1fr; padding: 0.3mm 1mm 0 1mm; font-size: 8.1pt; line-height: 1.15; }
+      #print-root .${K} .ht-t { display: grid; grid-template-columns: 3.6mm 1fr; padding: 0.3mm 1mm 0 1mm; font-size: 7.5pt; line-height: 1.2; }
       #print-root .${K} .ht-mid { border-left: 1px solid #000; display: flex; flex-direction: column; }
-      #print-root .${K} .ht-bk { font-weight: bold; font-size: 9.2pt; padding: 1.2mm 1.5mm; line-height: 1.25; min-height: 18mm; }
+      #print-root .${K} .ht-bk { font-weight: bold; font-size: 8.1pt; padding: 1.2mm 1.5mm; line-height: 1.25; min-height: 18mm; }
       #print-root .${K} .ht-dsp { min-height: 0; padding-top: 1.4mm; flex: 1; }
       #print-root .${K} .ht-tot { border-left: 1px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .ht-lad { flex: 1; }
-      #print-root .${K} .ht-lad td { border-bottom: 1px solid #000; padding: 0.15mm 1mm; height: 4.15mm; font-size: 8.8pt; vertical-align: bottom; }
+      #print-root .${K} .ht-lad td { border-bottom: 1px solid #000; padding: 0.15mm 1mm; height: 4.15mm; font-size: 8.1pt; vertical-align: bottom; }
       #print-root .${K} .ht-lad td:nth-child(3) { border-left: 1px solid #000; }
       #print-root .${K} .ht-lad tr.ht-inv td { background: #2e2e2e; color: #eee; font-weight: bold; border-bottom: 0; }
-      #print-root .${K} .ht-words { border-top: 1px solid #000; padding: 0.4mm 1mm; font-size: 9.2pt; }
+      #print-root .${K} .ht-words { border-top: 1px solid #000; padding: 0.4mm 1mm; font-size: 8pt; }
       #print-root .${K} .ht-foot { display: grid; grid-template-columns: 34.5% 1fr 30%; border-top: 1px solid #000; min-height: 25mm; }
-      #print-root .${K} .ht-corp { border-right: 1px solid #000; font-size: 8.3pt; }
+      #print-root .${K} .ht-corp { border-right: 1px solid #000; font-size: 8pt; }
       #print-root .${K} .ht-ca { padding: 1.3mm 1mm 1.8mm; line-height: 1.2; }
       #print-root .${K} .ht-corp > div:last-child { padding: 0 1mm 0.5mm; }
-      #print-root .${K} .ht-rcv, #print-root .${K} .ht-sign { display: flex; flex-direction: column; justify-content: space-between; padding: 1mm 1.5mm 0.6mm; font-size: 9.2pt; }
-      #print-root .${K} .ht-sign { text-align: right; font-size: 9.6pt; }
+      #print-root .${K} .ht-rcv, #print-root .${K} .ht-sign { display: flex; flex-direction: column; justify-content: space-between; padding: 1mm 1.5mm 0.6mm; font-size: 8pt; }
+      #print-root .${K} .ht-sign { text-align: right; font-size: 8.9pt; }
       #print-root .${K} .ht-sign span:first-child { font-weight: bold; padding-top: 1mm; }
       #print-root .${K} .ht-pgno { text-align: right; font-size: 7.6pt; padding-top: 0.5mm; }
     `,
@@ -5195,7 +5251,7 @@
   const igstOnly = d => d.hasIgst && !d.cgst;
 
   const cols = d => [
-    { w: 6, h: 'SrNo', a: 'r' }, { w: 0.9, h: '' }, { w: null, h: 'Product Name', wrap: true }, { w: 8.5, h: 'HSN/SAC' },
+    { w: 6, h: 'SrNo', a: 'r' }, { w: 1, h: '' }, { w: null, h: 'Product Name', wrap: true }, { w: 8.5, h: 'HSN/SAC' },
     { w: 9.1, h: 'Qty', a: 'r' }, { w: 11, h: 'Rate', a: 'r' }, { w: 7, h: igstOnly(d) ? 'IGST %' : 'GST %', a: 'c' }, { w: 12.3, h: 'Amount', a: 'r' }
   ];
 
@@ -5226,7 +5282,7 @@
     }).join('');
     const tots = [...(hasG ? [num(d.cgst), num(d.sgst)] : []), ...(hasI ? [num(d.igst)] : [])];
     while (tots.length < 3) tots.push('');
-    return `<table class="ke-sum"><colgroup><col style="width:16%"><col style="width:15.4%"><col style="width:8.3%"><col style="width:14.2%"><col style="width:13.6%"><col style="width:13%"><col></colgroup>
+    return `<table class="ke-sum"><colgroup><col style="width:17%"><col style="width:15.6%"><col style="width:8.3%"><col style="width:16%"><col style="width:9.8%"><col style="width:15.6%"><col></colgroup>
       <tr><th class="l">GST Summary</th><th>Tax.Amount</th><th>Rate</th>${heads.map(h => `<th>${h}</th>`).join('')}<th>Net Amt</th></tr>
       ${body}
       <tr class="t"><td class="l b">Total</td><td class="b">${num(d.taxable)}</td><td></td>${tots.map(cell).join('')}<td class="b">${num(d.taxable + d.totalTax)}</td></tr>
@@ -5256,7 +5312,7 @@
             <div></div>
           </div>
           <div class="ke-ids">
-            <span><b>GSTIN No. :</b> ${esc(s.gst)}</span>
+            <span><b>GSTIN No. :</b> <span class="g">${esc(s.gst)}</span></span>
             <span>${x.iec ? `<b>IEC No :</b>${esc(x.iec)}` : ''}</span>
             <span>${s.pan ? `<b>PAN No. :</b> ${esc(s.pan)}` : ''}</span>
           </div>
@@ -5268,26 +5324,26 @@
               <div class="ke-ad b ke-city">${esc(x.bCity || '')}</div>
               ${b.phone ? `<div class="ke-ad b">Mo. : ${esc(b.phone)}</div>` : ''}
               <table class="ke-pk"><colgroup><col style="width:29mm"><col></colgroup>
-                <tr><td class="k">Place of Supply :</td><td>${pos ? `${esc(pos.name)}-${pos.code}` : ''}</td></tr>
+                <tr><td class="k ps">Place of Supply :</td><td class="psv">${pos ? `${esc(pos.name)}-${pos.code}` : ''}</td></tr>
                 <tr><td class="k">GSTIN No.</td><td class="v">: ${esc(b.gst)}</td></tr>
                 <tr><td class="k">PAN No.</td><td class="v">: ${esc(b.pan)}</td></tr>
               </table>
             </div>
             <div class="ke-meta">
-              <table class="ke-inv"><colgroup><col style="width:27mm"><col></colgroup>
+              <table class="ke-inv"><colgroup><col style="width:24mm"><col></colgroup>
                 ${kv('Invoice No.', esc(d.invNo))}${kv('Date', esc(dmy(d.iso.date)))}
               </table>
-              <table class="ke-tr"><colgroup><col style="width:27mm"><col></colgroup>
-                ${kv('Transport', esc(m.thru))}${kv('VEHICLE No.', esc(m.veh))}${kv('L. R. No.', esc(m.lrNo))}${kv('PLACE OF SUPPLY', esc(m.dest))}
+              <table class="ke-tr"><colgroup><col style="width:24mm"><col></colgroup>
+                ${kv('Transport', esc(m.thru))}${kv('VEHICLE No.', esc(m.veh))}${kv('L. R. No.', esc(m.lrNo))}${kv('PLACE OF SUPPLY', esc(m.dest), 'ps')}
               </table>
             </div>
           </div>
-          ${gridTable('ke-items', cols(d), pg.rows, pg.last, pg.nextPage, '', `<tr>${cols(d).map((c, i) => i === 1 ? '' : `<th${i === 2 ? ' colspan="2"' : ''}>${c.h}</th>`).join('')}</tr>`)}
+          ${gridTable('ke-items', cols(d), pg.rows, pg.last, pg.nextPage)}
           ${pg.last ? `
           <div class="ke-bot">
             <div class="ke-l">
               <div class="ke-strip"></div>
-              <table class="ke-bank"><colgroup><col style="width:30mm"><col></colgroup>
+              <table class="ke-bank"><colgroup><col style="width:30.5mm"><col></colgroup>
                 <tr><td>Bank Name</td><td>: ${esc(d.bank.name)}</td></tr>
                 <tr><td>Bank A/c. No.</td><td>: ${esc(d.bank.acc)}</td></tr>
                 <tr><td>RTGS/IFSC Code</td><td>: ${esc(d.bank.ifsc)}</td></tr>
@@ -5325,24 +5381,25 @@
       { id: 'specLabel', label: 'Item detail label (e.g. Detail)' }, { id: 'note', label: 'Note', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Tahoma, Verdana, "DejaVu Sans", Arial, sans-serif; font-size: 7.8pt; line-height: 1.3; padding-top: 9mm; }
+      #print-root .${K} { font-family: Verdana, sans-serif; font-size: 7.8pt; line-height: 1.3; padding-top: 9mm; }
       #print-root .${K} .ke-box { border: 1.3px solid #000; display: flex; flex-direction: column; }
-      #print-root .${K} .ke-hd { display: grid; grid-template-columns: 36mm 1fr 6mm; min-height: 27mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .ke-hd { display: grid; grid-template-columns: 38mm 1fr 30mm; min-height: 27mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ke-logo { padding: 13mm 0 0 3mm; text-align: center; }
-      #print-root .${K} .ke-logo .w { font-family: "Arial Black", Impact, Arial, sans-serif; font-style: italic; font-weight: 900; font-size: 17pt;
-        line-height: 1; letter-spacing: -0.5px; transform: scaleY(0.85); }
-      #print-root .${K} .ke-logo .s { font-family: Arial, sans-serif; font-weight: bold; font-size: 8pt; letter-spacing: 0.6px; }
-      #print-root .${K} .ke-co { text-align: center; font-size: 10pt; line-height: 1.32; padding: 1.5mm 0 0.6mm; }
-      #print-root .${K} .ke-name { font-weight: bold; font-size: 20pt; letter-spacing: 0.6px; line-height: 1.2; margin-bottom: 1mm; }
-      #print-root .${K} .ke-ph { display: flex; justify-content: center; gap: 9mm; font-size: 9.6pt; white-space: nowrap; }
+      #print-root .${K} .ke-logo .w { font-family: "Times New Roman", serif; font-style: italic; font-weight: bold; font-size: 21pt;
+        line-height: 1; letter-spacing: -0.4px; -webkit-text-stroke: 0.6px #000; transform: scaleY(0.86); }
+      #print-root .${K} .ke-logo .s { font-family: Arial, sans-serif; font-size: 9.4pt; letter-spacing: 0.6px; }
+      #print-root .${K} .ke-co { text-align: center; font-size: 10.7pt; line-height: 1.32; padding: 1.5mm 0 0.6mm; }
+      #print-root .${K} .ke-name { font-weight: bold; font-size: 18.2pt; letter-spacing: 0.6px; line-height: 1.2; margin-bottom: 1mm; }
+      #print-root .${K} .ke-ph { display: flex; justify-content: center; gap: 11mm; font-size: 9.6pt; white-space: nowrap; position: relative; left: 8mm; }
       #print-root .${K} .ke-ph b { font-size: 10.4pt; }
-      #print-root .${K} .ke-co .b { font-size: 10pt; }
+      #print-root .${K} .ke-co .b { font-size: 9.5pt; }
       #print-root .${K} .ke-ids { display: grid; grid-template-columns: 1fr 1fr auto; font-size: 8.2pt; padding: 0.8mm 1.2mm 0.4mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ke-ids b { font-size: 9.6pt; }
+      #print-root .${K} .ke-ids .g { font-size: 6.9pt; }
       #print-root .${K} .ke-bar { display: grid; grid-template-columns: 1fr auto 1fr; font-weight: bold; font-size: 8.2pt; padding: 0 1.2mm;
         border-bottom: 1px solid #000; min-height: 4.5mm; }
       #print-root .${K} .ke-bar .dm { align-self: end; }
-      #print-root .${K} .ke-bar .t { font-size: 11pt; align-self: end; }
+      #print-root .${K} .ke-bar .t { font-size: 10.4pt; align-self: end; }
       #print-root .${K} .ke-bar .cp { text-align: right; align-self: start; }
       #print-root .${K} .ke-party { display: grid; grid-template-columns: 60.5% 39.5%; min-height: 38mm; }
       #print-root .${K} .ke-buyer { padding: 1.5mm 1.2mm 0.6mm; display: flex; flex-direction: column; }
@@ -5350,20 +5407,21 @@
       #print-root .${K} .ke-pn { font-weight: bold; font-size: 9.6pt; }
       #print-root .${K} .ke-ad { padding-left: 12.5mm; font-size: 8.4pt; line-height: 1.35; }
       #print-root .${K} .ke-city { margin-top: 5mm; }
-      #print-root .${K} .ke-ad.b { font-size: 9.4pt; }
       #print-root .${K} .ke-pk { width: 100%; margin-top: auto; }
       #print-root .${K} .ke-pk td { padding: 0; font-size: 9pt; line-height: 1.3; }
       #print-root .${K} .ke-pk td.k { font-weight: bold; font-size: 9.6pt; white-space: nowrap; }
-      #print-root .${K} .ke-pk td.v { font-size: 10pt; padding-left: 0; }
+      #print-root .${K} .ke-pk td.psv { padding-left: 5.6mm; }
+      #print-root .${K} .ke-pk td.v { font-size: 9.5pt; padding-left: 0; }
       #print-root .${K} .ke-meta { border-left: 1px solid #000; }
       #print-root .${K} .ke-inv { border-bottom: 1px solid #000; }
-      #print-root .${K} .ke-inv td { font-weight: bold; font-size: 10.2pt; white-space: nowrap; padding: 1mm 1.2mm 1.4mm; }
+      #print-root .${K} .ke-inv td { font-weight: bold; font-size: 10pt; padding: 1mm 1.2mm 1.4mm; white-space: nowrap; }
       #print-root .${K} .ke-tr { margin-top: 1mm; }
       #print-root .${K} .ke-tr td { font-size: 7.8pt; padding: 0.5mm 1.2mm; }
       #print-root .${K} .ke-tr td.k { font-weight: bold; font-size: 7.4pt; white-space: nowrap; }
-      #print-root .${K} .ke-items th { font-size: 7.8pt; padding: 0.8mm 1mm; border-top: 1px solid #000; white-space: nowrap; }
+      #print-root .${K} .ke-tr tr.ps td.k { font-size: 6.2pt; }
+      #print-root .${K} .ke-items th { font-size: 7.4pt; padding: 0.8mm 1mm; border-top: 1px solid #000; white-space: nowrap; }
       #print-root .${K} .ke-items th:first-child { text-align: left; }
-      #print-root .${K} .ke-items td { font-size: 8.8pt; padding-left: 1mm; padding-right: 1mm; }
+      #print-root .${K} .ke-items td { font-size: 8.2pt; padding-left: 1mm; padding-right: 1mm; }
       #print-root .${K} .ke-items tr.it td { padding-top: 1.6mm; }
       #print-root .${K} .ke-items .ke-sp { margin-top: 0.8mm; }
       #print-root .${K} .ke-items tr.cont td { border-top: 1px solid #000; }
@@ -5372,34 +5430,34 @@
       #print-root .${K} .ke-strip { height: 5.8mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ke-bank { width: 100%; border-bottom: 1px solid #000; margin-top: 1.5mm; }
       #print-root .${K} .ke-bank td { padding: 0 1.2mm; font-size: 8.6pt; line-height: 1.32; }
-      #print-root .${K} .ke-bank td:first-child { font-weight: bold; font-size: 8.8pt; white-space: nowrap; }
+      #print-root .${K} .ke-bank td:first-child { font-weight: bold; font-size: 8.4pt; white-space: nowrap; }
       #print-root .${K} .ke-bank tr:last-child td { padding-bottom: 0.8mm; }
-      #print-root .${K} .ke-words { padding: 0.8mm 1.2mm; border-bottom: 1px solid #000; font-size: 8.8pt; line-height: 1.35; }
+      #print-root .${K} .ke-words { padding: 0.8mm 1.2mm; border-bottom: 1px solid #000; font-size: 8.4pt; line-height: 1.35; }
       #print-root .${K} .ke-words b { font-size: 7.4pt; }
       #print-root .${K} .ke-sum { width: 100%; }
       #print-root .${K} .ke-sum th, #print-root .${K} .ke-sum td { border: 1px solid #000; padding: 0.4mm 1mm; height: 3.6mm; text-align: right;
-        font-size: 7.8pt; white-space: nowrap; overflow: hidden; }
-      #print-root .${K} .ke-sum th { font-weight: bold; text-align: center; font-size: 7.6pt; }
+        font-size: 7.25pt; white-space: nowrap; overflow: hidden; }
+      #print-root .${K} .ke-sum th { font-weight: bold; text-align: center; font-size: 7.15pt; }
       #print-root .${K} .ke-sum .l { text-align: left; }
       #print-root .${K} .ke-sum td.b { font-weight: bold; }
       #print-root .${K} .ke-sum tr > *:first-child { border-left: 0; }
       #print-root .${K} .ke-sum tr:last-child td { border-bottom: 0; }
       #print-root .${K} .ke-r { border-left: 1px solid #000; display: flex; flex-direction: column; }
-      #print-root .${K} .ke-st { display: flex; justify-content: space-between; font-weight: bold; font-size: 8.8pt; padding: 0 1.2mm;
+      #print-root .${K} .ke-st { display: flex; justify-content: space-between; font-weight: bold; font-size: 8.6pt; padding: 0 1.2mm;
         height: 5.8mm; align-items: center; border-bottom: 1px solid #000; }
       #print-root .${K} .ke-lad { width: 100%; min-height: 20mm; }
-      #print-root .${K} .ke-lad td { padding: 0.5mm 1.2mm; font-size: 8.6pt; }
-      #print-root .${K} .ke-gt { margin-top: auto; display: flex; justify-content: space-between; font-weight: bold; font-size: 10.2pt;
-        padding: 0.6mm 1.2mm; border-top: 1.3px solid #000; border-bottom: 1px solid #000; }
+      #print-root .${K} .ke-lad td { padding: 0.5mm 1.2mm; font-size: 8.1pt; }
+      #print-root .${K} .ke-gt { margin-top: auto; display: flex; justify-content: space-between; font-weight: bold; font-size: 9.5pt;
+        padding: 0.8mm 1.2mm; border-top: 1.3px solid #000; border-bottom: 1px solid #000; }
       #print-root .${K} .ke-note { min-height: 20mm; padding: 0.6mm 1.2mm; }
       #print-root .${K} .ke-note .h { font-weight: bold; text-align: center; }
       #print-root .${K} .ke-foot { display: grid; grid-template-columns: 1fr auto; border-top: 1px solid #000; min-height: 29mm; }
-      #print-root .${K} .ke-terms { padding: 0.8mm 1.2mm 1mm; font-size: 8.4pt; line-height: 1.5; max-width: 128mm; }
-      #print-root .${K} .ke-terms .b { font-size: 7.8pt; }
+      #print-root .${K} .ke-terms { padding: 0.8mm 1.2mm 1mm; font-size: 7.2pt; line-height: 1.55; max-width: 121.5mm; }
+      #print-root .${K} .ke-terms .b { font-size: 7.25pt; }
       #print-root .${K} .ke-terms .t { display: flex; gap: 1mm; }
       #print-root .${K} .ke-terms .t span:first-child { flex: none; width: 4mm; }
       #print-root .${K} .ke-sign { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;
-        padding: 0.8mm 1.2mm 1.6mm; font-size: 9pt; }
+        padding: 0.8mm 1.2mm 1.6mm; font-size: 8.3pt; }
       #print-root .${K} .ke-sign .i { font-size: 7.8pt; }
     `,
     preset: {
@@ -5476,7 +5534,7 @@
           ${pg.last ? `
           <div class="kt-foot">
             <div class="kt-bank">
-              <div class="sm">${d.bank.name ? `BANK NAME : ${esc(d.bank.name)}` : ''}${d.bank.branch ? `<span class="br">Branch : ${esc(d.bank.branch)}</span>` : ''}</div>
+              <div class="sm sans">${d.bank.name ? `BANK NAME : ${esc(d.bank.name)}` : ''}${d.bank.branch ? `<span class="br">Branch : ${esc(d.bank.branch)}</span>` : ''}</div>
               ${d.bank.acc ? `<div class="ac">A/C. NO. ${esc(d.bank.acc)}</div>` : ''}
               ${d.bank.ifsc ? `<div class="sm">IFSC Code : ${esc(d.bank.ifsc)}</div>` : ''}
             </div>
@@ -5490,30 +5548,31 @@
     key: K, name: 'Krishana Traders — Simple Bill', base: 'simple', show: ['s_bank_branch'],
     extra: [{ id: 'showUnit', label: 'Print unit after QTY (yes / blank)' }],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size: 10pt; line-height: 1.3; padding-top: 4mm; }
+      #print-root .${K} { font-family: Calibri, sans-serif; font-size: 10pt; line-height: 1.3; padding-top: 4mm; }
       #print-root .${K} .kt-box { border: 1.2px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .kt-mob { position: relative; height: 0; }
-      #print-root .${K} .kt-mob { text-align: right; font-size: 9.6pt; line-height: 1.45; }
+      #print-root .${K} .kt-mob { text-align: right; font-size: 10.8pt; line-height: 1.3; }
       #print-root .${K} .kt-mob > div:first-child { padding-top: 1.6mm; }
       #print-root .${K} .kt-mob > div { padding-right: 0.6mm; }
-      #print-root .${K} .kt-name { font-family: "Castellar", "Engravers MT", "Times New Roman", Times, serif; font-weight: bold; font-size: 40pt;
-        letter-spacing: 1.5px; text-align: center; line-height: 1; padding: 11mm 18mm 1.5mm; color: #5a5a5a; -webkit-text-stroke: 1px #000; }
-      #print-root .${K} .kt-addr { font-family: "Times New Roman", Times, serif; text-align: center; font-size: 10.4pt; padding-bottom: 0.4mm;
+      #print-root .${K} .kt-name { font-family: "Times New Roman", serif; font-weight: bold; font-size: 33pt;
+        letter-spacing: 0; text-align: center; line-height: 1; padding: 11mm 18mm 1.5mm; color: #6e6e6e; -webkit-text-stroke: 0.8px #000; }
+      #print-root .${K} .kt-addr { font-family: Cambria, serif; font-weight: bold; text-align: center; font-size: 11.4pt; padding-bottom: 0.4mm;
         border-bottom: 1px solid #000; }
-      #print-root .${K} .kt-gst { text-align: center; font-weight: bold; font-size: 11.4pt; padding: 0.6mm 0 0.4mm; }
-      #print-root .${K} .kt-party { padding: 0 0.8mm 1.4mm; font-size: 10.4pt; }
+      #print-root .${K} .kt-gst { text-align: center; font-weight: bold; font-size: 13.4pt; padding: 0.6mm 0 0.4mm; }
+      #print-root .${K} .kt-party { padding: 0 0.8mm 1.4mm; font-size: 11.8pt; }
       #print-root .${K} .kt-r1 { display: grid; grid-template-columns: 22.4mm 1fr auto; align-items: baseline; }
-      #print-root .${K} .kt-r1 .k { font-size: 10pt; }
-      #print-root .${K} .kt-date { font-weight: bold; font-size: 10.4pt; align-self: end; }
-      #print-root .${K} .kt-pn { font-weight: 600; margin-left: -2.4mm; }
-      #print-root .${K} .kt-ad { align-items: center; margin-top: 4mm; line-height: 1.55; font-weight: 600; }
+      #print-root .${K} .kt-r1 .k { font-size: 11.4pt; }
+      #print-root .${K} .kt-date { font-weight: bold; font-size: 11.8pt; align-self: end; }
+      #print-root .${K} .kt-pn { font-weight: bold; margin-left: -2.4mm; }
+      #print-root .${K} .kt-ad { align-items: center; margin-top: 4mm; line-height: 1.45; font-weight: bold; }
       #print-root .${K} .kt-ad .k { font-weight: normal; }
       #print-root .${K} .kt-ad > span:nth-child(2) { grid-column: 2 / 4; }
-      #print-root .${K} .kt-bg { margin-top: 7mm; font-size: 11.2pt; }
-      #print-root .${K} .kt-items { font-family: "Times New Roman", Times, serif; }
-      #print-root .${K} .kt-items th { background: #262626; color: #fff; font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-weight: bold;
-        font-size: 12pt; padding: 0.5mm 1mm 0.3mm; border-color: #000; }
-      #print-root .${K} .kt-items th .kt-sp { letter-spacing: 2.4px; }
+      #print-root .${K} .kt-bg { margin-top: 7mm; font-size: 12.8pt; }
+      #print-root .${K} .kt-bg .k { font-size: 12.4pt; }
+      #print-root .${K} .kt-items { font-family: "Times New Roman", serif; }
+      #print-root .${K} .kt-items th { background: #262626; color: #fff; font-family: Calibri, sans-serif; font-weight: bold;
+        font-size: 13.7pt; padding: 0.5mm 1mm 0.3mm; border-color: #000; }
+      #print-root .${K} .kt-items th .kt-sp { letter-spacing: 4px; }
       #print-root .${K} .kt-items td { font-size: 11pt; padding-left: 1mm; padding-right: 1mm; }
       #print-root .${K} .kt-items tr.it td { padding-top: 0.6mm; text-align: center; }
       #print-root .${K} .kt-items .kt-spec { font-size: 9.6pt; }
@@ -5522,14 +5581,15 @@
       #print-root .${K} .kt-items tr.kt-tot td.k { border-left-width: 2px; }
       #print-root .${K} .kt-items tr.kt-last td { border-bottom: 1px solid #000; }
       #print-root .${K} .kt-items tr.kt-last td.kt-bar { background: #262626; border-left: 0; }
-      #print-root .${K} .kt-items tr.cont td { border-top: 1px solid #000; font-family: Calibri, Carlito, Arial, sans-serif; font-size: 8.6pt; }
+      #print-root .${K} .kt-items tr.cont td { border-top: 1px solid #000; font-family: Calibri, sans-serif; font-size: 8.6pt; }
       #print-root .${K} .kt-foot { display: flex; justify-content: space-between; align-items: center; min-height: 23mm; padding: 0 0.8mm 2mm 22.4mm;
-        font-family: "Times New Roman", Times, serif; }
+        font-family: "Times New Roman", serif; }
       #print-root .${K} .kt-cont { min-height: 0; padding: 0; }
-      #print-root .${K} .kt-bank { font-size: 9.6pt; line-height: 1.6; padding-top: 0.6mm; align-self: flex-start; }
+      #print-root .${K} .kt-bank { font-size: 10.85pt; line-height: 1.6; padding-top: 0.6mm; align-self: flex-start; }
       #print-root .${K} .kt-bank .br { margin-left: 7mm; }
+      #print-root .${K} .kt-bank .sans, #print-root .${K} .kt-bank .ac { font-family: Calibri, sans-serif; }
       #print-root .${K} .kt-bank .ac { font-size: 12.4pt; letter-spacing: 0.3px; }
-      #print-root .${K} .kt-sign { font-weight: bold; font-size: 11.4pt; margin-top: -4mm; }
+      #print-root .${K} .kt-sign { font-weight: bold; font-size: 11.2pt; margin-top: -4mm; }
     `,
     preset: {
       label: 'Krishana Traders — 709',
@@ -5584,8 +5644,8 @@
         <div class="mg-lw"><span class="mg-ll">${l}</span><span class="mg-la">${at}</span><span class="mg-lr">${r}</span></div></td>
         <td class="r">${amt}</td></tr>`).join('');
     const tq = `${fmt2(d.totalQty)}&nbsp; ${esc(x.totUnit || d.totalQtyUnit)}`;
-    const closing = `${ladder}<tr class="mg-gt"><td colspan="3" class="r">Grand Total</td><td colspan="3"><span class="mg-tq">${tq}</span></td>
-        <td colspan="2" class="r">₹</td><td class="r">${fmt2(d.grandTotal)}</td></tr>`;
+    const closing = `${ladder}<tr class="mg-gt"><td colspan="3" class="r">Grand Total</td><td colspan="2"><span class="mg-tq">${tq}</span></td>
+        <td colspan="3" class="r">₹</td><td class="r">${fmt2(d.grandTotal)}</td></tr>`;
     // tax summary by rate
     const by = {};
     d.groups.forEach(g => {
@@ -5632,7 +5692,7 @@
           ${pg.last ? `
           <div class="mg-sum">
             <table class="mg-tax">
-              <colgroup><col style="width:14mm"><col style="width:18.5mm">${gst ? '<col style="width:15mm"><col style="width:15mm">' : ''}${igst ? '<col style="width:15mm">' : ''}<col style="width:16.5mm"></colgroup>
+              <colgroup><col style="width:14mm"><col style="width:25mm">${gst ? '<col style="width:23mm"><col style="width:25mm">' : ''}${igst ? '<col style="width:25mm">' : ''}<col style="width:22mm"></colgroup>
               <tr class="mg-th"><td><span class="mg-tr">Tax Rate</span></td><td class="r"><span>Taxable Amt.</span></td>
                 ${gst ? '<td class="r"><span>CGST Amt.</span></td><td class="r"><span>SGST Amt.</span></td>' : ''}${igst ? '<td class="r"><span>IGST Amt.</span></td>' : ''}
                 <td class="r"><span class="mg-tr">Total Tax</span></td></tr>
@@ -5668,67 +5728,66 @@
       ${P} { font-family: Tahoma, Verdana, "DejaVu Sans", sans-serif; font-size: 9.6pt; line-height: 1.2; padding: 10.8mm 6mm 34mm 13.2mm; }
       ${P} .mg-box { border: 1px solid #000; display: flex; flex-direction: column; }
       ${P} .mg-hd { position: relative; text-align: center; height: 26.8mm; border-bottom: 1px solid #000; padding-top: 3.6mm; box-sizing: border-box; }
-      ${P} .mg-hgst { position: absolute; left: 1.6mm; top: 2.6mm; font-weight: bold; font-size: 9.7pt; }
-      ${P} .mg-copy { position: absolute; right: 2mm; top: 2.1mm; font-style: italic; font-size: 10.2pt; letter-spacing: -0.3px; }
-      ${P} .mg-title { font-weight: bold; font-size: 11.2pt; text-decoration: underline; line-height: 1.1; padding-top: 0.4mm; }
-      ${P} .mg-name { font-weight: bold; font-size: 17.6pt; line-height: 1.1; padding: 0 22mm; }
-      ${P} .mg-addr { font-size: 10.1pt; line-height: 1.1; letter-spacing: -0.2px; }
-      ${P} .mg-tel { font-weight: bold; font-style: italic; font-size: 7.9pt; line-height: 1.2; }
+      ${P} .mg-hgst { position: absolute; left: 1.6mm; top: 2.4mm; font-weight: bold; font-size: 10.4pt; }
+      ${P} .mg-copy { position: absolute; right: 2mm; top: 2.1mm; font-style: italic; font-size: 10.6pt; letter-spacing: -0.3px; }
+      ${P} .mg-title { font-weight: bold; font-size: 10.5pt; text-decoration: underline; line-height: 1.1; }
+      ${P} .mg-name { font-weight: bold; font-size: 23pt; line-height: 1.05; padding: 0 16mm; }
+      ${P} .mg-addr { font-size: 10.6pt; line-height: 1.12; letter-spacing: -0.2px; }
+      ${P} .mg-tel { font-weight: bold; font-style: italic; font-size: 8.2pt; line-height: 1.2; }
       ${P} .mg-2 { display: grid; grid-template-columns: 49.2% 50.8%; border-bottom: 1px solid #000; }
       ${P} .mg-2 > div { min-width: 0; }
       ${P} .mg-2 > div + div { border-left: 1px solid #000; }
-      ${P} .mg-inv { height: 11.3mm; font-size: 9.4pt; }
+      ${P} .mg-inv { height: 11.3mm; font-size: 10.6pt; }
       ${P} .mg-inv > div { padding: 2.4mm 1.4mm 0; line-height: 1.12; }
       ${P} .mg-kv { display: grid; grid-template-columns: 29mm 3.2mm 1fr; }
       ${P} .mg-kv.mg-kr { grid-template-columns: 29.8mm 3.6mm 1fr; }
       ${P} .mg-dt { padding-left: 1mm; }
       ${P} .mg-parties { height: 31.8mm; }
-      ${P} .mg-pty { display: flex; flex-direction: column; padding: 2.6mm 1.4mm 0.8mm; font-size: 9.1pt; line-height: 1.32; }
+      ${P} .mg-pty { display: flex; flex-direction: column; padding: 2.6mm 1.4mm 0.8mm; font-size: 10.4pt; line-height: 1.18; }
       ${P} .mg-pl { font-weight: bold; font-style: italic; }
       ${P} .mg-gst { margin-top: auto; display: grid; grid-template-columns: 29.4mm 3.4mm 1fr; }
-      ${P} .mg-items { font-size: 8.2pt; }
-      ${P} .mg-items th { font-weight: bold; vertical-align: top; text-align: left; padding: 1.8mm 0.6mm 0; height: 12.6mm; line-height: 1.5; box-sizing: border-box; font-size: 7.9pt; }
-      ${P} .mg-items th:nth-child(1) { font-size: 6.6pt; padding-top: 2.4mm; }
+      ${P} .mg-items { font-size: 9.6pt; }
+      ${P} .mg-items th { font-weight: bold; vertical-align: top; text-align: left; padding: 1.8mm 0.6mm 0; height: 12.6mm; line-height: 1.45; box-sizing: border-box; }
+      ${P} .mg-items th:nth-child(1) { font-size: 8.4pt; padding-top: 2.4mm; }
       ${P} .mg-items th:nth-child(4), ${P} .mg-items th:nth-child(6), ${P} .mg-items th:nth-child(8), ${P} .mg-items th:nth-child(9) { text-align: right; }
       ${P} .mg-items th:nth-child(9) { padding-top: 2.4mm; }
       ${P} .mg-items td { padding: 0 0.6mm; }
       ${P} .mg-items tr.it td { padding-top: 0.6mm; padding-bottom: 0.4mm; }
-      ${P} .mg-items tr.it:first-child td { padding-top: 3.9mm; }
-      ${P} .mg-spec { font-size: 7.6pt; }
-      ${P} .mg-dp { display: inline-block; width: 10mm; text-align: left; padding-left: 0.8mm; }
-      ${P} .mg-items tr.mg-lad td { border: 0; padding: 0 0.6mm; line-height: 1.38; font-size: 9.4pt; }
+      ${P} .mg-items tr.it:first-child td { padding-top: 3.6mm; }
+      ${P} .mg-spec { font-size: 8.6pt; }
+      ${P} .mg-dp { display: inline-block; width: 12mm; text-align: left; padding-left: 0.8mm; }
+      ${P} .mg-items tr.mg-lad td { border: 0; padding: 0 0.6mm; line-height: 1.35; }
       ${P} .mg-items tr.mg-lad td:last-child { border-left: 1px solid #000; }
-      ${P} .mg-items tr.mg-l1 td { border-top: 1px solid #000; padding-top: 1.9mm; }
+      ${P} .mg-items tr.mg-l1 td { border-top: 1px solid #000; padding-top: 2.4mm; }
       ${P} .mg-items tr.mg-ln td { padding-bottom: 1.8mm; }
       ${P} .mg-lw { position: relative; height: 1.35em; font-style: italic; }
       ${P} .mg-lw span { position: absolute; top: 0; white-space: nowrap; }
       ${P} .mg-ll { left: 54%; }
       ${P} .mg-la { left: 86.3%; }
       ${P} .mg-lr { left: 90%; }
-      ${P} .mg-items tr.mg-gt td { border: 0; border-top: 1px solid #000; font-weight: bold; padding: 1.6mm 0.6mm 1.6mm; font-size: 8.4pt; white-space: nowrap; }
-      ${P} .mg-items tr.mg-gt td:last-child { border: 1px solid #000 !important; border-right: 0 !important; font-size: 8.6pt; }
+      ${P} .mg-items tr.mg-gt td { border: 0; border-top: 1px solid #000; font-weight: bold; padding: 1.6mm 0.6mm 1.4mm; }
+      ${P} .mg-items tr.mg-gt td:last-child { border: 1px solid #000 !important; border-right: 0 !important; font-size: 10.4pt; }
       ${P} .mg-items tr.mg-gt td:nth-child(3) { font-size: 11pt; font-weight: normal; }
-      ${P} .mg-items tr.mg-gt td:nth-child(2) { overflow: visible; }
-      ${P} .mg-tq { display: inline-block; padding: 0 3mm 1.4mm 4.6mm; margin-left: -1.6mm; border-bottom: 1px solid #000; }
+      ${P} .mg-tq { display: inline-block; padding: 0 1.5mm 1.3mm 5.5mm; border-bottom: 1px solid #000; }
       ${P} .mg-items tr.cont td { border-top: 1px solid #000; }
       ${P} .mg-sum { padding: 2.2mm 1.4mm 1.6mm; border-bottom: 1px solid #000; }
-      ${P} .mg-tax { width: auto; font-size: 7.8pt; }
+      ${P} .mg-tax { width: auto; font-size: 9.6pt; }
       ${P} .mg-tax td { padding: 0 0 0 0; white-space: nowrap; }
       ${P} .mg-tax td + td { padding-left: 2mm; }
-      ${P} .mg-tax .mg-th td { font-weight: bold; font-size: 6.8pt; vertical-align: bottom; }
+      ${P} .mg-tax .mg-th td { font-weight: bold; font-size: 8.4pt; vertical-align: bottom; }
       ${P} .mg-tax .mg-th td > span { display: inline-block; border-bottom: 1px solid #000; padding: 0 0.4mm 0.6mm 2.4mm; }
       ${P} .mg-tax .mg-th td:first-child > span { padding-left: 0; }
-      ${P} .mg-tax .mg-th .mg-tr { font-size: 7.8pt; }
+      ${P} .mg-tax .mg-th .mg-tr { font-size: 9.6pt; }
       ${P} .mg-tax tr:not(.mg-th) td { padding-top: 0.8mm; }
-      ${P} .mg-words { font-weight: bold; font-size: 9.8pt; padding-top: 5.6mm; }
+      ${P} .mg-words { font-weight: bold; font-size: 11.6pt; padding-top: 6.2mm; }
       ${P} .mg-foot { display: grid; grid-template-columns: 44.3% 55.7%; height: 31.8mm; }
-      ${P} .mg-terms { padding: 1.6mm 1.4mm 0; font-size: 7.8pt; line-height: 1.3; }
+      ${P} .mg-terms { padding: 1.4mm 1.4mm 0; font-size: 9.2pt; line-height: 1.12; }
       ${P} .mg-terms > div { margin-bottom: 0.7mm; }
-      ${P} .mg-th2 { font-weight: bold; font-size: 6.9pt; display: inline-block; border-bottom: 1px solid #000; padding-bottom: 0.4mm; }
+      ${P} .mg-th2 { font-weight: bold; font-size: 8.6pt; display: inline-block; border-bottom: 1px solid #000; padding-bottom: 0.4mm; }
       ${P} .mg-sg { border-left: 1px solid #000; display: flex; flex-direction: column; }
-      ${P} .mg-rcv { font-weight: bold; font-size: 6.9pt; height: 11.4mm; border-bottom: 1px solid #000; padding: 1.8mm 0.8mm 0; box-sizing: border-box; }
+      ${P} .mg-rcv { font-weight: bold; font-size: 8.8pt; height: 11.4mm; border-bottom: 1px solid #000; padding: 1.8mm 0.8mm 0; box-sizing: border-box; }
       ${P} .mg-auth { flex: 1; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end;
-        font-weight: bold; font-size: 10pt; padding: 2.6mm 3.6mm 1.4mm 2mm; min-width: 0; }
+        font-weight: bold; font-size: 11pt; padding: 2.2mm 3.6mm 1.4mm 2mm; min-width: 0; }
       ${P} .mg-auth > span { max-width: 100%; }
     `,
     preset: {
@@ -5853,7 +5912,7 @@
                 <div><b>Date.:</b> ${esc(dmy(d.iso.date))}</div>
                 <div>SAC Desc. ${esc(x.sacDesc)}</div>
                 <div>Sac Code.: ${esc(x.sacCode)}</div>
-                <div class="ml-irn"><span>IRN No.:&nbsp;</span>${fit(esc(d.irn))}</div>
+                <div>IRN No.: ${d.irn ? `<span class="ml-irn">${esc(d.irn)}</span>` : ''}</div>
                 <div>IRN Date.: ${esc(dmy(d.iso.ackDate))}</div>
               </div>
               <div class="ml-po">${m.buyersOrder || d.iso.buyersOrderDate ? `<b>PO No.:</b> ${esc(m.buyersOrder)}, <b>Date.:</b> ${esc(dmy(d.iso.buyersOrderDate))}` : ''}</div>
@@ -5904,61 +5963,62 @@
       { id: 'acName', label: 'Bank Account Name' }, { id: 'remarks', label: 'Remarks', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size: 8pt; line-height: 1.2;
+      #print-root .${K} { font-family: Arial, sans-serif; font-size: 8pt; line-height: 1.2;
         padding: 11.5mm 15mm 21mm 14.5mm; }
       #print-root .${K} .ml-box { border: 1px solid #000; }
       #print-root .${K} .ml-title, #print-root .${K} .ml-bar > div, #print-root .${K} .ml-ids .k, #print-root .${K} .ml-items th {
         background: #c9c9c9; }
-      #print-root .${K} .ml-title { text-align: center; font-weight: bold; font-size: 11pt; height: 7.4mm; line-height: 7.4mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .ml-title { text-align: center; font-weight: bold; font-size: 11.2pt; height: 7.4mm; line-height: 7.4mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ml-hd { display: flex; height: 25.4mm; border-bottom: 1px solid #000; }
       #print-root .${K} .ml-logo { width: 25.4mm; flex: none; border-right: 1px solid #000; display: flex; align-items: center; justify-content: center; }
       #print-root .${K} .ml-logo img { max-width: 24mm; max-height: 24mm; }
-      #print-root .${K} .ml-co { flex: 1; min-width: 0; padding: 0.8mm 1mm 0; font-size: 7.4pt; line-height: 1.28; }
-      #print-root .${K} .ml-name { font-size: 18pt; line-height: 1.08; margin-bottom: 0.4mm; }
-      #print-root .${K} .ml-ids { width: 41.5mm; flex: none; border-left: 1px solid #000; font-size: 6.6pt; display: grid; grid-auto-rows: 4.1mm; }
+      #print-root .${K} .ml-co { flex: 1; min-width: 0; padding: 0.1mm 1mm 0; font-size: 8.5pt; line-height: 1.19; }
+      #print-root .${K} .ml-name { font-family: Arial, sans-serif; font-size: 16.8pt; line-height: 1.1; }
+      #print-root .${K} .ml-ids { width: 41.5mm; flex: none; border-left: 1px solid #000; font-size: 6.4pt; display: grid; grid-auto-rows: 4.1mm; }
+      #print-root .${K} .ml-ids .k { font-weight: bold; }
       #print-root .${K} .ml-ids > div { border-bottom: 1px solid #000; padding: 0 0.8mm; line-height: 4mm; overflow: hidden; }
       #print-root .${K} .ml-ids > div:last-child { border-bottom: 0; }
       #print-root .${K} .ml-2 { display: grid; grid-template-columns: 50.2% 49.8%; }
       #print-root .${K} .ml-2 > div + div { border-left: 1px solid #000; }
-      #print-root .${K} .ml-bar > div { font-weight: bold; padding: 0.3mm 0.6mm; height: 4.6mm; box-sizing: border-box; border-bottom: 1px solid #000; }
-      #print-root .${K} .ml-par { border-bottom: 1px solid #000; font-size: 7.4pt; line-height: 1.4; }
+      #print-root .${K} .ml-bar > div { font-weight: bold; font-size: 8.3pt; padding: 0.3mm 0.6mm; height: 4.6mm; box-sizing: border-box; border-bottom: 1px solid #000; }
+      #print-root .${K} .ml-par { border-bottom: 1px solid #000; font-size: 8.5pt; line-height: 3.4mm; }
       #print-root .${K} .ml-par > div { padding: 0.8mm 0.6mm 0.6mm; min-height: 21.5mm; }
-      #print-root .${K} .ml-bd { display: grid; grid-template-columns: 1fr 1fr; }
-      #print-root .${K} .ml-po { padding-top: 10.6mm; }
-      #print-root .${K} .ml-irn { display: flex; } #print-root .${K} .ml-irn .fit { flex: 1; min-width: 0; }
-      #print-root .${K} .ml-cons { font-size: 6.2pt; line-height: 1.36; }
-      #print-root .${K} .ml-cons > div { padding: 0.3mm 0.6mm 0.1mm; min-height: 9.2mm; box-sizing: border-box; }
+      #print-root .${K} .ml-bd { display: grid; grid-template-columns: 1fr 1fr; font-size: 7.45pt; }
+      #print-root .${K} .ml-po { padding-top: 10.3mm; }
+      #print-root .${K} .ml-irn { font-size: 6pt; }
+      #print-root .${K} .ml-cons { font-size: 6.5pt; line-height: 1.22; }
+      #print-root .${K} .ml-cons > div { padding: 0.6mm 0.6mm 0.4mm; min-height: 9.4mm; }
       #print-root .${K} .ml-kvl { display: flex; }
-      #print-root .${K} .ml-kvl > span:first-child { flex: none; white-space: nowrap; padding-right: 1mm; box-sizing: border-box; }
+      #print-root .${K} .ml-kvl > span:first-child { flex: none; white-space: nowrap; }
       #print-root .${K} .ml-items { border-top: 1px solid #000; font-size: 7.4pt; }
-      #print-root .${K} .ml-items th { text-align: left; vertical-align: top; font-size: 7pt; padding: 0.4mm 0.6mm 0; line-height: 1.22; }
+      #print-root .${K} .ml-items th { text-align: left; vertical-align: top; font-size: 7.45pt; padding: 0.5mm 0.6mm; line-height: 1.3; }
       #print-root .${K} .ml-items th.c { text-align: center; }
-      #print-root .${K} .ml-items thead tr:first-child th { height: 5mm; box-sizing: border-box; }
-      #print-root .${K} .ml-items thead tr + tr th { height: 4.4mm; box-sizing: border-box; padding-top: 0.6mm; }
+      #print-root .${K} .ml-items thead tr:first-child th { height: 4.6mm; }
+      #print-root .${K} .ml-items thead tr + tr th { height: 4.2mm; }
       #print-root .${K} .ml-items tr.it td { border-bottom: 1px solid #000; padding: 0.9mm 0.6mm 0.4mm; height: 4.6mm; box-sizing: border-box; }
-      #print-root .${K} .ml-items tr.ml-tot td { font-weight: bold; padding: 1.4mm 0.6mm 0.2mm; height: 4.9mm; line-height: 1.2; box-sizing: border-box; }
-      #print-root .${K} .ml-items tr.ml-tot td:first-child { vertical-align: top; padding-top: 0.2mm; }
-      #print-root .${K} .ml-items tr.ml-wr td { font-size: 7.6pt; padding: 0.4mm 0.6mm 0.2mm; line-height: 1.2; }
-      #print-root .${K} .ml-ft { display: flex; border-top: 1px solid #000; min-height: 28.5mm; }
-      #print-root .${K} .ml-bank { width: 64mm; flex: none; padding: 0.8mm 0.4mm; font-size: 7.8pt; line-height: 1.4; white-space: nowrap; overflow: hidden; }
+      #print-root .${K} .ml-items tr.ml-tot td { font-weight: bold; padding: 1.2mm 0.6mm 0.5mm; height: 5.2mm; }
+      #print-root .${K} .ml-items tr.ml-tot td:first-child { font-weight: bold; vertical-align: top; padding-top: 0.2mm; }
+      #print-root .${K} .ml-items tr.ml-wr td { font-size: 7.5pt; padding: 0.6mm 0.6mm 0.4mm; }
+      #print-root .${K} .ml-ft { display: flex; border-top: 1px solid #000; min-height: 29mm; }
+      #print-root .${K} .ml-bank { width: 64mm; flex: none; padding: 0.6mm 0.3mm; font-size: 8.5pt; line-height: 1.2; }
       #print-root .${K} .ml-qr { width: 27.5mm; flex: none; border-right: 1px solid #000; padding: 0.4mm 0.5mm 0 0; }
       #print-root .${K} .ml-qr .qr-upi { width: 26.5mm; height: 26.5mm; margin: 0; }
       #print-root .${K} .ml-qr .qr-upi img, #print-root .${K} .ml-qr .qr-upi canvas { width: 26.5mm !important; height: 26.5mm !important; image-rendering: pixelated; }
-      #print-root .${K} .ml-terms { flex: 1; min-width: 0; padding: 0.8mm 0.6mm 0.4mm; font-size: 6pt; line-height: 1.32; }
-      #print-root .${K} .ml-lad { width: 68.5mm; flex: none; border-left: 1px solid #000; display: flex; flex-direction: column; font-size: 7.4pt; }
+      #print-root .${K} .ml-terms { flex: 1; min-width: 0; padding: 0.8mm 0.6mm; font-size: 6.5pt; line-height: 1.22; }
+      #print-root .${K} .ml-lad { width: 68.5mm; flex: none; border-left: 1px solid #000; display: flex; flex-direction: column; font-size: 7.6pt; }
       #print-root .${K} .ml-lad table { width: 100%; }
-      #print-root .${K} .ml-lad td { padding: 0 0.6mm; line-height: 1.48; text-align: right; white-space: nowrap; }
+      #print-root .${K} .ml-lad td { padding: 0.15mm 0.6mm; line-height: 1.36; text-align: right; }
       #print-root .${K} .ml-lad td + td { width: 25mm; border-left: 1px solid #000; }
       #print-root .${K} .ml-lad tr:first-child td { padding-top: 1.4mm; }
       #print-root .${K} .ml-lad td.b { font-weight: bold; }
       #print-root .${K} .ml-lad .ml-rc { margin-top: auto; border-top: 1px solid #000; }
-      #print-root .${K} .ml-lad .ml-rc td { padding: 0.3mm 0.6mm 0.2mm; font-size: 6.6pt; line-height: 1.45; overflow: hidden; }
+      #print-root .${K} .ml-lad .ml-rc td { padding: 0.5mm 0.6mm; }
       #print-root .${K} .ml-lad .ml-rc td.c { text-align: center; }
       #print-root .${K} .ml-sign { text-align: right; font-weight: bold; padding-top: 2mm; }
-      #print-root .${K} .ml-sn { font-size: 9.4pt; }
-      #print-root .${K} .ml-as { font-size: 7.8pt; margin-top: 4.6mm; }
-      #print-root .${K} .ml-pf { display: flex; justify-content: space-between; align-items: flex-end; font-size: 8.6pt; padding-top: 2mm; }
-      #print-root .${K} .ml-pf > b { font-size: 8.6pt; margin-right: 1.5mm; }
+      #print-root .${K} .ml-sn { font-size: 9.3pt; }
+      #print-root .${K} .ml-as { font-size: 8.4pt; margin-top: 4.6mm; }
+      #print-root .${K} .ml-pf { display: flex; justify-content: space-between; align-items: flex-end; font-size: 9.2pt; padding-top: 2mm; }
+      #print-root .${K} .ml-pf > b { font-size: 8.8pt; margin-right: 1.5mm; }
     `,
     preset: {
       label: 'Mahalakshmi Logistics — 729225BLG001214',
@@ -6287,6 +6347,7 @@
 })();
 </script>
 <script>
+
 // =====================================================================================
 // MOHIT SALES CORPORATION PVT. LTD. (Polycab dealer) — "GST Tax Invoice", A4 landscape
 // Copied from docs/New Doc 2026-11-21 23.42.29.pdf (2 pages: header + items + Total on page 1,
@@ -6650,7 +6711,7 @@
             isBuyer && pos && ['Place of Supply', esc(pos.name)]])}
         </div>`;
     };
-    const cell = (k, val) => `<div class="mo-mc"><div>${fit(k)}</div><div class="mo-mv">${fit(esc(val))}</div></div>`;
+    const cell = (k, val) => `<div class="mo-mc"><div>${k}</div><div class="mo-mv">${fit(esc(val))}</div></div>`;
     const meta = [
       ['Invoice No.', d.invNo, 'Dated', d.date], ['Delivery Note', m.deliveryNote, m.pay ? 'Mode/Terms of Payment' : '', m.pay],
       ['Reference No. &amp; Date.', m.refNoDate, 'Other References', m.otherRef], ["Buyer's Order No.", m.buyersOrder, 'Dated', m.buyersOrderDate],
@@ -6661,7 +6722,7 @@
     const totQ = units.length === 1 && d.items.length ? `<span class="mo-q">${qty(d.totalQty, units[0])}</span>` : '';
     const closing = rowOf(cl, 'tot', ['', '<div class="r">Total</div>', '', totQ, ...(ri ? [''] : []), '', '', '', `<b class="mo-gt">${esc(x.cur || '₹')} ${fmt2(d.grandTotal)}</b>`]);
     const ob = d.oldBalance;
-    const bank = (rws) => `<table class="mo-bk"><colgroup><col style="width:30.5%"><col style="width:2.4%"><col></colgroup>
+    const bank = (rws) => `<table class="mo-bk"><colgroup><col style="width:28%"><col style="width:3%"><col></colgroup>
         ${rws.map(([k, val]) => `<tr><td>${k}</td><td>:</td><td>${val}</td></tr>`).join('')}</table>`;
 
     return `
@@ -6673,7 +6734,7 @@
             <div class="mo-co">
               <div class="mo-name">${esc(s.name)}</div>
               ${s.addr.map(l => `<div>${esc(l)}</div>`).join('')}
-              <div class="mo-ct">${fit([s.phone ? `Contact : ${esc(s.phone)}` : '', s.email ? `E-Mail : ${esc(s.email)}` : ''].join(''))}</div>
+              <div>${fit([s.phone ? `Contact : ${esc(s.phone)}` : '', s.email ? `E-Mail : ${esc(s.email)}` : ''].join(''))}</div>
               ${s.gst ? `<div>GSTIN : ${esc(s.gst)}</div>` : ''}
             </div>
           </div>
@@ -6721,72 +6782,69 @@
       { id: 'bank2Name', label: 'Bank Name (2)' }, { id: 'bank2Acc', label: 'Bank (2) A/c No.' }, { id: 'bank2Ifsc', label: 'Bank (2) Branch & IFS Code' }
     ],
     css: `
-      ${P} { font-family: Arial, Helvetica, sans-serif; font-size: 8.4pt; line-height: 1.15; padding: 15mm 9.5mm 16mm 20.5mm; }
-      ${P} .mo-top { position: relative; height: 6.6mm; }
+      ${P} { font-family: Arial, Helvetica, sans-serif; font-size: 8.4pt; line-height: 1.15; padding: 14mm 9.5mm 16mm 20.5mm; }
+      ${P} .mo-top { position: relative; height: 5mm; }
       ${P} .mo-title { text-align: center; font-weight: bold; font-size: 10.5pt; padding-top: 0.6mm; }
       ${P} .mo-copy { position: absolute; right: 1mm; top: -0.6mm; font-style: italic; font-size: 8.4pt; letter-spacing: 0.4px; }
       ${P} .mo-box { border: 1px solid #000; display: flex; flex-direction: column; }
-      ${P} .mo-hd { display: flex; border-bottom: 1px solid #000; min-height: 24mm; }
+      ${P} .mo-hd { display: flex; border-bottom: 1px solid #000; height: 24mm; }
       ${P} .mo-logo { width: 20mm; flex: none; }
-      ${P} .mo-co { flex: 1; text-align: center; font-weight: bold; font-size: 9.4pt; line-height: 1.04; padding-right: 22mm; padding-bottom: 0.6mm; min-width: 0; }
-      ${P} .mo-co .mo-ct { line-height: 0.86; padding-top: 0.6mm; }
-      ${P} .mo-name { font-size: 18.5pt; line-height: 1.02; padding-top: 0.3mm; }
+      ${P} .mo-co { flex: 1; text-align: center; font-weight: bold; font-size: 9.6pt; line-height: 1.2; padding-right: 15mm; min-width: 0; }
+      ${P} .mo-name { font-size: 18.5pt; line-height: 1.1; padding-top: 0.2mm; }
       ${P} .mo-mid { display: grid; grid-template-columns: 59.5% 40.5%; border-bottom: 1px solid #000; }
       ${P} .mo-parties { padding: 1.2mm 1mm 1mm; letter-spacing: 0.45px; min-width: 0; }
       ${P} .mo-parties .fit { letter-spacing: 0.45px; }
-      ${P} .mo-cons { font-size: 9pt; line-height: 1.17; width: 87%; border-bottom: 1px solid #000; padding-bottom: 0.4mm; }
-      ${P} .mo-buy { font-size: 8.1pt; line-height: 1.07; padding-top: 0.3mm; }
+      ${P} .mo-cons { font-size: 9pt; line-height: 1.22; width: 87%; border-bottom: 1px solid #000; padding-bottom: 0.4mm; }
+      ${P} .mo-buy { font-size: 8.1pt; line-height: 1.12; padding-top: 0.3mm; }
       ${P} .mo-pl { font-size: 7.4pt; letter-spacing: 0.2px; }
       ${P} .mo-pn { font-weight: bold; }
       ${P} .mo-kv td { padding: 0; }
       ${P} .mo-meta { border-left: 1px solid #000; }
-      ${P} .mo-mr { display: grid; grid-template-columns: 51% 49%; height: 7.55mm; border-bottom: 1px solid #000; }
+      ${P} .mo-mr { display: grid; grid-template-columns: 51% 49%; height: 7.75mm; border-bottom: 1px solid #000; }
       ${P} .mo-mr:last-child { border-bottom: 0; height: 8.6mm; }
       ${P} .mo-mc { padding: 0.5mm 0.6mm 0; min-width: 0; font-size: 8.6pt; letter-spacing: 0.2px; }
       ${P} .mo-mc + .mo-mc { border-left: 1px solid #000; }
       ${P} .mo-mv { font-weight: bold; font-size: 9.6pt; padding-top: 0.4mm; }
       ${P} .mo-items { font-size: 8.6pt; }
-      ${P} .mo-items th { font-weight: normal; vertical-align: top; padding: 0.4mm 0.5mm 0; height: 8.6mm; line-height: 1.12; overflow: hidden; }
+      ${P} .mo-items th { font-weight: normal; vertical-align: top; padding: 0.4mm 0.5mm 0; height: 8.4mm; line-height: 1.12; }
       ${P} .mo-items th:first-child { text-align: left; }
-      ${P} .mo-items th small { font-size: 7.2pt; white-space: nowrap; letter-spacing: -0.2px; }
+      ${P} .mo-items th small { font-size: 7.4pt; }
       ${P} .mo-items td { border-top: 0; border-bottom: 0; padding: 0 0.7mm; }
-      ${P} .mo-items tr.it td { padding-top: 0.8mm; padding-bottom: 0; }
-      ${P} .mo-items tr.it td:first-child { padding-top: 3.4mm; text-align: left; }
+      ${P} .mo-items tr.it td { padding-top: 1.6mm; padding-bottom: 0; }
+      ${P} .mo-items tr.it td:first-child { padding-top: 4.6mm; text-align: left; }
       ${P} .mo-nm { font-weight: bold; }
-      ${P} .mo-spec { font-style: italic; font-size: 9.4pt; padding: 1.4mm 0 0 3.8mm; }
-      ${P} .mo-q { font-weight: bold; font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif; font-stretch: condensed; }
+      ${P} .mo-spec { font-style: italic; font-size: 9.4pt; padding: 0.6mm 0 0 3.8mm; }
+      ${P} .mo-q { font-weight: bold; font-family: "Arial Narrow", Arial, sans-serif; font-stretch: condensed; letter-spacing: -0.3px; }
       ${P} .mo-led { text-align: right; font-weight: bold; font-style: italic; font-size: 9.6pt; line-height: 1.12; }
       ${P} .mo-items tr.sm td { font-size: 9.6pt; line-height: 1.12; }
-      ${P} .mo-items tr.mo-l1 td { padding-top: 7.4mm; }
+      ${P} .mo-items tr.mo-l1 td { padding-top: 5.5mm; }
       ${P} .mo-items tr.tot td { border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 0.6mm 0.7mm 0.4mm; }
       ${P} .mo-gt { font-size: 10pt; }
       ${P} .mo-items tr.cont td { border-top: 1px solid #000; }
-      ${P} .mo-eoe { text-align: right; font-style: italic; padding: 0 0.8mm 0; line-height: 1; height: 2.6mm; }
-      ${P} .mo-words { padding: 0 1mm 0; line-height: 1.08; }
+      ${P} .mo-eoe { text-align: right; font-style: italic; padding: 0.2mm 0.8mm 0; line-height: 1; }
+      ${P} .mo-words { padding: 0 1mm 0.3mm; }
       ${P} .mo-sm { font-size: 7.6pt; }
       ${P} .mo-wv { font-weight: bold; font-size: 10.4pt; letter-spacing: 0.2px; }
       ${P} .mo-hsn { border-top: 1px solid #000; }
       ${P} .mo-hsn td { padding: 0 0.6mm; line-height: 1.1; }
       ${P} .mo-hsn td + td { border-left: 1px solid #000; }
-      ${P} .mo-hsn tr.mo-hh td { font-size: 9.2pt; vertical-align: middle; white-space: nowrap; line-height: 1.02; }
-      ${P} .mo-hsn tr.mo-hh td:last-child { font-size: 8.6pt; letter-spacing: -0.2px; }
+      ${P} .mo-hsn tr.mo-hh td { font-size: 9.2pt; vertical-align: middle; }
       ${P} .mo-hsn tr.mo-hh2 td, ${P} .mo-hsn tr.mo-hh td[colspan] { border-bottom: 1px solid #000; }
       ${P} .mo-hsn tr.mo-hh2 td { border-left: 1px solid #000; }
       ${P} .mo-hsn tr.mo-hr td { font-size: 9.2pt; border-top: 1px solid #000; }
       ${P} .mo-hsn tr.mo-ht td { font-size: 9.2pt; border-top: 1px solid #000; font-weight: bold; }
-      ${P} .mo-tw { padding: 4.2mm 1mm 1.4mm; }
+      ${P} .mo-tw { padding: 4mm 1mm 1mm; border-top: 0; }
       ${P} .mo-tw b { font-size: 10.4pt; letter-spacing: 0.2px; }
       ${P} .mo-foot { display: grid; grid-template-columns: 53.3% 46.7%; min-height: 37mm; }
       ${P} .mo-bal { padding: 0 1mm; }
-      ${P} .mo-bal table { width: 63mm; }
       ${P} .mo-bal td { padding: 0.3mm 0; font-weight: bold; font-size: 9pt; letter-spacing: 0.2px; vertical-align: middle; }
-      ${P} .mo-bal td:nth-child(1) { width: 33mm; }
-      ${P} .mo-bal td:nth-child(2) { width: 2.5mm; }
-      ${P} .mo-bal td:nth-child(3) { width: 27.5mm; }
+      ${P} .mo-bal td:nth-child(1) { width: 34%; }
+      ${P} .mo-bal td:nth-child(2) { width: 2.5%; }
+      ${P} .mo-bal td:nth-child(3) { width: 58%; }
       ${P} .mo-bx { border: 1px solid #000; border-right: 0; height: 4mm; text-align: right; padding: 0 0.6mm; font-size: 9.2pt; line-height: 4mm; }
       ${P} .mo-right { display: flex; flex-direction: column; padding-top: 1.2mm; }
-      ${P} .mo-bh { font-size: 9.7pt; padding-left: 0.6mm; letter-spacing: 0.15px; }
-      ${P} .mo-bk td { padding: 0 0.6mm; font-weight: bold; font-size: 7.7pt; line-height: 1.2; white-space: nowrap; overflow: hidden; }
+      ${P} .mo-bh { font-size: 10.4pt; padding-left: 0.6mm; }
+      ${P} .mo-bk td { padding: 0 0.6mm; font-weight: bold; font-size: 8.6pt; line-height: 1.15; }
       ${P} .mo-bk td:last-child { padding-left: 1mm; }
       ${P} .mo-right > table { border-bottom: 1px solid #000; }
       ${P} .mo-b2 { padding-top: 0.8mm; }
@@ -7096,7 +7154,7 @@
       <div class="invoice-page inv-page ${K}">
         <div class="nv-box">
           <div class="nv-hd">
-            <div class="nv-logo">${x.logo ? `<span>${esc(x.logo)}</span>` : ''}</div>
+            <div class="nv-logo">${x.logo ? `<div class="nv-oval"></div><span>${esc(x.logo)}</span>` : ''}</div>
             <div class="nv-co">
               <div class="nv-name">${fit(esc(s.name).replace(/ /g, '&nbsp; '))}</div>
               <div class="nv-ad">${s.addr.map(l => `<div>${fit(esc(l))}</div>`).join('')}</div>
@@ -7118,17 +7176,16 @@
           <div class="nv-2 nv-party">
             ${party('Buyer\'s Billing &amp; Address', b)}
             ${party('Buyer\'s&nbsp; Delivery &amp; Address', c)}
-            ${pg.last ? '<div class="page-spacer nv-psp"></div>' : ''}
           </div>
           <div class="nv-strip"></div>
-          ${gridTable('nv-items', COLS, pg.rows, pg.last, pg.nextPage, '', thead).replace('<table ', '<table data-min-body="28.8" ')}
+          ${gridTable('nv-items', COLS, pg.rows, pg.last, pg.nextPage, '', thead)}
           ${pg.last ? `
           <div class="nv-sum">
             <div class="nv-tob">
               ${d.terms.length ? `<div class="nv-tobh">Terms Of Business :</div>${termsList(d)}` : ''}
             </div>
-            <table class="nv-lad"><colgroup><col style="width:6mm"><col><col style="width:5mm"><col style="width:26mm"></colgroup>
-              ${lad.map(([k, val, cls]) => `<tr class="${cls || ''}"><td></td><td>${k}</td><td class="c">:</td><td>${fit(val)}</td></tr>`).join('')}
+            <table class="nv-lad"><colgroup><col style="width:9mm"><col><col style="width:7mm"><col style="width:25mm"></colgroup>
+              ${lad.map(([k, val, cls]) => `<tr class="${cls || ''}"><td></td><td>${k}</td><td class="c">:</td><td>${val}</td></tr>`).join('')}
             </table>
           </div>
           <div class="nv-words">${esc(words(d.grandTotal))}</div>
@@ -7151,7 +7208,7 @@
               ${bankRow('A/c Type&nbsp;&nbsp;&nbsp;', esc(x.acType))}
               ${bankRow('Branch', esc(d.bank.branch))}
             </div>
-            <div class="nv-sign">${fit(`FOR ${esc(s.name.toUpperCase())}`)}<div class="nv-as">AUTHORISED SIGNATORY</div></div>
+            <div class="nv-sign"><div>FOR ${esc(s.name.toUpperCase())}</div><div class="nv-as">AUTHORISED SIGNATORY</div></div>
           </div>` : ''}
         </div>
       </div>`;
@@ -7165,41 +7222,40 @@
       { id: 'ifscNote', label: 'IFSC note line', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size: 9.8pt; line-height: 1.22;
-        padding: 10.5mm 9mm 24.5mm 15mm; }
+      #print-root .${K} { font-family: Calibri, Arial, sans-serif; font-size: 9.8pt; line-height: 1.22;
+        padding: 10.5mm 9mm 24mm 15mm; }
       #print-root .${K} .nv-box { border: 1px solid #000; border-bottom: 3px double #000; display: flex; flex-direction: column; }
       #print-root .${K} .nv-hd { display: flex; height: 30.5mm; border-bottom: 1px solid #000; }
       #print-root .${K} .nv-logo { width: 51mm; flex: none; position: relative; }
-      #print-root .${K} .nv-logo span { position: absolute; left: 17.5mm; top: 15.6mm; font-family: "Arial Black", "Arial", sans-serif;
+      #print-root .${K} .nv-oval { position: absolute; left: 6mm; top: 8.5mm; width: 45mm; height: 15mm; border-radius: 50%;
+        border: 2.4mm solid #000; border-right-color: transparent; border-bottom-color: transparent; transform: rotate(-4deg); }
+      #print-root .${K} .nv-logo span { position: absolute; left: 13mm; top: 15.5mm; font-family: "Arial Black", "Arial", sans-serif;
         font-weight: 900; font-size: 15pt; letter-spacing: 0.3px; }
       #print-root .${K} .nv-co { flex: 1; min-width: 0; font-weight: bold; padding-right: 7mm; }
       #print-root .${K} .nv-name { font-size: 21pt; line-height: 1.08; text-align: right; }
       #print-root .${K} .nv-name .fit { text-decoration: underline; text-decoration-thickness: 1.2px; text-underline-offset: 2px; }
-      #print-root .${K} .nv-ad { font-family: Verdana, Geneva, sans-serif; font-size: 9.4pt; line-height: 5.5mm; margin: 2.4mm 0 0 0; }
+      #print-root .${K} .nv-ad { font-family: Verdana, Geneva, sans-serif; font-size: 8.7pt; line-height: 5.6mm; margin: 2.6mm 0 0 0; }
       #print-root .${K} .nv-ct { font-size: 9.2pt; line-height: 4.6mm; }
       #print-root .${K} .nv-title { text-align: center; font-weight: bold; font-size: 13.5pt; line-height: 5.8mm; border-bottom: 1px solid #000; }
       #print-root .${K} .nv-title span { text-decoration: underline; }
       #print-root .${K} .nv-2 { display: grid; grid-template-columns: 50.2% 49.8%; border-bottom: 1px solid #000; }
       #print-root .${K} .nv-2 > div + div, #print-root .${K} .nv-2 > table + table { border-left: 1px solid #000; }
-      #print-root .${K} .nv-meta { height: 14.3mm; box-sizing: border-box; }
-      #print-root .${K} .nv-meta table { margin-top: 0.8mm; }
-      #print-root .${K} .nv-meta td { padding: 0 1mm 0 0; line-height: 5.6mm; font-size: 10.2pt; }
+      #print-root .${K} .nv-meta { height: 15.2mm; }
+      #print-root .${K} .nv-meta table { margin-top: 1.2mm; }
+      #print-root .${K} .nv-meta td { padding: 0.4mm 1mm 0.4mm 0; font-size: 10.2pt; }
       #print-root .${K} .nv-meta td:first-child { padding-left: 3.5mm; }
       #print-root .${K} .nv-meta td.k { font-weight: bold; }
       #print-root .${K} .nv-meta table + table td:first-child { padding-left: 1.5mm; }
-      #print-root .${K} .nv-party { min-height: 36mm; box-sizing: border-box; grid-template-rows: auto 1fr;
-        background: linear-gradient(#000, #000) no-repeat 50.2% 0 / 1px 100%; }
-      #print-root .${K} .nv-party > div + div { border-left: 0; }
-      #print-root .${K} .nv-psp { grid-column: 1 / -1; }
+      #print-root .${K} .nv-party { height: 64mm; }
       #print-root .${K} .nv-pt { padding: 1mm 0.2mm 0 0.2mm; font-family: Arial, Helvetica, sans-serif; font-size: 10.6pt; line-height: 1.32; }
-      #print-root .${K} .nv-ph { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-weight: bold; font-size: 10.2pt;
+      #print-root .${K} .nv-ph { font-family: Calibri, Arial, sans-serif; font-weight: bold; font-size: 10.2pt;
         text-decoration: underline; padding-left: 4.5mm; margin-bottom: 0.4mm; }
       #print-root .${K} .nv-pn { font-weight: bold; font-size: 12pt; }
       #print-root .${K} .nv-ms { font-family: "Times New Roman", Times, serif; font-weight: normal; font-size: 11.5pt; }
       #print-root .${K} .nv-pa { text-align: justify; }
       #print-root .${K} .nv-pg { margin-top: 5mm; padding-left: 3mm; font-size: 11pt; }
       #print-root .${K} .nv-pg span { font-family: "Times New Roman", Times, serif; font-weight: bold; letter-spacing: 1.6px; margin-right: 3mm; }
-      #print-root .${K} .nv-strip { height: 5.4mm; box-sizing: border-box; border-bottom: 1px solid #000; }
+      #print-root .${K} .nv-strip { height: 5.4mm; border-bottom: 1px solid #000; }
       #print-root .${K} .nv-items th { font-weight: bold; font-size: 10.6pt; vertical-align: top; padding: 1.4mm 1mm 0.6mm; height: 10.4mm; box-sizing: border-box; }
       #print-root .${K} .nv-items th.h0, #print-root .${K} .nv-items th.h1 { vertical-align: middle; text-align: left; padding-left: 2.6mm; }
       #print-root .${K} .nv-items th.h0 { padding-left: 1mm; }
@@ -7212,32 +7268,31 @@
       #print-root .${K} .nv-items .nv-sp { font-family: Arial, Helvetica, sans-serif; font-weight: normal; font-size: 11pt; line-height: 1.3; }
       #print-root .${K} .nv-items tr.it td:last-child { font-weight: normal; }
       #print-root .${K} .nv-items tr.filler td:last-child, #print-root .${K} .nv-items tr.cont td { border-bottom: 1px solid #000; }
-      #print-root .${K} .nv-sum { display: grid; grid-template-columns: 1fr 79mm; min-height: 26.2mm; box-sizing: border-box; border-bottom: 1px solid #000; }
-      #print-root .${K} .nv-tob { font-family: "Times New Roman", Times, serif; font-size: 7.6pt; line-height: 1.22; padding: 1.4mm 1mm 1mm 0.6mm; }
+      #print-root .${K} .nv-sum { display: grid; grid-template-columns: 1fr 79mm; min-height: 26.4mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .nv-tob { font-family: "Times New Roman", Times, serif; font-size: 8.2pt; line-height: 1.22; padding: 1.4mm 1mm 1mm 0.6mm; }
       #print-root .${K} .nv-tobh { font-weight: bold; font-size: 9.4pt; text-decoration: underline; }
       #print-root .${K} .nv-tob > div:not(.nv-tobh) { padding-left: 1.5mm; }
       #print-root .${K} .nv-lad { align-self: start; margin-top: 0.4mm; }
-      #print-root .${K} .nv-lad td { font-weight: bold; font-size: 11pt; line-height: 4.05mm; padding: 0 0.5mm; white-space: nowrap; }
+      #print-root .${K} .nv-lad td { font-weight: bold; font-size: 12.2pt; line-height: 1.05; padding: 0 0.5mm; white-space: nowrap; }
       #print-root .${K} .nv-lad tr.hr td { padding-bottom: 0.6mm; border-bottom: 1px solid #000; }
       #print-root .${K} .nv-lad tr.hr td:first-child { border-bottom: 0; }
       #print-root .${K} .nv-lad tr.hr + tr td { padding-top: 0.6mm; }
-      #print-root .${K} .nv-lad tr.gt td:last-child { font-size: 13.4pt; }
-      #print-root .${K} .nv-lad tr.gt td { padding-top: 0.3mm; line-height: 5mm; }
-      #print-root .${K} .nv-words { font-weight: bold; font-size: 12.4pt; letter-spacing: 0.5px; word-spacing: 2px; line-height: 6.2mm; min-height: 6.2mm; box-sizing: border-box; padding: 0 4mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .nv-tch { text-align: center; font-weight: bold; font-size: 11.2pt; line-height: 5.6mm; height: 5.9mm; box-sizing: border-box; border-bottom: 1px solid #000; }
+      #print-root .${K} .nv-lad tr.gt td:last-child { font-size: 14pt; }
+      #print-root .${K} .nv-words { font-weight: bold; font-size: 12.4pt; letter-spacing: 0.5px; word-spacing: 2px; padding: 0.6mm 4mm 0.4mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .nv-tch { text-align: center; font-weight: bold; font-size: 11.2pt; line-height: 5.6mm; border-bottom: 1px solid #000; }
       #print-root .${K} .nv-tch span { text-decoration: underline; }
-      #print-root .${K} .nv-tc { height: 16.5mm; box-sizing: border-box; border-bottom: 1px solid #000; padding: 0.6mm 0 0 3.6mm; }
+      #print-root .${K} .nv-tc { min-height: 16.5mm; border-bottom: 1px solid #000; padding: 0.6mm 0 0 3.6mm; }
       #print-root .${K} .nv-tc td { padding: 0.25mm 0; font-size: 10pt; }
       #print-root .${K} .nv-tc td.k { font-weight: bold; }
-      #print-root .${K} .nv-foot { display: grid; grid-template-columns: 56% 44%; min-height: 44.6mm; }
-      #print-root .${K} .nv-bank { font-weight: bold; font-size: 10pt; line-height: 4.2mm; padding: 1mm 0 2mm 3.6mm; }
-      #print-root .${K} .nv-bh { font-size: 13.2pt; text-decoration: underline; line-height: 6mm; }
-      #print-root .${K} .nv-bank > div:not(.nv-bh) { padding-left: 0.8mm; white-space: nowrap; }
+      #print-root .${K} .nv-foot { display: grid; grid-template-columns: 1fr 1fr; min-height: 44mm; }
+      #print-root .${K} .nv-bank { font-weight: bold; font-size: 10.6pt; line-height: 1.35; padding: 1.2mm 0 2mm 3.6mm; }
+      #print-root .${K} .nv-bh { font-size: 13.2pt; text-decoration: underline; line-height: 1.3; }
+      #print-root .${K} .nv-bank > div:not(.nv-bh) { padding-left: 0.8mm; }
       #print-root .${K} .nv-tm { font-family: "Times New Roman", Times, serif; font-size: 11pt; }
       #print-root .${K} .nv-note { padding-left: 2mm !important; font-size: 11.6pt; }
       #print-root .${K} .nv-note sup { font-size: 0.6em; }
-      #print-root .${K} .nv-sign { font-weight: bold; font-size: 10.2pt; padding: 9.5mm 4.5mm 0 0; text-align: right; white-space: nowrap; }
-      #print-root .${K} .nv-as { margin-top: 11.5mm; padding-right: 16mm; }
+      #print-root .${K} .nv-sign { font-weight: bold; font-size: 10.8pt; padding: 17mm 4.5mm 0 6mm; text-align: right; }
+      #print-root .${K} .nv-as { margin-top: 10mm; padding-right: 22mm; }
     `,
     preset: {
       label: 'Nova Engineers — NEI/2026-27/014',
@@ -7283,7 +7338,7 @@
   const cols = d => {
     const units = [...new Set(d.items.map(it => it.unit).filter(Boolean))];
     return [
-      { w: 3.5, h: 'Sr<br>No' }, { w: 8.5, h: 'Model<br>Code', wrap: true }, { w: null, h: 'Description of Goods', wrap: true },
+      { w: 3.0, h: 'Sr<br>No' }, { w: 9.5, h: 'Model<br>Code', wrap: true }, { w: null, h: 'Description of Goods', wrap: true },
       { w: 6.1, h: 'HSN<br>Code' }, { w: 5.1, h: 'GST<br>%', a: 'r' }, { w: 7.8, h: 'Qty', a: 'r' }, { w: 3.5, h: 'Unit' },
       { w: 8.5, h: `Rate&nbsp; Per<br>${esc(units.length === 1 ? units[0] : 'Unit')}`, a: 'r' }, { w: 12.1, h: 'Total', a: 'r' },
       { w: 8.3, h: 'Discount', a: 'r' }, { w: 11.5, h: 'Taxable<br>Value', a: 'r' }
@@ -7413,80 +7468,81 @@
     css: `
       #print-root .${K} { font-family: Arial, Helvetica, sans-serif; font-size: 8.6pt; line-height: 1.2; padding: 8.5mm 8.5mm 4mm 8.5mm; }
       #print-root .${K} .pr-box { border: 1px solid #000; display: flex; flex-direction: column; flex: 1; }
-      #print-root .${K} .pr-title { text-align: center; font-weight: bold; font-size: 10.5pt; line-height: 1; padding: 0.6mm 0 0.5mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .pr-title { text-align: center; font-weight: bold; font-size: 9.9pt; line-height: 10.5pt; padding: 0.6mm 0 0.5mm; border-bottom: 1px solid #000; }
       #print-root .${K} .pr-black { height: 6mm; background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       #print-root .${K} .pr-hd { display: flex; align-items: center; height: 20.3mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .pr-logo { width: 64mm; padding-left: 22mm; font-family: "Montserrat", "Century Gothic", "Avenir Next", "Futura", Arial, sans-serif; }
-      #print-root .${K} .pr-lm { font-size: 27pt; font-weight: bold; line-height: 0.95; letter-spacing: 0.5px; }
+      #print-root .${K} .pr-logo { width: 64mm; padding-left: 22mm; font-family: Montserrat, sans-serif; }
+      #print-root .${K} .pr-lm { font-size: 26pt; font-weight: bold; line-height: 25.6pt; letter-spacing: 0.5px; }
       #print-root .${K} .pr-lm sup { font-size: 6pt; vertical-align: 15pt; font-weight: normal; }
-      #print-root .${K} .pr-ls { font-size: 12.5pt; letter-spacing: 2.4px; line-height: 1.15; }
-      #print-root .${K} .pr-co { flex: 1; padding-left: 2mm; font-family: "Montserrat", "Century Gothic", "Avenir Next", "Futura", Arial, sans-serif; }
-      #print-root .${K} .pr-name { font-size: 14.6pt; font-weight: bold; letter-spacing: 1px; line-height: 1.15; }
-      #print-root .${K} .pr-cin { font-size: 9.5pt; letter-spacing: 0.6px; }
-      #print-root .${K} .pr-tag { font-size: 10.2pt; font-weight: bold; letter-spacing: 0.1px; white-space: nowrap; }
-      #print-root .${K} .pr-gst { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; font-size: 11.3pt; padding: 0.8mm 0.3mm 0.2mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .pr-copy { text-align: right; font-size: 7.6pt; }
+      #print-root .${K} .pr-ls { font-size: 12pt; letter-spacing: 2.3px; line-height: 14.4pt; }
+      #print-root .${K} .pr-co { flex: 1; padding-left: 2mm; font-family: Montserrat, sans-serif; }
+      #print-root .${K} .pr-name { font-size: 12.4pt; font-weight: bold; letter-spacing: 1.2px; line-height: 16pt; }
+      #print-root .${K} .pr-cin { font-size: 8.6pt; letter-spacing: 0.6px; line-height: 13.4pt; }
+      #print-root .${K} .pr-tag { font-family: Comfortaa, sans-serif; font-size: 10.2pt; line-height: 14pt; font-weight: bold; white-space: nowrap; }
+      #print-root .${K} .pr-gst { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; font-size: 10pt; line-height: 13.5pt; padding: 0.8mm 0.3mm 0.2mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .pr-copy { text-align: right; font-size: 7.9pt; }
       #print-root .${K} .pr-mid { display: grid; grid-template-columns: 48.4% 22.3% 29.3%; grid-template-rows: auto auto 1fr; border-bottom: 1px solid #000; }
       #print-root .${K} .pr-mid td, #print-root .${K} .pr-2 td { padding: 0 0.6mm; }
-      #print-root .${K} .pr-addr { grid-column: 1 / 3; grid-row: 1; font-size: 7.4pt; line-height: 1.25; min-height: 17.6mm; padding-top: 0.6mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .pr-addr td:first-child { font-size: 7.9pt; white-space: nowrap; }
-      #print-root .${K} .pr-irn { grid-column: 1 / 3; grid-row: 2; font-size: 8.5pt; padding: 0.6mm 0.6mm; border-bottom: 1px solid #000; white-space: nowrap; overflow: hidden; }
-      #print-root .${K} .pr-inv { grid-column: 1; grid-row: 3; font-size: 10.6pt; line-height: 1.3; padding-top: 0.6mm; }
-      #print-root .${K} .pr-inv b { font-size: 11pt; }
-      #print-root .${K} .pr-dt { grid-column: 2; grid-row: 3; border-left: 1px solid #000; font-size: 10.6pt; line-height: 1.3; padding-top: 0.4mm; min-height: 27mm; }
+      #print-root .${K} .pr-addr { grid-column: 1 / 3; grid-row: 1; font-size: 7pt; line-height: 9.25pt; min-height: 17.6mm; padding-top: 0.6mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .pr-addr td:first-child { font-size: 7.75pt; white-space: nowrap; }
+      #print-root .${K} .pr-irn { grid-column: 1 / 3; grid-row: 2; font-size: 7.9pt; line-height: 10.2pt; padding: 0.6mm 0.6mm; border-bottom: 1px solid #000; white-space: nowrap; overflow: hidden; }
+      #print-root .${K} .pr-inv { grid-column: 1; grid-row: 3; font-size: 8.9pt; line-height: 13.8pt; padding-top: 0.6mm; }
+      #print-root .${K} .pr-inv tr:first-child td, #print-root .${K} .pr-dt tr:first-child td { font-size: 9.7pt; }
+      #print-root .${K} .pr-inv b { font-size: 9.8pt; }
+      #print-root .${K} .pr-dt { grid-column: 2; grid-row: 3; border-left: 1px solid #000; font-size: 8.9pt; line-height: 13.8pt; padding-top: 0.4mm; min-height: 27mm; }
       #print-root .${K} .pr-qr { grid-column: 3; grid-row: 1 / 4; border-left: 1px solid #000; display: flex; align-items: center; justify-content: center; }
       #print-root .${K} .pr-qr .qr { margin: 0; }
       #print-root .${K} .pr-2 { display: grid; grid-template-columns: 48.4% 51.6%; border-bottom: 1px solid #000; }
       #print-root .${K} .pr-2 > div + div { border-left: 1px solid #000; }
-      #print-root .${K} .pr-tr { font-size: 10.6pt; line-height: 1.3; min-height: 10.6mm; padding-top: 0.6mm; }
-      #print-root .${K} .pr-parties { font-size: 8.6pt; min-height: 25.6mm; }
+      #print-root .${K} .pr-tr { font-size: 8.9pt; line-height: 13.8pt; min-height: 10.6mm; padding-top: 0.6mm; }
+      #print-root .${K} .pr-parties { font-size: 8pt; line-height: 10.3pt; min-height: 25.6mm; }
       #print-root .${K} .pr-pt td { padding: 0.2mm 0.6mm; }
-      #print-root .${K} .pr-ptl { font-size: 10.6pt; }
-      #print-root .${K} .pr-pt tr:first-child td { font-size: 10.6pt; padding-top: 0.6mm; white-space: nowrap; }
+      #print-root .${K} .pr-ptl { font-size: 10pt; }
+      #print-root .${K} .pr-pt tr:first-child td { font-size: 10pt; line-height: 12.7pt; padding-top: 0.6mm; white-space: nowrap; }
       #print-root .${K} .pr-pt tr:first-child td.b { font-size: 9.6pt; padding-top: 1mm; }
-      #print-root .${K} .pr-pt .pr-pa { padding-top: 0.6mm; padding-bottom: 0.6mm; line-height: 1.15; }
-      #print-root .${K} .pr-items { font-size: 8.3pt; }
-      #print-root .${K} .pr-items th { font-size: 9.8pt; line-height: 1.1; padding: 0.4mm 0; white-space: nowrap; }
+      #print-root .${K} .pr-pt .pr-pa { padding-top: 0.6mm; padding-bottom: 0.6mm; line-height: 9.9pt; }
+      #print-root .${K} .pr-items { font-size: 7.9pt; }
+      #print-root .${K} .pr-items th { font-size: 9pt; line-height: 10.8pt; padding: 0.4mm 0; white-space: nowrap; }
       #print-root .${K} .pr-items tr.pr-nh { display: none; }
       #print-root .${K} .pr-items tr.cont { display: none; }
-      #print-root .${K} .pr-items tr.it td { padding: 1.2mm 0.5mm 0.3mm; line-height: 1.12; }
+      #print-root .${K} .pr-items tr.it td { padding: 1.2mm 0.5mm 0.3mm; line-height: 9.3pt; }
       #print-root .${K} .pr-items tr.it td:nth-child(2) { padding-right: 0; }
       #print-root .${K} .pr-items tr.it td:nth-child(4) { font-size: 7.6pt; padding-left: 0.3mm; padding-right: 0.3mm; }
-      #print-root .${K} .pr-items tr.it td:nth-child(n+5) { font-size: 8.6pt; }
-      #print-root .${K} .pr-items tr.tot td { font-size: 8.8pt; padding: 0.8mm 0.6mm 0.4mm; border-top: 1px solid #000; }
-      #print-root .${K} .pr-items td.pr-tl { text-align: center; font-weight: bold; font-size: 11pt !important; padding: 0.3mm !important; }
-      #print-root .${K} .pr-items tr.lad td { font-size: 8.8pt; padding: 0.5mm 0.6mm 0.2mm; }
+      #print-root .${K} .pr-items tr.it td:nth-child(n+5) { font-size: 7.95pt; }
+      #print-root .${K} .pr-items tr.tot td { font-size: 7.9pt; line-height: 10.6pt; padding: 0.8mm 0.6mm 0.4mm; border-top: 1px solid #000; }
+      #print-root .${K} .pr-items td.pr-tl { text-align: center; font-weight: bold; font-size: 10.2pt !important; padding: 0.3mm !important; }
+      #print-root .${K} .pr-items tr.lad td { font-size: 8pt; line-height: 10.6pt; padding: 0.5mm 0.6mm 0.2mm; }
       #print-root .${K} .pr-items tr.lad td.pr-lb { border-bottom: 0; }
-      #print-root .${K} .pr-items tr.gt td { font-size: 11pt; padding: 0.4mm 0.6mm; border-top: 1.4px solid #000; border-bottom: 1.4px solid #000; }
+      #print-root .${K} .pr-items tr.gt td { font-size: 9pt; line-height: 13.2pt; padding: 0.4mm 0.6mm; border-top: 1.4px solid #000; border-bottom: 1.4px solid #000; }
       #print-root .${K} .pr-items td.pr-gw { padding: 0 0 0 1mm !important; }
       #print-root .${K} .pr-gw > div { display: flex; justify-content: space-between; align-items: stretch; }
-      #print-root .${K} .pr-gw span { padding: 0.4mm 0; font-size: 10.4pt; }
-      #print-root .${K} .pr-gw span b { font-size: 11pt; }
+      #print-root .${K} .pr-gw span { padding: 0.4mm 0; font-size: 9.25pt; }
+      #print-root .${K} .pr-gw span b { font-size: 10pt; }
       #print-root .${K} .pr-gtl { border-left: 1.4px solid #000; width: 29mm; padding: 0.6mm 0.4mm 0.2mm; }
       #print-root .${K} .pr-hsnw { margin: 0.6mm 0.8mm 0 0.8mm; border: 1px solid #000; border-left-width: 2px; border-top-width: 1.4px; }
-      #print-root .${K} .pr-hsnt { font-size: 11pt; padding: 0.2mm 0.6mm; }
+      #print-root .${K} .pr-hsnt { font-size: 10.3pt; line-height: 13.2pt; padding: 0.2mm 0.6mm; }
       #print-root .${K} .pr-hsn { font-size: 9.2pt; }
       #print-root .${K} .pr-hsn th, #print-root .${K} .pr-hsn td { border: 1px solid #000; padding: 0.3mm 0.6mm; font-weight: normal; white-space: nowrap; overflow: hidden; }
       #print-root .${K} .pr-hsn tr:first-child th { border-top: 1.4px solid #000; }
-      #print-root .${K} .pr-hsn td { font-size: 8.6pt; padding-top: 1mm; }
+      #print-root .${K} .pr-hsn td { font-size: 8pt; line-height: 11pt; padding-top: 1mm; }
       #print-root .${K} .pr-hsn tr > *:first-child { border-left: 0; }
       #print-root .${K} .pr-hsn tr > *:last-child { border-right: 0; }
       #print-root .${K} .pr-hsn tr:last-child td { border-bottom: 0; }
-      #print-root .${K} .pr-rem { font-size: 8.6pt; padding: 0.4mm 0.6mm 0.6mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .pr-acc { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 10.4pt; padding: 0.6mm 0.8mm 0.3mm; border-top: 1px solid #000; margin-top: 0.8mm; border-bottom: 1px solid #000; }
-      #print-root .${K} .pr-bank { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 9.6pt; line-height: 1.2; padding: 1.4mm 1.2mm 1.8mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .pr-rem { font-size: 7.95pt; line-height: 10.3pt; padding: 0.4mm 0.6mm 0.6mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .pr-acc { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 8pt; line-height: 12.5pt; padding: 0.6mm 0.8mm 0.3mm; border-top: 1px solid #000; margin-top: 0.8mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .pr-bank { font-family: "Times New Roman", Times, serif; font-weight: bold; font-size: 8pt; line-height: 11.5pt; padding: 1.4mm 1.2mm 1.8mm; border-bottom: 1px solid #000; }
       #print-root .${K} .pr-bank > div { margin-bottom: 1.5mm; }
       #print-root .${K} .pr-bank > div:last-child { margin-bottom: 0; }
       #print-root .${K} .pr-foot { display: grid; grid-template-columns: 60.8% 39.2%; border-top: 1px solid #000; min-height: 24.5mm; margin-top: auto; }
-      #print-root .${K} .pr-terms { font-size: 6.5pt; line-height: 1.2; padding: 0.8mm 0.8mm; border-right: 1px solid #000; }
-      #print-root .${K} .pr-terms > .b { font-size: 6.9pt; }
+      #print-root .${K} .pr-terms { font-size: 5.85pt; line-height: 7.8pt; padding: 0.8mm 0.8mm; border-right: 1px solid #000; }
+      #print-root .${K} .pr-terms > .b { font-size: 6.2pt; }
       #print-root .${K} .pr-cert { margin-top: 2.2mm; }
-      #print-root .${K} .pr-sign { display: flex; flex-direction: column; justify-content: space-between; padding: 1.2mm 2.4mm 1.2mm 2.4mm; font-size: 8.8pt; }
-      #print-root .${K} .pr-sign > .b { white-space: nowrap; font-size: 8.8pt; }
-      #print-root .${K} .pr-for { font-weight: bold; margin-right: 5.5mm; font-size: 9.6pt; }
+      #print-root .${K} .pr-sign { display: flex; flex-direction: column; justify-content: space-between; padding: 1.2mm 2.4mm 1.2mm 2.4mm; font-size: 7.7pt; line-height: 10.6pt; }
+      #print-root .${K} .pr-sign > .b { white-space: nowrap; font-size: 8.5pt; }
+      #print-root .${K} .pr-for { font-weight: bold; margin-right: 5.5mm; font-size: 8.5pt; }
       #print-root .${K} .pr-prep > div:first-child { margin-bottom: 1.2mm; }
       #print-root .${K} .pr-by { display: flex; justify-content: space-between; padding-right: 6mm; }
-      #print-root .${K} .pr-note { text-align: center; font-weight: bold; font-size: 11.5pt; padding-top: 1.2mm; min-height: 6mm; }
+      #print-root .${K} .pr-note { text-align: center; font-weight: bold; font-size: 9.85pt; padding-top: 1.2mm; min-height: 6mm; }
     `,
     preset: {
       label: 'Prima Innovation — SL0426PIMP0060',
@@ -7539,37 +7595,41 @@
   function cols(d) {
     const m = mode(d), tw = { gst: [3.3, 7.95, 2.9, 6.95], igst: [5.4, 11.7], both: [2.9, 6.3, 2.9, 6.3, 2.9, 6.3] }[m];
     const c = [
-      { w: 4.35, h: 'S.<br>No.', a: 'l' }, { w: null, h: 'Product Description', a: 'c', wrap: true }, { w: 9.3, h: 'HSN / SAC code', a: 'c' },
+      { w: 4.35, h: 'S.<br>No.', a: 'l' }, { w: null, h: 'Product Description', a: 'c' }, { w: 9.3, h: 'HSN / SAC code', a: 'c' },
       { w: 4.35, h: 'Qty', a: 'c' }, { w: 8.8, h: 'Rate', a: 'c' }, { w: 8.2, h: 'Amount', a: 'c' }, { w: 6.85, h: 'Taxable<br>Value', a: 'c' }
     ];
     TAX[m].forEach((t, i) => c.push({ w: tw[2 * i], a: 'c', tax: t }, { w: tw[2 * i + 1], a: 'c', tax: t }));
     c.push({ w: 11.05, h: 'Total', a: 'c' });
-    return c;
+    return c.map(x => ({ ...x, wrap: true }));   // cells carry their own line stacks
   }
+  // one sheet line per entry; every line is a fixed-height ruled row
+  const stack = (arr, cls = '') => arr.map(v => `<div class="rc-ln ${cls}">${fit(v)}</div>`).join('');
 
-  // Every sheet line is its own ruled row: item line, then one row per spec line (unit in the Qty column of
-  // the 2nd line). The sheet's formulas print 0 in the amount columns of rows without a value.
   function rows(d) {
     const c = cols(d), m = mode(d);
-    const subRow = (desc, unit) => rowOf(c, 'it rc-sub', c.map((col, j) =>
-      j === 1 ? `<div class="rc-desc">${esc(desc)}</div>` : j === 3 ? esc(unit) :
-        (j === 5 || j === 6 || j === c.length - 1 || (col.tax && j % 2 === 0)) ? '0' : ''));
-    const items = [];
-    d.items.forEach((it, i) => {
+    let used = 0;
+    const items = d.items.map((it, i) => {
       const spec = specOf(it.spec);
+      const k = Math.max(1 + spec.length, it.unit ? 2 : 1);
+      used += k;
+      const col = (first, rest = '') => [first, ...Array(k - 1).fill(rest)];
+      const qty = [fmtQtyPlain(it.qty), esc(it.unit), ...Array(k - 2).fill('')].slice(0, k);
       const tax = TAX[m].flatMap(t => {
         const on = t === 'IGST' ? it.isIgst : !it.isIgst;
         const amt = t === 'IGST' ? it.igst : t === 'CGST' ? it.cgst : it.sgst;
-        return on ? [fmtRate(t === 'IGST' ? it.tax.rate : it.tax.rate / 2), n0(amt)] : ['', ''];
+        return [on ? fmtRate(t === 'IGST' ? it.tax.rate : it.tax.rate / 2) : '', on ? n0(amt) : (it.isIgst ? '' : '')]
+          .map((v, j) => stack(col(v, j ? '0' : '')));
       });
-      items.push(rowOf(c, 'it', [i + 1, `<div class="rc-desc">${esc(it.name)}</div>`, esc(it.hsn), fmtQtyPlain(it.qty), inr(it.rate),
-        inr(it.gross), n0(it.taxable), ...tax, n0(it.taxable + it.lineTax)]));
-      const k = Math.max(spec.length, it.unit ? 1 : 0);
-      for (let j = 0; j < k; j++) items.push(subRow(spec[j] || '', j === 0 ? it.unit : ''));
+      return rowOf(c, 'it', [
+        stack(col(i + 1)), stack([esc(it.name), ...spec.map(esc), ...Array(k - 1 - spec.length).fill('')], 'rc-desc'),
+        stack(col(esc(it.hsn))), stack(qty), stack(col(inr(it.rate))), stack(col(inr(it.gross), '0')),
+        stack(col(n0(it.taxable), '0')), ...tax, stack(col(n0(it.taxable + it.lineTax), '0'))
+      ]);
     });
     // the sheet has 13 item lines; the unused ones print the formulas' 0
-    const blanks = Math.max(0, (parseInt(d.x.minRows, 10) || 13) - items.length);
-    const summary = Array.from({ length: blanks }, () => subRow('', '').replace('class="it rc-sub"', 'class="sm rc-sub"'));
+    const blanks = Math.max(0, (parseInt(d.x.minRows, 10) || 13) - used);
+    const zero = c.map((col, j) => (j === 5 || j === 6 || j === c.length - 1 || (col.tax && j % 2 === 0) ? stack(['0']) : stack([''])));
+    const summary = Array.from({ length: blanks }, () => rowOf(c, 'sm rc-blank', zero));
     return { items, summary };
   }
 
@@ -7589,7 +7649,7 @@
         gst: `<td colspan="${span}" class="${side ? 'R' : ''}">${fit(`GSTIN: ${esc(p.gst)}`)}</td>`,
         state: side
           ? `<td colspan="${span - 2}">${fit(`State: ${up(p.state)}`)}</td><td>Code</td><td class="r R">${ps ? ps.code : ''}</td>`
-          : `<td colspan="${span - 1}">${fit(`State: ${up(p.state)}`)}</td><td class="c">${fit(ps ? `Code-${ps.code}` : 'Code')}</td>`
+          : `<td colspan="${span - 1}">${fit(`State: ${up(p.state)}`)}</td><td class="c">${ps ? `Code-${ps.code}` : 'Code'}</td>`
       };
     };
     const bp = party(b, 0), cp = party(cn, 1);
@@ -7605,6 +7665,7 @@
     const lad = [['Total Amount before Tax', d.taxable], ['Add: CGST', d.cgst], ['Add: SGST', d.sgst], ['Add: IGST', d.igst]];
     if (d.freightAfterTax) lad.push([`Add: ${esc(d.freightLabel)}`, d.freightAfterTax]);
     lad.push(['Total Tax Amount', d.totalTax]);
+    if (hasRO(d)) lad.push(['Round Off', d.roundOff]);
     lad.push(['Total Amount after Tax:', d.grandTotal]);
     const ladRow = ([k, val]) => `<td colspan="${NT}" class="rc-lk">${k}</td><td class="R rc-lv">${fit(n0(val))}</td>`;
     const words = `${numberToWords(Math.round(d.grandTotal)).toUpperCase()} ONLY.`;
@@ -7620,9 +7681,9 @@
             <div class="rc-cert"><span>${esc(x.certify)}</span></div>
             <div class="rc-for">${fit(esc(x.forName || s.name))}</div>
             <div class="rc-auth">Authorised signatory</div></td></tr>
-        <tr class="rc-b3"><td colspan="5" class="rc-sm">${fit(bank.branch ? `Branch: ${esc(bank.branch)}` : '')}</td></tr>
+        <tr class="rc-b3"><td colspan="5" class="rc-sm rc-br">${fit(bank.branch ? `Branch: ${esc(bank.branch)}` : '')}</td></tr>
         <tr class="rc-b4"><td colspan="5" rowspan="2" class="rc-terms B">
-          ${terms.length ? `<div>${fit(`Terms &amp; conditions :-&nbsp; ${esc(terms[0])}`)}</div>${terms.slice(1).map(t => `<div class="c">${fit(esc(t))}</div>`).join('')}` : ''}</td></tr>
+          ${terms.length ? `<div>Terms &amp; conditions :-&nbsp; ${esc(terms[0])}</div>${terms.slice(1).map(t => `<div class="c">${esc(t)}</div>`).join('')}` : ''}</td></tr>
         <tr class="rc-b5"><td colspan="2" class="c B rc-cs">Common Seal</td></tr>
       </table>`;
 
@@ -7639,8 +7700,8 @@
           <table class="rc-grid">${colg(hcols)}
             ${gap}
             <tr class="rc-band"><td colspan="${H}" class="R">${esc(d.title)}</td></tr>
-            <tr><td colspan="5" class="rc-nr">${fit(`Invoice No: ${esc(d.invNo)}`)}</td><td colspan="${H - 5}" class="R rc-po">${fit(`Purchase Order No.&nbsp; ${esc(mt.buyersOrder)}`)}</td></tr>
-            <tr><td colspan="5" class="rc-nr">${fit(`Invoice date: ${esc(fmtDMY(d.iso.date, '.'))}`)}</td><td colspan="${H - 5}" class="R rc-po">${fit(`Date of Purchase Order : ${esc(fmtDMY(d.iso.buyersOrderDate, '.'))}`)}</td></tr>
+            <tr><td colspan="5" class="nr">${fit(`Invoice No: ${esc(d.invNo)}`)}</td><td colspan="${H - 5}" class="R rc-po">${fit(`Purchase Order No.&nbsp; ${esc(mt.buyersOrder)}`)}</td></tr>
+            <tr><td colspan="5" class="nr">${fit(`Invoice date: ${esc(fmtDMY(d.iso.date, '.'))}`)}</td><td colspan="${H - 5}" class="R rc-po rc-po2">${fit(`Date of Purchase Order : ${esc(fmtDMY(d.iso.buyersOrderDate, '.'))}`)}</td></tr>
             <tr><td colspan="6">${fit(`Reverse Charge (Y/N):${x.rcm ? ' ' + esc(x.rcm) : ''}`)}</td><td colspan="${H - 6}" class="R">${fit(x.arn ? `ARN NO.: ${esc(x.arn)}` : '')}</td></tr>
             <tr><td colspan="5">${fit(`State: ${st ? esc(st.name.toUpperCase()) : ''}`)}</td><td class="c">Code</td><td colspan="${H - 6}" class="R">${esc(x.sCode)}</td></tr>
             ${gap}
@@ -7658,7 +7719,7 @@
       </div>`;
   }
 
-  const LN = '3.6mm';
+  const LN = '3.95mm';
   registerVendor({
     key: K, name: 'Rai Cooling Tower — Excel Tax Invoice (black & white)', base: 'excel', show: [],
     extra: [
@@ -7667,56 +7728,60 @@
       { id: 'forName', label: 'Signature company name' }, { id: 'certify', label: 'Certificate line (above signature)', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", "Helvetica Neue", Arial, sans-serif; font-size: 8.6pt; line-height: 1.2; padding-top: 22mm; }
+      #print-root .${K} { font-family: Calibri, sans-serif; font-size: 8.6pt; line-height: 1.2; padding-top: 17mm; }
       #print-root .${K} .rc-box { width: 175mm; margin: 0 auto; border: 2px solid #000; }
-      #print-root .${K} .rc-hd { text-align: center; padding: 1.2mm 0 1.2mm; font-family: Tahoma, Verdana, "DejaVu Sans", sans-serif;
-        font-weight: bold; font-size: 9.4pt; line-height: 1.32; border-bottom: 2px solid #000; letter-spacing: 0.2px; }
-      #print-root .${K} .rc-name { font-size: 13pt; line-height: 1.3; }
+      #print-root .${K} .rc-hd { text-align: center; padding: 1.6mm 0 1.6mm; font-family: Tahoma, sans-serif;
+        font-weight: bold; font-size: 8.95pt; line-height: 1.42; border-bottom: 2px solid #000; }
+      #print-root .${K} .rc-name { font-size: 11.9pt; line-height: 1.4; }
       #print-root .${K} .rc-grid td, #print-root .${K} .rc-sum td { border-right: 1.3px solid #000; border-bottom: 1.3px solid #000; padding: 0 1mm;
-        height: 4.15mm; vertical-align: middle; font-weight: bold; overflow: hidden; }
+        height: 4.5mm; vertical-align: middle; font-weight: bold; overflow: hidden; }
       #print-root .${K} td.R { border-right: 0 !important; }
       #print-root .${K} td.B { border-bottom: 0 !important; }
-      #print-root .${K} .rc-grid td.rc-nr { border-right: 0; }
-      #print-root .${K} .rc-grid tr.rc-gap td { height: 2.3mm; border-bottom-width: 2px; }
-      #print-root .${K} .rc-grid tr.rc-band td { text-align: center; height: 8.6mm; border-bottom-width: 2px;
-        font-family: Cambria, Georgia, "Times New Roman", serif; font-size: 21pt; letter-spacing: 0.4px; }
-      #print-root .${K} .rc-grid td.rc-po { padding-left: 1.5mm; font-size: 8pt; }
+      #print-root .${K} .rc-grid td.nr { border-right: 0; }
+      #print-root .${K} .rc-grid tr.rc-gap td { height: 2.6mm; border-bottom-width: 2px; }
+      #print-root .${K} .rc-grid tr.rc-band td { text-align: center; height: 9.2mm; border-bottom-width: 2px;
+        font-family: Cambria, serif; font-size: 20.4pt; letter-spacing: 0.4px; word-spacing: 2px; }
+      #print-root .${K} .rc-grid td.rc-po { padding-left: 1.5mm; font-size: 7.85pt; }
+      #print-root .${K} .rc-grid td.rc-po2 { padding-left: 2.1mm; font-size: 8.75pt; }
       #print-root .${K} .rc-grid tr.rc-ph td { text-align: center; height: 4.7mm; border-bottom-width: 2px; }
-      #print-root .${K} .rc-grid td.rc-nm { font-size: 10.6pt; height: 5mm; }
+      #print-root .${K} .rc-grid td.rc-nm { font-size: 10.35pt; height: 5mm; }
       #print-root .${K} .rc-grid td.rc-nm2 { font-size: 7.8pt; }
-      #print-root .${K} .rc-grid td.rc-adr { height: 11.2mm; vertical-align: top; padding-top: 0.4mm; line-height: 1.32; border-bottom-width: 2px; }
-      #print-root .${K} .rc-grid td.rc-adr.R { font-size: 8.4pt; }
+      #print-root .${K} .rc-grid td.rc-adr { height: 12mm; vertical-align: top; padding-top: 0.4mm; line-height: 1.32; border-bottom-width: 2px; }
+      #print-root .${K} .rc-grid td.rc-adr.R { font-size: 8.7pt; }
       #print-root .${K} .rc-items { border-top: 0; }
       #print-root .${K} .rc-items th, #print-root .${K} .rc-items td { border-width: 1.3px; }
-      #print-root .${K} .rc-items th { font-weight: bold; font-size: 6.9pt; vertical-align: top; padding: 0.3mm 0.4mm; line-height: 1.5; }
+      #print-root .${K} .rc-items th { font-weight: bold; font-size: 6.6pt; white-space: nowrap; vertical-align: top; padding: 0.3mm 0.4mm; line-height: 1.5; }
       #print-root .${K} .rc-items thead tr:first-child th { height: 4mm; }
       #print-root .${K} .rc-items thead tr:last-child th { border-bottom-width: 2px; height: 5.4mm; }
       #print-root .${K} .rc-items thead tr:first-child th[rowspan] { border-bottom-width: 2px; }
       #print-root .${K} .rc-items th.l { text-align: left; }
-      #print-root .${K} .rc-items th.rc-big { font-size: 11.5pt; vertical-align: top; }
-      #print-root .${K} .rc-items td { font-weight: bold; font-size: 9.2pt; vertical-align: top; }
-      #print-root .${K} .rc-items tr.it td, #print-root .${K} .rc-items tr.sm td { padding: 0.2mm 0.7mm 0; height: ${LN}; line-height: 1.15;
-        border-bottom: 1.3px solid #000; vertical-align: middle; }
-      #print-root .${K} .rc-items .rc-desc { font-size: 8.2pt; }
-      #print-root .${K} .rc-items tr.rc-tot td { border-top: 2px solid #000; height: 7.8mm; font-size: 9.2pt; vertical-align: top; padding-top: 0.6mm; }
-      #print-root .${K} .rc-items tr.rc-tot td.rc-totl { font-family: Cambria, Georgia, "Times New Roman", serif; font-size: 18pt; text-align: center; vertical-align: middle; }
+      #print-root .${K} .rc-items th.rc-big { font-size: 10.25pt; vertical-align: top; }
+      #print-root .${K} .rc-items td { font-weight: bold; font-size: 8.75pt; vertical-align: top; }
+      #print-root .${K} .rc-items tr.it td, #print-root .${K} .rc-items tr.sm td { padding: 0; border-bottom: 1.3px solid #000; }
+      #print-root .${K} .rc-items .rc-ln { height: ${LN}; line-height: ${LN}; padding: 0 0.7mm; overflow: hidden; }
+      #print-root .${K} .rc-items .rc-ln + .rc-ln { border-top: 1.3px solid #000; }
+      #print-root .${K} .rc-items .rc-desc { font-size: 7.8pt; }
+      #print-root .${K} .rc-items .rc-desc .fit, #print-root .${K} .rc-for .fit { white-space: pre; }
+      #print-root .${K} .rc-items tr.rc-tot td { border-top: 2px solid #000; height: 8.4mm; font-size: 9.2pt; vertical-align: top; padding-top: 0.6mm; }
+      #print-root .${K} .rc-items tr.rc-tot td.rc-totl { font-family: Cambria, serif; font-size: 17pt; text-align: center; vertical-align: middle; }
       #print-root .${K} .rc-sum tr:first-child td { border-top: 2px solid #000; }
       #print-root .${K} .rc-sum td.rc-wh { text-align: center; position: relative; }
       #print-root .${K} .rc-sum td.rc-wh .rc-dash { position: absolute; right: 3mm; }
       #print-root .${K} .rc-sum td.rc-lk { white-space: nowrap; font-size: 9pt; }
-      #print-root .${K} .rc-sum td.rc-lv { text-align: right; padding-right: 2mm; }
+      #print-root .${K} .rc-sum td.rc-lv { text-align: right; padding-right: 5.5mm; font-weight: normal; }
       #print-root .${K} .rc-sum td.rc-words { text-align: center; font-size: 9.6pt; border-bottom-width: 2px; }
       #print-root .${K} .rc-sum tr.rc-b1 td { border-top: 0; }
-      #print-root .${K} .rc-sum tr.rc-b1 td.c { font-size: 9.2pt; }
-      #print-root .${K} .rc-sum td.rc-sm { font-size: 7.4pt; }
-      #print-root .${K} .rc-sum tr.rc-b4 td { height: 14mm; }
-      #print-root .${K} .rc-sum td.rc-terms { vertical-align: top; font-size: 8pt; line-height: 1.45; padding-top: 0.6mm; }
-      #print-root .${K} .rc-sum tr.rc-b5 td { height: 4.6mm; font-size: 9.2pt; }
+      #print-root .${K} .rc-sum tr.rc-b1 td.c { font-size: 8.9pt; }
+      #print-root .${K} .rc-sum td.rc-sm { font-size: 7.65pt; }
+      #print-root .${K} .rc-sum td.rc-br { font-size: 6.9pt; font-style: italic; padding-left: 2.7mm; }
+      #print-root .${K} .rc-sum tr.rc-b4 td { height: 15mm; }
+      #print-root .${K} .rc-sum td.rc-terms { vertical-align: top; font-size: 7.8pt; line-height: 1.45; padding-top: 0.6mm; }
+      #print-root .${K} .rc-sum tr.rc-b5 td { height: 4.6mm; font-size: 8.5pt; }
       #print-root .${K} .rc-sum td.rc-sign { vertical-align: top; text-align: center; padding-top: 0.6mm; }
       #print-root .${K} .rc-cert { display: flex; justify-content: center; overflow: hidden; white-space: nowrap; width: 44mm; margin: 0 auto;
-        font-size: 6.2pt; font-weight: normal; font-family: "Times New Roman", Times, serif; }
-      #print-root .${K} .rc-for { font-size: 7.4pt; width: 48mm; margin: 0.4mm auto 0; }
-      #print-root .${K} .rc-auth { font-size: 9.2pt; margin-top: 1mm; }
+        font-size: 5.9pt; font-weight: normal; font-family: "Times New Roman", serif; }
+      #print-root .${K} .rc-for { font-size: 7pt; width: 48mm; margin: 0.4mm auto 0; }
+      #print-root .${K} .rc-auth { font-size: 8.8pt; margin-top: 1mm; }
     `,
     preset: {
       label: 'Rai Cooling Tower — 465-25-26',
@@ -7874,27 +7939,31 @@
       { id: 'brands', label: 'Brand names in footer (comma separated)', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Tahoma, Verdana, "DejaVu Sans", Arial, sans-serif; font-size: 8.3pt; line-height: 1.3; padding: 9mm 9mm 3mm 10mm; }
+      #print-root .${K} { font-family: Tahoma, sans-serif; font-size: 8.3pt; line-height: 1.3; padding: 9mm 9mm 3mm 10mm; }
+      /* Busy prints Tahoma with tight GDI spacing: same glyph height, ~9% shorter lines than browser Tahoma */
+      #print-root .${K}, #print-root .${K} * { letter-spacing: -0.05em; }
       #print-root .${K} .rm-box { border: 1px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .rm-kv td { padding: 0 0.5mm; white-space: nowrap; }
       #print-root .${K} .rm-hd { display: grid; grid-template-columns: 40mm 1fr 31mm; grid-template-rows: auto auto auto; }
       #print-root .${K} .rm-logo { grid-row: 1; grid-column: 1; }
       #print-root .${K} .rm-co { grid-row: 1; grid-column: 2; padding: 1.5mm 1mm 0 0; justify-self: start; }
-      #print-root .${K} .rm-name { font-family: "Bookman Old Style", "URW Bookman", Georgia, "Times New Roman", serif; font-weight: bold;
-        font-size: 21pt; letter-spacing: 0.4px; line-height: 1.15; }
-      #print-root .${K} .rm-addr { font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 6.3pt; line-height: 1.6; letter-spacing: 0; padding-left: 0.5mm; white-space: nowrap; }
+      #print-root .${K} .rm-name { font-family: "Bookman Old Style", serif; font-weight: bold;
+        font-size: 16.7pt; letter-spacing: 0; line-height: 1.42; }
+      #print-root .${K} .rm-addr { font-family: Calibri, sans-serif; font-size: 6.5pt; line-height: 1.5; padding-left: 0.3mm; white-space: nowrap; }
+      #print-root .${K} .rm-addr > div { text-align: justify; text-align-last: justify; }
+      #print-root .${K} .rm-name *, #print-root .${K} .rm-addr, #print-root .${K} .rm-addr *, #print-root .${K} .rm-tag { letter-spacing: 0; }
       #print-root .${K} .rm-qr { grid-row: 1 / span 3; grid-column: 3; padding: 1.5mm 2mm 1mm 0; }
       #print-root .${K} .rm-band { grid-row: 2; grid-column: 1 / span 2; display: flex; align-items: stretch; margin: 1mm 0 0 2.5mm; height: 6mm; }
       #print-root .${K} .rm-cin { width: 42mm; white-space: nowrap; background: #3a3a3a; color: #fff; font-size: 7.2pt; display: flex; align-items: center; padding-left: 1.5mm;
-        clip-path: polygon(0 0, 100% 0, 91% 100%, 0 100%); letter-spacing: 0.3px; }
-      #print-root .${K} .rm-tag { flex: 1; background: #111; color: #fff; font-family: Verdana, Tahoma, Arial, sans-serif; font-size: 6.1pt; display: flex;
+        clip-path: polygon(0 0, 100% 0, 91% 100%, 0 100%); }
+      #print-root .${K} .rm-tag { flex: 1; background: #111; color: #fff; font-family: Calibri, sans-serif; font-size: 7pt; display: flex;
         align-items: center; justify-content: center; padding: 0 1mm 0 5mm; margin-left: -3.5mm; overflow: hidden; clip-path: polygon(5mm 0, 100% 0, 100% 100%, 0 100%); white-space: nowrap; }
       #print-root .${K} .rm-msme { grid-row: 3; grid-column: 1 / span 2; text-align: center; font-weight: bold; font-size: 10pt; padding: 2mm 0 4mm 30mm; }
       #print-root .${K} .rm-title { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; border-top: 1px solid #000; border-bottom: 1px solid #000;
         padding: 0.8mm 2mm 0.6mm; font-weight: bold; }
-      #print-root .${K} .rm-title .t { font-size: 12pt; }
-      #print-root .${K} .rm-title .cp { text-align: right; font-size: 11pt; align-self: start; }
-      #print-root .${K} .rm-ids { display: grid; grid-template-columns: 36% 30% 34%; border-bottom: 1px solid #000; font-weight: bold; font-size: 11.6pt; }
+      #print-root .${K} .rm-title .t { font-size: 11.2pt; }
+      #print-root .${K} .rm-title .cp { text-align: right; font-size: 9.6pt; align-self: start; }
+      #print-root .${K} .rm-ids { display: grid; grid-template-columns: 36% 30% 34%; border-bottom: 1px solid #000; font-weight: bold; font-size: 10.6pt; }
       #print-root .${K} .rm-ids > div { padding: 0.4mm 1mm 0.2mm; white-space: nowrap; overflow: hidden; }
       #print-root .${K} .rm-ids > div + div { border-left: 1px solid #000; }
       #print-root .${K} .rm-irn { display: flex; gap: 4mm; align-items: baseline; padding: 0.8mm 1mm; border-bottom: 1px solid #000; font-size: 8pt; min-height: 4.5mm; }
@@ -7919,7 +7988,7 @@
       #print-root .${K} .rm-items tr.rm-gt td { border-left: 0; border-right: 0; padding: 1.4mm 1mm 0.6mm; }
       #print-root .${K} .rm-items tr.rm-gt td:last-child { border-left: 1px solid #000; }
       #print-root .${K} .rm-gtw { display: flex; justify-content: space-between; align-items: baseline; }
-      #print-root .${K} .rm-words { font-weight: bold; font-size: 11pt; }
+      #print-root .${K} .rm-words { font-weight: bold; font-size: 10.5pt; }
       #print-root .${K} .rm-bank { display: grid; grid-template-columns: 20% 23.5% 22% 34.5%; border-top: 1px solid #000; border-bottom: 1px solid #000; font-weight: bold; }
       #print-root .${K} .rm-bank > div { padding: 2mm 1.5mm; white-space: nowrap; overflow: hidden; text-align: center; }
       #print-root .${K} .rm-bank > div + div { border-left: 1px solid #000; }
@@ -7930,7 +7999,7 @@
       #print-root .${K} .rm-rmpl td { font-weight: bold; }
       #print-root .${K} .rm-foot { display: grid; grid-template-columns: 59% 41%; min-height: 20mm; }
       #print-root .${K} .rm-brands { display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; padding: 2mm 1.5mm;
-        font-weight: bold; font-size: 10pt; letter-spacing: 0.3px; }
+        font-weight: bold; font-size: 10pt; }
       #print-root .${K} .rm-brands > span { text-align: center; }
       #print-root .${K} .rm-sign { border-left: 1px solid #000; display: flex; flex-direction: column; justify-content: space-between; font-weight: bold;
         font-size: 9.6pt; padding: 1.5mm 1mm 2mm 1mm; }
@@ -7997,8 +8066,7 @@
   function page(d, copy, pg) {
     const s = d.supplier, b = d.buyer, m = d.meta, x = d.x;
     const unit = d.totalQtyUnit ? `<br>${esc(d.totalQtyUnit)}` : '';
-    const thead = `<tr>${COLS.map((c, i) => `<th class="h${i}">${c.h}${i === 3 ? unit : ''}</th>`).join('')}</tr>
-      <tr class="sm-gap">${'<td></td>'.repeat(COLS.length)}</tr>`;
+    const thead = `<tr>${COLS.map((c, i) => `<th class="h${i}">${c.h}${i === 3 ? unit : ''}</th>`).join('')}</tr>`;
 
     // ---- closing rows (last page): taxable / tax ladder, amount in words, R/off, TOTAL, declaration + bank + sign ----
     const E = '<td class="e"></td><td class="e"></td><td class="e"></td>';
@@ -8061,7 +8129,7 @@
               <td colspan="3" class="sm-billc">
                 <table class="sm-bill"><colgroup><col style="width:26.7%"><col style="width:34.2%"><col></colgroup>
                   ${bill('Bill No:-', fit(esc(d.invNo)), 'Date:- ', esc(dmy2(d.iso.date)))}
-                  <tr><td class="bx b">PO. No.:-</td><td class="bx c" rowspan="2">${esc(m.buyersOrder).split('/').map((p, i, a) => `<span class="sm-nw">${p}${i < a.length - 1 ? '/' : ''}</span>`).join('<wbr>')}</td>
+                  <tr><td class="bx b">PO. No.:-</td><td class="bx c" rowspan="2">${esc(m.buyersOrder).replace(/\//g, '/<wbr>')}</td>
                     <td class="bx">${m.buyersOrder || d.iso.buyersOrderDate ? `Date:- ${esc(dmy2(d.iso.buyersOrderDate))}` : ''}</td></tr>
                   <tr><td></td><td></td></tr>
                 </table>
@@ -8077,39 +8145,37 @@
     key: K, name: 'Samarth Hydraulics — Tax Invoice (Excel style)', base: 'simple', show: [],
     extra: [{ id: 'signFor', label: 'Signature line (e.g. For Samarth Hydraulics)' }],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size: 9.6pt; line-height: 1.22;
-        padding: 45mm 15mm 53mm 18mm; }
+      #print-root .${K} { font-family: Arial, sans-serif; font-size: 9.6pt; line-height: 1.22;
+        padding: 41mm 15mm 60mm 18mm; }
       #print-root .${K} .sm-box { border: 1.3px solid #000; display: flex; flex-direction: column; }
       #print-root .${K} .sm-co { display: flex; padding: 1.2mm 0 0; }
       #print-root .${K} .sm-logo { width: 19.2%; flex: none; }
       #print-root .${K} .sm-cot { flex: 1; min-width: 0; font-weight: bold; line-height: 1.28; }
       #print-root .${K} .sm-name { font-family: "Times New Roman", Times, serif; font-size: 23pt; font-weight: bold; line-height: 1.05; padding-left: 9mm; }
-      #print-root .${K} .sm-ad { font-size: 9.4pt; line-height: 4.4mm; }
+      #print-root .${K} .sm-ad { font-size: 9.4pt; }
       #print-root .${K} .sm-ad + .sm-ad { padding-left: 3.5mm; }
       #print-root .${K} .sm-ph { display: flex; justify-content: space-between; align-items: flex-end; font-size: 9.4pt; padding-left: 3.5mm; }
       #print-root .${K} .sm-em { border: 1px solid #000; border-bottom: 0; width: 51.5mm; padding: 0 1mm; text-decoration: underline; font-size: 9pt; }
       #print-root .${K} .sm-gst { display: grid; grid-template-columns: 49% 51%; border-top: 1px solid #000; border-bottom: 1px solid #000;
         font-weight: bold; font-size: 9.8pt; text-align: center; }
-      #print-root .${K} .sm-gst > div { padding: 0 1mm; line-height: 1.15; }
+      #print-root .${K} .sm-gst > div { padding: 0.2mm 1mm; }
       #print-root .${K} .sm-gst > div + div { border-left: 1px solid #000; }
       #print-root .${K} .sm-mid td { padding: 0; }
       #print-root .${K} .sm-title { text-align: center; vertical-align: middle; font-weight: bold; font-size: 11.5pt; }
       #print-root .${K} .sm-copy { border-left: 1px solid #000; font-weight: bold; font-size: 7.4pt; padding: 0.8mm 0 0.4mm 0.6mm !important; }
       #print-root .${K} .sm-copy > div { display: flex; justify-content: space-between; height: 4.4mm; align-items: center; padding-right: 7mm; }
-      #print-root .${K} .sm-buyer { font-weight: bold; font-size: 10.2pt; line-height: 5.2mm; padding: 0.4mm 1mm 0.6mm 0 !important; }
-      #print-root .${K} .sm-bn { font-size: 11pt; }
+      #print-root .${K} .sm-buyer { font-weight: bold; font-size: 9.8pt; line-height: 1.3; padding: 0.6mm 1mm 0.8mm 0 !important; }
+      #print-root .${K} .sm-bn { font-size: 10.6pt; }
       #print-root .${K} .sm-billc { border-top: 1px solid #000; }
       #print-root .${K} .sm-bill td { padding: 0.2mm 0.8mm; font-size: 9.6pt; font-weight: bold; vertical-align: top; }
       #print-root .${K} .sm-bill td.bx { border: 1px solid #000; border-top: 0; }
       #print-root .${K} .sm-bill tr > td:last-child { border-right: 0; }
       #print-root .${K} .sm-bill td.c { line-height: 1.25; }
-      #print-root .${K} .sm-nw { white-space: nowrap; }
       #print-root .${K} .sm-items { border-top: 1px solid #000; }
-      #print-root .${K} .sm-items th { font-weight: bold; font-size: 9.8pt; vertical-align: top; padding: 0.8mm 1mm 1mm; line-height: 4.4mm; }
+      #print-root .${K} .sm-items th { font-weight: bold; font-size: 9.8pt; vertical-align: top; padding: 0.3mm 1mm 0.6mm; line-height: 1.2; }
       #print-root .${K} .sm-items th.h5 { vertical-align: middle; }
       #print-root .${K} .sm-items td { font-weight: bold; font-size: 9.8pt; padding: 0.3mm 1mm; }
-      #print-root .${K} .sm-items tr.it td { padding-top: 1.2mm; padding-bottom: 0.4mm; line-height: 4.5mm; }
-      #print-root .${K} .sm-items tr.sm-gap td { height: 4mm; padding: 0; border-top: 0; border-bottom: 0; }
+      #print-root .${K} .sm-items tr.it td { padding-top: 2.6mm; padding-bottom: 0.4mm; line-height: 1.3; }
       #print-root .${K} .sm-items tr.sm-c td { height: 4.2mm; padding: 0 0.8mm; vertical-align: bottom; }
       #print-root .${K} .sm-items tr.sm-c td.e { border-top: 0; border-bottom: 0; }
       #print-root .${K} .sm-items td.q { border-left: 1px solid #000; }
@@ -8284,7 +8350,7 @@
               <div class="smc-sup">
                 <div class="smc-sn">${fit(esc(s.name))}</div>
                 ${s.addr.map(l => `<div>${esc(l)}</div>`).join('')}
-                ${s.udyam ? `<div>${fit('UDYAM Reg No: ' + esc(s.udyam))}</div>` : ''}
+                ${s.udyam ? `<div>UDYAM Reg No: ${esc(s.udyam)}</div>` : ''}
                 ${s.gst ? `<div>GSTIN/UIN: ${esc(s.gst)}</div>` : ''}
                 ${st ? `<div>State Name : ${esc(st.name)}, Code : ${st.code}</div>` : ''}
                 ${s.phone ? `<div>Contact : ${esc(s.phone)}</div>` : ''}
@@ -8340,42 +8406,45 @@
       { id: 'acHolder', label: "Bank A/c Holder's Name (blank = company name)" }
     ],
     css: `
-      ${P} { font-family: Arial, Helvetica, sans-serif; font-size: 7.9pt; line-height: 1.12; padding: 4.8mm 8.5mm 17mm 9mm; }
+      /* Tally print: Arial throughout (regular 7.7pt body, bold values); the party/address column is Arial printed
+         horizontally expanded (~1.27x), reproduced with scaleX so both the glyph height and the line width match */
+      ${P} { font-family: Arial, sans-serif; font-size: 7.7pt; line-height: 1.12; padding: 6mm 8.5mm 4mm 9mm; }
       ${P} .smc-top { position: relative; min-height: 8mm; }
-      ${P} .smc-top.smc-wq { height: 47.6mm; }
-      ${P} .smc-title { text-align: center; font-weight: bold; font-size: 14pt; }
-      ${P} .smc-irn { position: absolute; left: 1mm; bottom: 6.2mm; width: 120mm; font-size: 10pt; line-height: 1.2; }
+      ${P} .smc-top.smc-wq { height: 46.5mm; }
+      ${P} .smc-title { text-align: center; font-weight: bold; font-size: 14pt; padding-top: 0.5mm; }
+      ${P} .smc-irn { position: absolute; left: 1mm; bottom: 7.5mm; width: 120mm; font-size: 10pt; line-height: 1.2; }
       ${P} .smc-irn td { padding: 0; }
       ${P} .smc-irn td:nth-child(1) { width: 18.5mm; }
       ${P} .smc-irn td:nth-child(2) { width: 2.5mm; font-weight: bold; }
       ${P} .smc-irn td:nth-child(3) { font-weight: bold; }
-      ${P} .smc-einv { position: absolute; right: 0; top: 8.6mm; width: 32mm; font-size: 10pt; }
+      ${P} .smc-einv { position: absolute; right: 0; top: 7.5mm; width: 32mm; font-size: 10pt; }
       ${P} .smc-einv > div:first-child { padding-left: 2mm; margin-bottom: 3.5mm; }
       ${P} .smc-einv .qr { width: 116px; height: 116px; margin: 0 0 0 auto; }
       ${P} .smc-box { border: 1px solid #000; display: flex; flex-direction: column; }
       ${P} .smc-hd { display: grid; grid-template-columns: 49.9% 50.1%; border-bottom: 1px solid #000; }
       ${P} .smc-left { border-right: 1px solid #000; }
-      ${P} .smc-left > div { padding: 0.5mm 1mm 0.3mm; min-height: 24.5mm; font-size: 9pt; line-height: 1.1; letter-spacing: 0.55px; }
+      ${P} .smc-left > div { padding: 0.6mm 1mm 0.4mm; min-height: 24mm; }
       ${P} .smc-left > div + div { border-top: 1px solid #000; }
-      ${P} .smc-sup { min-height: 27.3mm !important; font-size: 8.8pt !important; line-height: 1.02 !important; }
-      ${P} .smc-left > div > div { padding-bottom: 0.05mm; }
-      ${P} .smc-sn { font-weight: bold; font-size: 9.9pt; line-height: 1.15; letter-spacing: 0; }
-      ${P} .smc-pl { line-height: 1.05; }
-      ${P} .smc-pn { font-weight: bold; font-size: 9.6pt; line-height: 1.12; letter-spacing: 0; }
+      ${P} .smc-sup { min-height: 25.5mm; }
+      ${P} .smc-sn { font-weight: bold; font-size: 9.7pt; }
+      ${P} .smc-pl { font-size: 9.7pt; }
+      ${P} .smc-pn { font-weight: bold; font-size: 9.8pt; }
+      ${P} .smc-sup > div:not(.smc-sn), ${P} .smc-pty > div:not(.smc-pl):not(.smc-pn), ${P} .smc-pty .smc-kv {
+        width: 78.75%; transform: scaleX(1.27); transform-origin: 0 0; line-height: 1.1; }
       ${P} .smc-kv td { padding: 0; }
       ${P} .smc-meta { display: flex; flex-direction: column; }
-      ${P} .smc-mr { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #000; height: 7.85mm; }
+      ${P} .smc-mr { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid #000; height: 8.2mm; }
       ${P} .smc-mc { padding: 0.4mm 0.8mm; min-width: 0; }
       ${P} .smc-mc + .smc-mc { border-left: 1px solid #000; }
       ${P} .smc-mv { font-weight: bold; }
       ${P} .smc-tod { padding: 0.4mm 0.8mm; flex: 1; }
-      ${P} .smc-items { font-size: 7.9pt; line-height: 1.05; }
-      ${P} .smc-items th { font-weight: normal; vertical-align: top; padding: 0.3mm 0.6mm 0.4mm; line-height: 1.05; height: 6mm; white-space: nowrap; }
+      ${P} .smc-items { font-size: 7.7pt; }
+      ${P} .smc-items th { font-weight: normal; vertical-align: top; padding: 0.3mm 0.6mm 2.6mm; line-height: 1.1; }
       ${P} .smc-items th:nth-child(2) { padding-left: 2mm; }
       ${P} .smc-items th:first-child { text-align: left; }
       ${P} .smc-items td { padding: 0 0.8mm; border-top: 0; border-bottom: 0; }
       ${P} .smc-items tr.it td { padding-top: 0; padding-bottom: 0; }
-      ${P} .smc-items tr.it:first-child td { padding-top: 2.8mm; }
+      ${P} .smc-items tr.it:first-child td { padding-top: 2.6mm; }
       ${P} .smc-items tr.it td:first-child { padding-left: 1.2mm; text-align: left; font-weight: bold; }
       ${P} .smc-spec { font-weight: normal; font-style: italic; padding-left: 3mm; }
       ${P} .smc-items tr.smc-sub td:last-child { border-top: 1px solid #000 !important; }
@@ -8384,7 +8453,7 @@
       ${P} .smc-less { float: left; font-style: italic; padding-left: 0.8mm; }
       ${P} .smc-items tr.tot td { border-top: 1px solid #000; padding: 0.2mm 0.8mm; }
       ${P} .smc-items tr.cont td { border-top: 1px solid #000; }
-      ${P} .smc-words { padding: 0 1mm 2.6mm; }
+      ${P} .smc-words { border-top: 1px solid #000; padding: 0.3mm 1mm 1.6mm; }
       ${P} .smc-wl { display: flex; justify-content: space-between; }
       ${P} .smc-wl i { padding-right: 0.5mm; }
       ${P} .smc-hsnw { display: flex; align-items: stretch; padding: 0 0 0 0.5mm; }
@@ -8399,21 +8468,20 @@
       ${P} .smc-hsn th { font-weight: normal; text-align: center; vertical-align: top; line-height: 1.12; }
       ${P} .smc-hsn thead tr:last-child th { text-align: left; }
       ${P} .smc-hsn .smc-tv { text-align: center; }
-      ${P} .smc-hb td { height: 20.5mm; border-bottom: 0; line-height: 1.1; }
+      ${P} .smc-hb td { height: 24mm; border-bottom: 0; line-height: 1.1; }
       ${P} .smc-ht td { font-weight: bold; border-top: 1px solid #000; }
       ${P} .smc-tw { padding: 0 1mm 0; display: flex; gap: 8mm; }
-      ${P} .smc-tw b { font-size: 8.6pt; }
-      ${P} .smc-db { display: grid; grid-template-columns: 49.9% 50.1%; min-height: 16mm; }
-      ${P} .smc-decl { align-self: end; padding: 0 1mm 0.2mm; font-size: 7.7pt; }
+            ${P} .smc-db { display: grid; grid-template-columns: 49.9% 50.1%; min-height: 16mm; }
+      ${P} .smc-decl { align-self: end; padding: 0 1mm 0.2mm; }
       ${P} .smc-bank { padding: 3.5mm 0 1mm 1mm; line-height: 1.1; }
       ${P} .smc-bank td { padding: 0; }
-      ${P} .smc-bank td:first-child { width: 31.5%; }
+      ${P} .smc-bank td:first-child { width: 30%; }
       ${P} .smc-bank td:last-child { font-weight: bold; }
       ${P} .smc-sign { display: grid; grid-template-columns: 49.9% 50.1%; border-top: 1px solid #000; height: 14mm; }
       ${P} .smc-sign > div { padding: 0.3mm 1mm; }
       ${P} .smc-sign > div + div { border-left: 1px solid #000; }
       ${P} .smc-auth { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-bottom: 0.3mm !important; }
-      ${P} .smc-cg { text-align: center; font-size: 10pt; padding-top: 1.5mm; }
+      ${P} .smc-cg { text-align: center; font-size: 9.7pt; padding-top: 1.5mm; }
     `,
     preset: {
       label: 'S M Corporation — SMC-409',
@@ -8451,7 +8519,7 @@
   const num = n => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const words = n => wordsPlain(n, 'Indian Rupees ')
     .replace(/\b(Twenty|Thirty|Forty|Fifty|Sixty|Seventy|Eighty|Ninety) (One|Two|Three|Four|Five|Six|Seven|Eight|Nine)\b/g, '$1-$2');
-  const kv = (rows, w = '24mm') => `<table class="sw-kv"><colgroup><col style="width:${w}"><col></colgroup>
+  const kv = (rows, w = '24mm') => `<table class="kv"><colgroup><col style="width:${w}"><col></colgroup>
       ${rows.map(([k, val]) => `<tr><td class="k">${k}</td><td>${fit(': ' + (val || ''))}</td></tr>`).join('')}</table>`;
 
   const cols = d => {
@@ -8558,37 +8626,40 @@
       { id: 'acType', label: 'Bank A/C Type' }, { id: 'preparedBy', label: 'Prepared by' }, { id: 'remarks', label: 'Remarks', wide: true }
     ],
     css: `
-      #print-root .${K} { font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif; font-size: 7.6pt; line-height: 1.25; padding-top: 5mm; }
-      #print-root .${K} .sw-branch { text-align: right; font-weight: bold; font-size: 9.5pt; min-height: 4.5mm; }
+      /* the original (SAP B1 / Crystal print) is set in Tahoma throughout: Tahoma Bold for the name, title and labels */
+      #print-root .${K} { font-family: Tahoma, sans-serif; font-size: 6.4pt; line-height: 1.3; padding-top: 5mm; }
+      #print-root .${K} .sw-branch { text-align: right; font-weight: bold; font-size: 7.8pt; min-height: 4.5mm; }
       #print-root .${K} .sw-box { border: 1px solid #000; border-radius: 2mm; display: flex; flex-direction: column; }
-      #print-root .${K} .sw-kv { width: 100%; }
-      #print-root .${K} .sw-kv td { padding: 0.15mm 1mm; vertical-align: top; }
-      #print-root .${K} .sw-kv td.k { white-space: nowrap; }
+      #print-root .${K} .kv { display: table; width: 100%; font-size: inherit; }
+      #print-root .${K} .kv td { padding: 0.15mm 1mm; vertical-align: top; line-height: 1.36; }
+      #print-root .${K} .kv td.k { white-space: nowrap; }
       #print-root .${K} .sw-hd { display: flex; align-items: flex-start; padding: 1.5mm 2mm 0; }
-      #print-root .${K} .sw-logo { width: 52mm; padding-top: 9mm; font-family: "Comfortaa", "Varela Round", "Arial Rounded MT Bold", Arial, sans-serif;
-        font-size: 25pt; letter-spacing: 0.3px; color: #222; }
-      #print-root .${K} .sw-co { flex: 1; text-align: center; font-size: 7.4pt; line-height: 1.3; }
-      #print-root .${K} .sw-name { font-size: 12.5pt; font-weight: bold; margin-bottom: 0.5mm; }
+      #print-root .${K} .sw-logo { width: 52mm; padding-top: 9mm; font-family: Comfortaa, sans-serif; font-size: 19.5pt; color: #222; }
+      #print-root .${K} .sw-co { flex: 1; text-align: center; font-size: 6.5pt; line-height: 1.42; }
+      #print-root .${K} .sw-name { font-size: 10.5pt; line-height: 1.25; font-weight: bold; margin-bottom: 0.5mm; }
       #print-root .${K} .sw-qr { width: 36mm; display: flex; justify-content: flex-end; min-height: 34mm; }
-      #print-root .${K} .sw-irn { width: 125mm; padding: 0 1mm 0.5mm; }
+      #print-root .${K} .sw-irn { width: 125mm; padding: 0 1mm 0.5mm; font-size: 6.5pt; }
+      #print-root .${K} .sw-irn .kv td { padding: 0.4mm 1mm; line-height: 1.6; }
       #print-root .${K} .sw-irn td.k { font-weight: bold; }
-      #print-root .${K} .sw-title { text-align: center; font-weight: bold; font-size: 9pt; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 0.3mm; }
+      #print-root .${K} .sw-title { text-align: center; font-weight: bold; font-size: 8.2pt; border-top: 1px solid #000; border-bottom: 1px solid #000; padding: 0.3mm; }
       #print-root .${K} .sw-2 { display: grid; grid-template-columns: 56% 44%; border-bottom: 1px solid #000; }
       #print-root .${K} .sw-2 > div + div { border-left: 1px solid #000; }
       #print-root .${K} .sw-2 > div { padding: 0.6mm 0.5mm; }
       #print-root .${K} .sw-ph > div { font-weight: bold; padding: 0.5mm 1.5mm; }
       #print-root .${K} .sw-party { min-height: 26mm; }
-      #print-root .${K} .sw-items { border-bottom: 1px solid #000; }
-      #print-root .${K} .sw-items th { background: #d9d9d9; font-weight: normal; font-size: 7.2pt; padding: 0.4mm 1mm; }
+      #print-root .${K} .sw-items { border-bottom: 1px solid #000; font-size: 5.6pt; }
+      #print-root .${K} .sw-items th { background: #d9d9d9; font-weight: normal; font-size: 5.7pt; padding: 0.4mm 1mm; }
       #print-root .${K} .sw-items td { padding: 1mm 1mm 0.4mm; }
+      #print-root .${K} .sw-items td b { font-size: 5pt; }
       #print-root .${K} .sw-items tr.tot td { border-top: 1px solid #000; padding: 1.2mm 1mm; }
       #print-root .${K} .sw-sum { display: grid; grid-template-columns: 1fr 74mm; border-bottom: 1px solid #000; }
       #print-root .${K} .sw-rem { padding: 1.2mm 1.5mm; border-right: 1px solid #000; }
-      #print-root .${K} .sw-lad { width: 100%; }
-      #print-root .${K} .sw-lad td { padding: 0.2mm 1.5mm; border-bottom: 1px solid #000; }
+      #print-root .${K} .sw-lad { width: 100%; font-size: 6.6pt; }
+      #print-root .${K} .sw-lad td { padding: 0.45mm 1.5mm; border-bottom: 1px solid #000; }
       #print-root .${K} .sw-lad tr:first-child td { padding-top: 1.2mm; }
       #print-root .${K} .sw-lad tr:last-child td { border-bottom: 0; }
       #print-root .${K} .sw-lad tr.b td { font-weight: bold; }
+      #print-root .${K} .sw-lad tr:first-child td:first-child { font-weight: normal; }
       #print-root .${K} .sw-words { border-bottom: 1px solid #000; padding: 0.4mm 0.5mm; }
       #print-root .${K} .sw-words td.k { font-weight: bold; }
       #print-root .${K} .sw-foot { display: grid; grid-template-columns: 56% 44%; border-bottom: 1px solid #000; min-height: 26mm; }
@@ -8596,7 +8667,7 @@
       #print-root .${K} .sw-foot > div + div { border-left: 1px solid #000; }
       #print-root .${K} .sw-sign { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; }
       #print-root .${K} .sw-prep { padding: 5mm 2mm 1.5mm; min-height: 11mm; }
-      #print-root .${K} .sw-pg { text-align: right; font-size: 7.4pt; padding: 0.5mm 1mm; }
+      #print-root .${K} .sw-pg { text-align: right; font-size: 6.5pt; padding: 0.5mm 1mm; }
     `,
     preset: {
       label: 'Swash Tech (officebanao) — AR24100801000001',
